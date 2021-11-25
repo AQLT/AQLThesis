@@ -1,4 +1,6 @@
 #'@export
+#'@importFrom readr read_csv cols col_date
+#'@importFrom utils read.csv
 fredmd <- function (file = "", date_start = NULL, date_end = NULL, transform = TRUE)
 {
   if (!is.logical(transform))
@@ -19,7 +21,7 @@ fredmd <- function (file = "", date_start = NULL, date_end = NULL, transform = T
   }
   rawdata <- readr::read_csv(file, col_names = FALSE, col_types = readr::cols(X1 = readr::col_date(format = "%m/%d/%Y")),
                              skip = 2)
-  rawdata <- rawdata[1:(nrow(rawdata)-1), ] #dernière ligne est vide
+  rawdata <- rawdata[!is.na(rawdata[,1]), ] #supprimer les eventuelles dernieres lignes vides
   rawdata <- as.data.frame(rawdata)
   nom_col <- colnames(read.csv(file,header = TRUE,nrows =1))
   header <- c("date", nom_col[-1])
