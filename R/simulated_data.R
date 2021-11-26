@@ -21,25 +21,25 @@
 #' @importFrom stats rnorm
 simulated_tci <- function(t, rho, lambda, sigma_nu, sigma_e, start = 0){
   n = length(t)
-  cycle = cycle(t = t, rho = rho, lambda = lambda)
-  trend = trend(n = n, sigma_nu = sigma_nu, start = start)
-  irregular = irregular(n = n, sigma_e = sigma_e)
+  cycle = simulated_cycle(t = t, rho = rho, lambda = lambda)
+  trend = simulated_trend(n = n, sigma_nu = sigma_nu, start = start)
+  irregular = simulated_irregular(n = n, sigma_e = sigma_e)
   tc = cycle + trend + irregular
   cbind(tc, cycle, trend, irregular)
 }
 #' @rdname simulated_tci
 #' @export
-cycle <- function(t, rho, lambda){
+simulated_cycle <- function(t, rho, lambda){
   rho *(cos(2*pi*t/lambda) + sin(2*pi*t/lambda))
 }
 #' @rdname simulated_tci
 #' @export
-trend <- function(n = 1, sigma_nu=1, start = 0){
+simulated_trend <- function(n = 1, sigma_nu=1, start = 0){
   data = c(start, rnorm(n - 1, sd = sigma_nu))
   cumsum(data)
 }
 #' @rdname simulated_tci
 #' @export
-irregular <- function(n = 1, sigma_e=1){
+simulated_irregular <- function(n = 1, sigma_e=1){
   rnorm(n, sd = sigma_e)
 }

@@ -9,7 +9,7 @@
 \alias{selectFilter.ts}
 \title{X11 utility function}
 \usage{
-calcICR(x)
+calcICR(x, length = 13)
 
 calAbsMeanVariations(x, nlags = 1, mul = FALSE)
 
@@ -17,14 +17,16 @@ selectFilter(x, ...)
 
 \method{selectFilter}{default}(x, ..., freq)
 
-\method{selectFilter}{ts}(x, ...)
+\method{selectFilter}{ts}(x, ..., length = 13)
 }
 \arguments{
 \item{x}{the input time series}
 
-\item{nlags, mul}{parameters}
+\item{length}{the length of the Henderson filter.}
 
-\item{...}{unused argument}
+\item{nlags, mul}{parameters.}
+
+\item{...}{unused argument.}
 
 \item{freq}{the frequency.}
 }

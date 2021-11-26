@@ -2,18 +2,18 @@
 % Please edit documentation in R/simulated_data.R
 \name{simulated_tci}
 \alias{simulated_tci}
-\alias{cycle}
-\alias{trend}
-\alias{irregular}
+\alias{simulated_cycle}
+\alias{simulated_trend}
+\alias{simulated_irregular}
 \title{Simulate Trend-Cycle Component}
 \usage{
 simulated_tci(t, rho, lambda, sigma_nu, sigma_e, start = 0)
 
-cycle(t, rho, lambda)
+simulated_cycle(t, rho, lambda)
 
-trend(n = 1, sigma_nu = 1, start = 0)
+simulated_trend(n = 1, sigma_nu = 1, start = 0)
 
-irregular(n = 1, sigma_e = 1)
+simulated_irregular(n = 1, sigma_e = 1)
 }
 \arguments{
 \item{t, rho, lambda, sigma_nu, sigma_e, start, n}{parameters, see details.}

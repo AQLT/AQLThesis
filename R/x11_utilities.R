@@ -2,15 +2,16 @@
 #'
 #' @param x the input time series
 #' @param freq the frequency.
-#' @param nlags,mul parameters
-#' @param ... unused argument
+#' @param length the length of the Henderson filter.
+#' @param nlags,mul parameters.
+#' @param ... unused argument.
 #'
 #' @name x11_utilities
 #' @export
 #' @importFrom stats frequency
 #' @importFrom rjdfilters henderson
-calcICR <- function(x){
-  sc <- henderson(x, length = 13,musgrave = FALSE)
+calcICR <- function(x, length = 13){
+  sc <- henderson(x, length = length, musgrave = FALSE)
   si <- x - sc
   gc <- calAbsMeanVariations(sc, 1)
   gi <- calAbsMeanVariations(si, 1)
@@ -47,27 +48,27 @@ selectFilter <- function(x, ...){
 selectFilter.default <- function(x, ..., freq) {
   icr = x
   if (freq == 2) {
-    return (5);
+    c(icr = icr, length = 5);
   }
   if (icr >= 1 && icr < 3.5) {
-    return(freq + 1);
+    c(icr = icr, length = freq + 1);
   }
   if (icr < 1) {
     if (freq == 12) {
-      9
+      c(icr = icr, length = 9)
     } else {
-      5
+      c(icr = icr, length = 5)
     }
   } else {
     if(freq == 12){
-      23
+      c(icr = icr, length = 23)
     }else{
-      7
+      c(icr = icr, length = 7)
     }
   }
 }
 #' @rdname x11_utilities
 #' @export
-selectFilter.ts <- function(x, ...){
-  selectFilter(calcICR(x), freq = frequency(x))
+selectFilter.ts <- function(x, ..., length = 13){
+  selectFilter(calcICR(x, length = length), freq = frequency(x))
 }
