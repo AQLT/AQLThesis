@@ -2,7 +2,7 @@
 #'
 #' National Bureau of Economic Research’s Business Cycle Dating Committee maintains a chronology of US business cycles. The chronology identifies the dates of peaks and troughs that frame economic recessions and expansions. A recession is the period between a peak of economic activity and its subsequent trough, or lowest point. Between trough and peak, the economy is in an expansion. Expansion is the normal state of the economy; most recessions are brief. However, the time that it takes for the economy to return to its previous peak level of activity or its previous trend path may be quite extended. According to the NBER chronology, the most recent peak occurred in February 2020. The most recent trough occurred in April 2020.
 #' @source \url{https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions}
-#' @md nber_tp
+#' @name nber_tp
 #' @rdname nber_tp
 "nber_tp_m"
 #' @rdname nber_tp
