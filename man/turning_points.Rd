@@ -23,12 +23,13 @@ Detect turning points in a time series
 \details{
 \loadmathjax
 Zellner, Hong, et Min (1991) definition is used \mjseqn{k=3}, \mjseqn{m=1}:
-- we have an upturn at date \mjseqn{t} when
+\itemize{
+\item we have an upturn at date \mjseqn{t} when
 \mjsdeqn{
 y_{t-k}\geq\cdots\geq y_{t-1}<y_t\leq y_{t+1}\leq\cdots y_{t+m}
 }
-
-- we have a downturn at date \mjseqn{t} when
+\item we have a downturn at date \mjseqn{t} when
+}
 
 \mjsdeqn{
 y_{t-k}\leq\cdots\leq y_{t-1}>y_t\geq y_{t+1}\geq\cdots y_{t+m}
