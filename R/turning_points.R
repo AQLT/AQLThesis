@@ -19,7 +19,7 @@
 #' @export
 #' @importFrom stats ts start end time window
 #' @importFrom zoo rollapply
-turning_points <- function(x, start = start(x), end = end(x)){
+turning_points <- function(x, start = NULL, end = NULL){
   if(is.null(x))
     return(NULL)
   list(upturn = upturn(x, start = start, end = end),
@@ -27,7 +27,7 @@ turning_points <- function(x, start = start(x), end = end(x)){
 }
 #' @rdname turning_points
 #' @export
-upturn <- function(x, start = start(x), end = end(x)){
+upturn <- function(x, start = NULL, end = NULL){
   if(is.null(x))
     return(NULL)
   res <- zoo::rollapply(x, width=5,
@@ -41,7 +41,7 @@ upturn <- function(x, start = start(x), end = end(x)){
 }
 #' @rdname turning_points
 #' @export
-downturn <- function(x, start = start(x), end = end(x)){
+downturn <- function(x, start = NULL, end = NULL){
   if(is.null(x))
     return(NULL)
   res <- rollapply(x, width=5,

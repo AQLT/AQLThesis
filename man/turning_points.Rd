@@ -6,11 +6,11 @@
 \alias{downturn}
 \title{Detect turning points in a time series}
 \usage{
-turning_points(x, start = start(x), end = end(x))
+turning_points(x, start = NULL, end = NULL)
 
-upturn(x, start = start(x), end = end(x))
+upturn(x, start = NULL, end = NULL)
 
-downturn(x, start = start(x), end = end(x))
+downturn(x, start = NULL, end = NULL)
 }
 \arguments{
 \item{x}{the input time series}
