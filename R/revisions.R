@@ -1,7 +1,7 @@
 #'@export
 first_est_revisions <- function(x){
   last_est <- x[[length(x)]]
-  while(is.null(last_est) & length(x) >0){
+  while(is.null(last_est) & length(x) >1){
     x <- x[-length(x)]
     last_est <- x[[length(x)]]
   }
