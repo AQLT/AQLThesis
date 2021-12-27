@@ -1,6 +1,12 @@
 #'@export
 first_est_revisions <- function(x){
   last_est <- x[[length(x)]]
+  while(!is.null(last_est) & length(x) >0){
+    x <- x[-length(x)]
+    last_est <- x[[length(x)]]
+  }
+  if(length(x) == 0)
+    return(NULL)
   revisions_firstest <- t(sapply(x, function(est){
     if(is.null(est)){
       return(rep(NA,11))
