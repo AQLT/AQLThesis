@@ -3,11 +3,13 @@
 #' @param file path to a file.
 #' @param date_start,date_end optional date start and end.
 #' @param transform boolean indicating if the data should be transformed.
+#' @param log boolean indicating if only the log transformation should be used (\code{transform} must be equal to \code{FALSE}).
 #'@export
 #'@importFrom readr read_csv cols col_date
 #'@importFrom utils read.csv
 #'@importFrom stats lag
-fredmd <- function (file = "", date_start = NULL, date_end = NULL, transform = TRUE)
+fredmd <- function (file = "", date_start = NULL, date_end = NULL, transform = TRUE,
+                    log = FALSE)
 {
   if (!is.logical(transform))
     stop("'transform' must be logical.")
@@ -57,6 +59,12 @@ fredmd <- function (file = "", date_start = NULL, date_end = NULL, transform = T
     }))
     colnames(data_out) <- colnames(ts_data)
     ts_data <- data_out
+  }else if(log){
+    data_out <- do.call(cbind, lapply(seq_len(ncol(ts_data)),function(i){
+      transxfredlog(ts_data[,i], tcode[i])
+    }))
+    colnames(data_out) <- colnames(ts_data)
+    ts_data <- data_out
   }
 
   return(ts_data)
@@ -84,6 +92,24 @@ transxfred <- function(x, tcode) {
       x <- log(x)
       y <- diff(diff(x))
     }
+  }else if (tcode == 7) {
+    y1 <- diff(x)/stats::lag(x)
+    y <- diff(y1)
+  }else{
+    stop("wrong tcode")
+  }
+  return(y)
+}
+
+
+transxfredlog <- function(x, tcode) {
+  small <- 1e-06
+  y <- NULL
+  if (tcode %in% c(1, 2, 3)) {
+    y <- x
+  }else if (tcode %in% c(4, 5, 6)) {
+    if (min(x, na.rm = TRUE) > small)
+      y <- log(x)
   }else if (tcode == 7) {
     y1 <- diff(x)/stats::lag(x)
     y <- diff(y1)

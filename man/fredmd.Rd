@@ -4,7 +4,13 @@
 \alias{fredmd}
 \title{Import fredmd database}
 \usage{
-fredmd(file = "", date_start = NULL, date_end = NULL, transform = TRUE)
+fredmd(
+  file = "",
+  date_start = NULL,
+  date_end = NULL,
+  transform = TRUE,
+  log = FALSE
+)
 }
 \arguments{
 \item{file}{path to a file.}
@@ -12,6 +18,8 @@ fredmd(file = "", date_start = NULL, date_end = NULL, transform = TRUE)
 \item{date_start, date_end}{optional date start and end.}
 
 \item{transform}{boolean indicating if the data should be transformed.}
+
+\item{log}{boolean indicating if only the log transformation should be used (\code{transform} must be equal to \code{FALSE}).}
 }
 \description{
 Import fredmd database
