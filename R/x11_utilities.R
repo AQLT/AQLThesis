@@ -48,10 +48,10 @@ selectFilter <- function(x, ...){
 selectFilter.default <- function(x, ..., freq) {
   icr = x
   if (freq == 2) {
-    c(icr = icr, length = 5);
+    return(c(icr = icr, length = 5));
   }
   if (icr >= 1 && icr < 3.5) {
-    c(icr = icr, length = freq + 1);
+    return(c(icr = icr, length = freq + 1));
   }
   if (icr < 1) {
     if (freq == 12) {
