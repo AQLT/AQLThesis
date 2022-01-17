@@ -7,6 +7,8 @@
 "nber_tp_m"
 #' @rdname nber_tp
 "nber_tp_q"
+#' @rdname nber_tp
+"fred_md_description"
 
 #
 # data = structure(list(V1 = c("", "June 1857 (1857Q2)", "October 1860 (1860Q3)",
@@ -59,3 +61,45 @@
 # colnames(nber_tp_m) <-
 #   colnames(nber_tp_q) <- c("Peak", "Trough")
 # usethis::use_data(nber_tp_m, nber_tp_q)
+
+
+# f <- "/Users/alainquartierlatente/Downloads/FRED-MD_description.pdf"
+# all_tables <- tabulizer::extract_tables(f,
+#                                         output = "data.frame")
+# table4_1 <- tabulizer::extract_tables(f, pages = 4,
+#                                       area = list(c(top = 65.25, left = 57.75, bottom = 258.75, right = 633.75
+#                                       )),output = "data.frame"
+# )[[1]]
+# table4_2 <- tabulizer::extract_tables(f, pages = 4,
+#                                       area = list(c(top = 261.75, left = 75.75, bottom = 449.25, right = 612.75
+#                                       )),output = "data.frame"
+# )[[1]][-1,]
+# table4_3 <- tabulizer::extract_tables(f, pages = 4,
+#                                       area = list(c(top = 449.25, left = 68.25, bottom = 726.75, right = 639.75
+#                                       )),output = "data.frame"
+# )[[1]][-1,]
+# colnames(table4_2) <- colnames(table4_3) <- colnames(table4_1)
+# all_tables[[4]] <- table4_1
+# all_tables[[7]] <- table4_2
+# all_tables[[8]] <- table4_3
+# # all_tables <- lapply(all_tables, `[`, ,-1)
+#
+# names(all_tables) <- c("Output and income",
+#                        "Labor market",
+#                        "Housing",
+#                        "Consumption, orders, and inventories",
+#                        "Prices",
+#                        "Stock market",
+#                        "Money and credit",
+#                        "Interest and exchange rates")
+# for(i in 1:8){
+#   all_tables[[i]]$Group <- names(all_tables)[i]
+# }
+# all_tables <- all_tables[c(1,2,3,4,7,8,5,6)]
+#
+# for(i in 1:8){
+#   all_tables[[i]]$Group_number <- i
+# }
+#
+# fred_md_description = do.call(rbind,all_tables)
+# usethis::use_data(fred_md_description)

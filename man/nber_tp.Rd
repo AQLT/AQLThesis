@@ -5,11 +5,14 @@
 \alias{nber_tp}
 \alias{nber_tp_m}
 \alias{nber_tp_q}
+\alias{fred_md_description}
 \title{NBER Business US Cycle Reference Dates}
 \format{
 An object of class \code{matrix} (inherits from \code{array}) with 35 rows and 2 columns.
 
 An object of class \code{matrix} (inherits from \code{array}) with 35 rows and 2 columns.
+
+An object of class \code{data.frame} with 135 rows and 9 columns.
 }
 \source{
 \url{https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions}
@@ -18,6 +21,8 @@ An object of class \code{matrix} (inherits from \code{array}) with 35 rows and 2
 nber_tp_m
 
 nber_tp_q
+
+fred_md_description
 }
 \description{
 National Bureau of Economic Research’s Business Cycle Dating Committee maintains a chronology of US business cycles. The chronology identifies the dates of peaks and troughs that frame economic recessions and expansions. A recession is the period between a peak of economic activity and its subsequent trough, or lowest point. Between trough and peak, the economy is in an expansion. Expansion is the normal state of the economy; most recessions are brief. However, the time that it takes for the economy to return to its previous peak level of activity or its previous trend path may be quite extended. According to the NBER chronology, the most recent peak occurred in February 2020. The most recent trough occurred in April 2020.
