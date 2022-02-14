@@ -5,7 +5,7 @@ compute_time_lag <- function(data,
                              troughs = nber_tp_m[,"Trough"],
                              frequency = 12,
                              type = c("first_detection", "no_revisions")){
-  type <- match.arg(spec)
+  type <- match.arg(type)
   if(type == "first_detection"){
     detection_fun <- first_detection
   }else{
