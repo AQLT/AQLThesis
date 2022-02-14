@@ -3,7 +3,15 @@
 compute_time_lag <- function(data,
                              peaks = nber_tp_m[,"Peak"],
                              troughs = nber_tp_m[,"Trough"],
-                             frequency = 12){
+                             frequency = 12,
+                             type = c("first_detection", "no_revisions")){
+  type <- match.arg(spec)
+  if(type == "first_detection"){
+    detection_fun <- first_detection
+  }else{
+    detection_fun <- no_revisions
+  }
+
   peaks <- na.omit(peaks)
   troughs <- na.omit(troughs)
 
@@ -25,8 +33,8 @@ compute_time_lag <- function(data,
        !any(peaks_timelag[tp,]) ||
        peaks_timelag[tp,1])
       return(NA)
-    first_est_tp <- colnames(peaks_timelag)[peaks_timelag[tp,]][1]
-    (as.numeric(first_est_tp) - as.numeric(tp))*frequency
+    est_tp <- detection_fun(peaks_timelag[tp,])
+    (est_tp - as.numeric(tp))*frequency
   })
 
   first_date = round(as.numeric(colnames(troughs_timelag)[1]),3)
@@ -35,9 +43,25 @@ compute_time_lag <- function(data,
        !any(troughs_timelag[tp,]) ||
        troughs_timelag[tp,1])
       return(NA)
-    first_est_tp <- colnames(troughs_timelag)[troughs_timelag[tp,]][1]
-    (as.numeric(first_est_tp) - as.numeric(tp))*frequency
+    est_tp <- detection_fun(troughs_timelag[tp,])
+    (est_tp - as.numeric(tp))*frequency
   })
   list(peaks = peaks_timelag,
        troughs = troughs_timelag)
+}
+
+no_revisions <- function(x){
+  i <- length(x)
+  remove_i <- NULL
+  while (x[i] && i > 0) {
+    remove_i <- c(i, remove_i)
+    i <- i - 1
+  }
+  as.numeric(names(x)[remove_i[1]])
+}
+first_detection <- function(x){
+  valid_dates <- which(x)
+  if(length(valid_dates) ==0)
+    NA
+  as.numeric(as.numeric(names(x[valid_dates[1]])))
 }
