@@ -34,6 +34,8 @@ compute_time_lag <- function(data,
        peaks_timelag[tp,1])
       return(NA)
     est_tp <- detection_fun(peaks_timelag[tp,])
+    if(length(est_tp) == 0)
+      return(NA)
     (est_tp - as.numeric(tp))*frequency
   })
 
@@ -44,6 +46,8 @@ compute_time_lag <- function(data,
        troughs_timelag[tp,1])
       return(NA)
     est_tp <- detection_fun(troughs_timelag[tp,])
+    if(length(est_tp) == 0)
+      return(NA)
     (est_tp - as.numeric(tp))*frequency
   })
   list(peaks = peaks_timelag,
