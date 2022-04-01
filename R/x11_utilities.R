@@ -72,3 +72,12 @@ selectFilter.default <- function(x, ..., freq) {
 selectFilter.ts <- function(x, ..., length = 13){
   selectFilter(calcICR(x, length = length), freq = frequency(x))
 }
+#' @rdname x11_utilities
+#' @export
+#' @importFrom rjdfilters lp_filter
+CV <- function(x, horizon = 6){
+  sc <- henderson(x, length = horizon*2+1, musgrave = FALSE)
+  h_coef <- lp_filter(horizon = horizon)$filters.coef
+  h_coef0 <- h_coef["t",horizon+1]
+  (x-sc)/(1-h_coef0)
+}

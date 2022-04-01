@@ -7,6 +7,7 @@
 \alias{selectFilter}
 \alias{selectFilter.default}
 \alias{selectFilter.ts}
+\alias{CV}
 \title{X11 utility function}
 \usage{
 calcICR(x, length = 13)
@@ -18,6 +19,8 @@ selectFilter(x, ...)
 \method{selectFilter}{default}(x, ..., freq)
 
 \method{selectFilter}{ts}(x, ..., length = 13)
+
+CV(x, horizon = 6)
 }
 \arguments{
 \item{x}{the input time series}

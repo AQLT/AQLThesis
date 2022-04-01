@@ -19,13 +19,13 @@ compute_time_lag <- function(data,
     if(is.null(x))
       return(rep(FALSE, length(peaks)))
     round(peaks,3) %in% round(do.call(c, x), 3)
-  })
+  },simplify = "matrix")
   rownames(peaks_timelag) <- peaks
   troughs_timelag <- sapply(data, function(x){
     if(is.null(x))
       return(rep(FALSE, length(troughs)))
     round(troughs,3) %in% round(do.call(c, x), 3)
-  })
+  },simplify = "matrix")
   rownames(troughs_timelag) <- troughs
   first_date = round(as.numeric(colnames(peaks_timelag)[1]),3)
   peaks_timelag <- sapply(rownames(peaks_timelag), function(tp){
