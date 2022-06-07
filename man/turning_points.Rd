@@ -21,17 +21,16 @@ downturn(x, start = NULL, end = NULL, digits = 6)
 Detect turning points in a time series
 }
 \details{
-\loadmathjax
-Zellner, Hong, et Min (1991) definition is used \mjseqn{k=3}, \mjseqn{m=1}:
+Zellner, Hong, et Min (1991) definition is used \eqn{k=3}, \eqn{m=1}:
 \itemize{
-\item we have an upturn at date \mjseqn{t} when
-\mjsdeqn{
+\item we have an upturn at date \eqn{t} when
+\deqn{
 y_{t-k}\geq\cdots\geq y_{t-1}<y_t\leq y_{t+1}\leq\cdots y_{t+m}
 }
-\item we have a downturn at date \mjseqn{t} when
+\item we have a downturn at date \eqn{t} when
 }
 
-\mjsdeqn{
+\deqn{
 y_{t-k}\leq\cdots\leq y_{t-1}>y_t\geq y_{t+1}\geq\cdots y_{t+m}
 }
 }

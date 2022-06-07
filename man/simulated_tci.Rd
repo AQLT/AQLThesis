@@ -22,20 +22,19 @@ simulated_irregular(n = 1, sigma_e = 1)
 Simulate Trend-Cycle Component
 }
 \details{
-\loadmathjax
 The following formula is used for the cycle
-\mjsdeqn{
-C_t = \rho [
+\deqn{
+C_t = \rho \[
 \cos (2 \pi t / \lambda) +
 \sin (2 \pi t / \lambda)
-]
+\]
 }
 The trend component is assumed to be a random walk with drift:
-\mjsdeqn{
+\deqn{
 T_t = T_{t-1} + \nu_t\quad \nu_t \sim \mathcal{N}(0, \sigma_\nu^2)
 }
-The irregular component is white noise with mean zero and variance \mjseqn{\sigma_e^2}:
-\mjsdeqn{
+The irregular component is white noise with mean zero and variance \eqn{\sigma_e^2}:
+\deqn{
 I_t = e_t\text{ with }
 e_t \sim \mathcal{N}(0, \sigma_e^2)
 }

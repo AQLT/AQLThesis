@@ -8,14 +8,14 @@ Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
 Imports:
-  mathjaxr,
   zoo,
   readr,
-  rjdfilters
+  rjdfilters,
+  ggplot2,
+  reshape2
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
-RdMacros: mathjaxr
+RoxygenNote: 7.2.0
 Depends: 
     R (>= 2.10)
