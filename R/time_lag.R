@@ -1,10 +1,11 @@
 
 #'@export
 compute_time_lag <- function(data,
-                             peaks = nber_tp_m[,"Peak"],
-                             troughs = nber_tp_m[,"Trough"],
-                             frequency = 12,
-                             type = c("first_detection", "no_revisions")){
+         peaks = nber_tp_m[,"Peak"],
+         troughs = nber_tp_m[,"Trough"],
+         frequency = 12,
+         type = c("first_detection", "no_revisions"),
+         tp_limit = 3){
   type <- match.arg(type)
   if(type == "first_detection"){
     detection_fun <- first_detection
@@ -12,46 +13,53 @@ compute_time_lag <- function(data,
     detection_fun <- no_revisions
   }
 
-  peaks <- na.omit(peaks)
-  troughs <- na.omit(troughs)
+  peaks <- peaks[!is.na(peaks)]
+  troughs <- troughs[!is.na(troughs)]
+  abs.min <- function(x){
+    x[which.min(abs(x))]
+  }
 
-  peaks_timelag <- sapply(data, function(x){
-    if(is.null(x))
-      return(rep(FALSE, length(peaks)))
-    round(peaks,3) %in% round(do.call(c, x), 3)
-  },simplify = "matrix")
-  rownames(peaks_timelag) <- peaks
-  troughs_timelag <- sapply(data, function(x){
-    if(is.null(x))
-      return(rep(FALSE, length(troughs)))
-    round(troughs,3) %in% round(do.call(c, x), 3)
-  },simplify = "matrix")
-  rownames(troughs_timelag) <- troughs
-  first_date = round(as.numeric(colnames(peaks_timelag)[1]),3)
-  peaks_timelag <- sapply(rownames(peaks_timelag), function(tp){
-    if(round(as.numeric(tp),3) < first_date ||
-       !any(peaks_timelag[tp,]) ||
-       peaks_timelag[tp,1])
-      return(NA)
-    est_tp <- detection_fun(peaks_timelag[tp,])
-    if(length(est_tp) == 0)
-      return(NA)
-    (est_tp - as.numeric(tp))*frequency
-  })
-
-  first_date = round(as.numeric(colnames(troughs_timelag)[1]),3)
-  troughs_timelag <- sapply(rownames(troughs_timelag), function(tp){
-    if(round(as.numeric(tp),3) < first_date ||
-       !any(troughs_timelag[tp,]) ||
-       troughs_timelag[tp,1])
-      return(NA)
-    est_tp <- detection_fun(troughs_timelag[tp,])
-    if(length(est_tp) == 0)
-      return(NA)
-    (est_tp - as.numeric(tp))*frequency
-  })
+  troughs_timelag <- compute_tp(data = data, focus_tp = peaks, tp_limit = tp_limit,detection_fun = detection_fun)
+  peaks_timelag <- compute_tp(data = data, focus_tp = troughs, tp_limit = tp_limit,detection_fun = detection_fun)
   list(peaks = peaks_timelag,
        troughs = troughs_timelag)
+}
+
+compute_tp <- function(data, focus_tp, tp_limit, detection_fun){
+
+  last_tp_det = do.call(c, data[[length(data)]])
+  # vector with phase shift of all the detected tp
+  final_phaseshift = sapply(focus_tp, function(y) abs.min(last_tp_det - y))*frequency
+  final_phaseshift = round(final_phaseshift)
+  final_phaseshift[abs(final_phaseshift) > tp_limit] <- NA
+  names(final_phaseshift) <- focus_tp
+  # vector with the final dates of the TP with correspondance to the focus tp dates
+  format_tp <- last_tp_ret <- focus_tp + final_phaseshift/frequency
+  # replace NA by current values to format output
+  format_tp[is.na(format_tp)] <- focus_tp[is.na(format_tp)]
+
+  timelag <- sapply(data, function(x){
+    if(is.null(x))
+      return(rep(FALSE, length(format_tp)))
+    round(format_tp,3) %in% round(do.call(c, x), 3)
+  },simplify = "matrix")
+  rownames(timelag) <- focus_tp
+  timelag[names(final_phaseshift)[!is.na(final_phaseshift)],seq(ncol(timelag)-5,length.out = 5)]
+
+  first_date = round(as.numeric(colnames(timelag)[1]),3)
+  timelag = sapply(rownames(timelag), function(tp){
+    if(round(as.numeric(tp),3) < first_date ||
+       !any(timelag[tp,]) ||
+       timelag[tp,1])
+      return(NA)
+    est_tp <- detection_fun(timelag[tp,])
+    if(length(est_tp) == 0)
+      return(NA)
+    (est_tp - as.numeric(tp))*frequency
+  })
+  list(phaseshift_correcttp = final_phaseshift,
+       last_tp = last_tp_ret,
+       phaseshift = timelag)
 }
 
 no_revisions <- function(x){
