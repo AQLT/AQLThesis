@@ -4,7 +4,7 @@
 #' @export
 Gg_plot_coef <- function(x, zeroAsNa = TRUE){
     if (zeroAsNa)
-      x <- rjdfilters:::trailingZeroAsNa(x)
+      x <- rjd3filters:::trailingZeroAsNa(x)
     data = data.frame(x)
     data$date <- factor(rownames(data), levels = rownames(data),ordered = TRUE)
     dataGraph <- reshape2::melt(data)

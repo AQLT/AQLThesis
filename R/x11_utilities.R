@@ -9,7 +9,7 @@
 #' @name x11_utilities
 #' @export
 #' @importFrom stats frequency
-#' @importFrom rjdfilters henderson
+#' @importFrom rjd3filters henderson
 calcICR <- function(x, length = 13){
   sc <- henderson(x, length = length, musgrave = FALSE)
   si <- x - sc
@@ -74,7 +74,7 @@ selectFilter.ts <- function(x, ..., length = 13){
 }
 #' @rdname x11_utilities
 #' @export
-#' @importFrom rjdfilters lp_filter
+#' @importFrom rjd3filters lp_filter
 CV <- function(x, horizon = 6){
   if (sum(!is.na(x)) < 2 * horizon + 1)
     return(NA)
