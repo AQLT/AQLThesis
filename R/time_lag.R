@@ -15,17 +15,14 @@ compute_time_lag <- function(data,
 
   peaks <- peaks[!is.na(peaks)]
   troughs <- troughs[!is.na(troughs)]
-  abs.min <- function(x){
-    x[which.min(abs(x))]
-  }
 
-  troughs_timelag <- compute_tp(data = data, focus_tp = peaks, tp_limit = tp_limit,detection_fun = detection_fun)
-  peaks_timelag <- compute_tp(data = data, focus_tp = troughs, tp_limit = tp_limit,detection_fun = detection_fun)
+  troughs_timelag <- compute_tp(data = data, focus_tp = peaks, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency)
+  peaks_timelag <- compute_tp(data = data, focus_tp = troughs, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency)
   list(peaks = peaks_timelag,
        troughs = troughs_timelag)
 }
 
-compute_tp <- function(data, focus_tp, tp_limit, detection_fun){
+compute_tp <- function(data, focus_tp, tp_limit, detection_fun, frequency){
 
   last_tp_det = do.call(c, data[[length(data)]])
   # vector with phase shift of all the detected tp
@@ -44,15 +41,16 @@ compute_tp <- function(data, focus_tp, tp_limit, detection_fun){
     round(format_tp,3) %in% round(do.call(c, x), 3)
   },simplify = "matrix")
   rownames(timelag) <- focus_tp
-  timelag[names(final_phaseshift)[!is.na(final_phaseshift)],seq(ncol(timelag)-5,length.out = 5)]
+  # timelag[names(final_phaseshift)[!is.na(final_phaseshift)],seq(ncol(timelag)-5,length.out = 5)]
 
   first_date = round(as.numeric(colnames(timelag)[1]),3)
-  timelag = sapply(rownames(timelag), function(tp){
+  timelag = sapply(names(format_tp), function(n_tp){
+    tp = format_tp[n_tp]
     if(round(as.numeric(tp),3) < first_date ||
-       !any(timelag[tp,]) ||
-       timelag[tp,1])
+       !any(timelag[n_tp,]) ||
+       timelag[n_tp,1])
       return(NA)
-    est_tp <- detection_fun(timelag[tp,])
+    est_tp <- detection_fun(timelag[n_tp,])
     if(length(est_tp) == 0)
       return(NA)
     (est_tp - as.numeric(tp))*frequency
@@ -76,4 +74,8 @@ first_detection <- function(x){
   if(length(valid_dates) ==0)
     NA
   as.numeric(as.numeric(names(x[valid_dates[1]])))
+}
+
+abs.min <- function(x){
+  x[which.min(abs(x))]
 }
