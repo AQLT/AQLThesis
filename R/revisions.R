@@ -35,8 +35,9 @@ consecutive_est_revisions <- function(x){
   revisions_consest
 }
 
-
-#'@export
+#' @importFrom stats aggregate na.omit
+#'@importFrom utils tail
+#' @export
 summary_revisions <- function(data,
                               peaks = nber_tp_m[,"Peak"],
                               troughs = nber_tp_m[,"Trough"],

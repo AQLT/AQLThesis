@@ -13,11 +13,11 @@ fredmd <- function (file = "", date_start = NULL, date_end = NULL, transform = T
 {
   if (!is.logical(transform))
     stop("'transform' must be logical.")
-  if ((class(date_start) != "Date") && (!is.null(date_start)))
+  if ((!inherits(date_start, "Date")) && (!is.null(date_start)))
     stop("'date_start' must be Date or NULL.")
-  if ((class(date_end) != "Date") && (!is.null(date_end)))
+  if ((!inherits(date_end, "Date")) && (!is.null(date_end)))
     stop("'date_end' must be Date or NULL.")
-  if (class(date_start) == "Date") {
+  if (inherits(date_start, "Date")) {
     if (as.numeric(format(date_start, "%d")) != 1)
       stop("'date_start' must be Date whose day is 1.")
     if (date_start < as.Date("1959-01-01"))
