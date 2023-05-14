@@ -5,7 +5,8 @@ compute_time_lag <- function(data,
          troughs = nber_tp_m[,"Trough"],
          frequency = 12,
          type = c("first_detection", "no_revisions"),
-         tp_limit = 3){
+         tp_limit = 3,
+         n_ahead_max = NULL){
   type <- match.arg(type)
   if(type == "first_detection"){
     detection_fun <- first_detection
@@ -16,13 +17,13 @@ compute_time_lag <- function(data,
   peaks <- peaks[!is.na(peaks)]
   troughs <- troughs[!is.na(troughs)]
 
-  troughs_timelag <- compute_tp(data = data, focus_tp = peaks, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency)
-  peaks_timelag <- compute_tp(data = data, focus_tp = troughs, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency)
+  troughs_timelag <- compute_tp(data = data, focus_tp = peaks, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency, n_ahead_max = n_ahead_max)
+  peaks_timelag <- compute_tp(data = data, focus_tp = troughs, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency, n_ahead_max = n_ahead_max)
   list(peaks = peaks_timelag,
        troughs = troughs_timelag)
 }
 
-compute_tp <- function(data, focus_tp, tp_limit, detection_fun, frequency){
+compute_tp <- function(data, focus_tp, tp_limit, detection_fun, frequency, n_ahead_max = NULL){
 
   last_tp_det = do.call(c, data[[length(data)]])
   # vector with phase shift of all the detected tp
@@ -42,7 +43,7 @@ compute_tp <- function(data, focus_tp, tp_limit, detection_fun, frequency){
   },simplify = "matrix")
   rownames(timelag) <- focus_tp
   # timelag[names(final_phaseshift)[!is.na(final_phaseshift)],seq(ncol(timelag)-5,length.out = 5)]
-
+# View(timelag)
   first_date = round(as.numeric(colnames(timelag)[1]),3)
   timelag = sapply(names(format_tp), function(n_tp){
     tp = format_tp[n_tp]
@@ -50,7 +51,10 @@ compute_tp <- function(data, focus_tp, tp_limit, detection_fun, frequency){
        !any(timelag[n_tp,]) ||
        timelag[n_tp,1])
       return(NA)
-    est_tp <- detection_fun(timelag[n_tp,])
+    x = timelag[n_tp,]
+    if (!is.null(n_ahead_max))
+      x = x[seq_len(min(which(names(x) == n_tp) + n_ahead_max, length(x)))]
+    est_tp <- detection_fun(x)
     if(length(est_tp) == 0)
       return(NA)
     (est_tp - as.numeric(tp))*frequency
