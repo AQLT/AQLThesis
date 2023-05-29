@@ -4,7 +4,7 @@
 \alias{ggplot_coef}
 \title{'ggplot2' functions}
 \usage{
-ggplot_coef(x, add = FALSE, ...)
+ggplot_coef(x, zero_as_na = TRUE, q = 0, ylab = "Coefficients", ...)
 }
 \arguments{
 \item{x}{the coefficients}

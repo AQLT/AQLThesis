@@ -21,7 +21,7 @@ ggplot_coef.default <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coefficient
   ggplot2::ggplot(data = dataGraph,
                   ggplot2::aes(x = date, y = value, group = variable,
                                colour = variable)) +
-    ggplot2::geom_line(linewidth = 0.7) +
+    ggplot2::geom_line() +
     ggplot2::geom_point() +
     theme_ggplot() +
     ggplot2::labs(x = NULL, y = ylab)
@@ -37,14 +37,11 @@ ggplot_coef.finite_filters <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coef
 
 #' @export
 ggplot_coef.moving_average <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coefficients", ...){
-  x_coef <- coef(x)
-
-  if (zero_as_na)
-    x <- trailingzero_as_na(x)
+  x <- coef(x)
   data <- data.frame(date = factor(names(x), levels = names(x), ordered = TRUE),
                      y = x, var = "x")
   ggplot2::ggplot(data = data,
-                  ggplot2::aes(x = date, y = y, group = var)) +
+                  ggplot2::aes(x = date, y = y, group = var, color = var)) +
     ggplot2::geom_line(linewidth = 0.7) +
     ggplot2::geom_point() +
     theme_ggplot() +
@@ -78,12 +75,33 @@ ggplot_gain.finite_filters <- function(x, nxlab = 7,
   ggplot2::ggplot(data = dataGraph,
          ggplot2::aes(x = x, y = value, group = variable,
                       colour = variable)) +
-    ggplot2::geom_line(size = 0.7) +
+    ggplot2::geom_line() +
     theme_ggplot() +
     ggplot2::labs(x = NULL, y = "Gain") +
     ggplot2::scale_x_continuous(NULL,
                        breaks = x_lab_at*pi,
                        labels = parse(text=xlabel_ggplot(x_lab_at)))
+}
+#' @export
+ggplot_gain.moving_average <- function(x, nxlab = 7,
+                                       xlim = c(0, pi), q = 0,
+                                       n = 101, ...){
+  x_values <- seq.int(xlim[1], xlim[2], length.out = n)
+  gsym <- rjd3filters::get_properties_function(x, "Symmetric Gain")
+  y_val <- gsym(x_values)
+
+  data = data.frame(x = x_values, value = y_val, variable = "x")
+  x_lab_at <- seq(xlim[1]/pi, xlim[2]/pi, length.out = nxlab)
+  x_lab_at <- seq(xlim[1]/pi, xlim[2]/pi, length.out = nxlab)
+  ggplot2::ggplot(data = data,
+                  ggplot2::aes(x = x, y = value, group = variable,
+                               colour = variable)) +
+    ggplot2::geom_line() +
+    theme_ggplot() +
+    ggplot2::labs(x = NULL, y = "Gain") +
+    ggplot2::scale_x_continuous(NULL,
+                                breaks = x_lab_at*pi,
+                                labels = parse(text=xlabel_ggplot(x_lab_at)))
 }
 #' @export
 ggplot_phase <- function(x, add = FALSE, ...){
@@ -114,12 +132,33 @@ ggplot_phase.finite_filters <- function(x, nxlab = 7,
   ggplot2::ggplot(data = dataGraph,
          ggplot2::aes(x = x, y = value, group = variable,
                       colour = variable)) +
-    ggplot2::geom_line(size = 0.7) +
+    ggplot2::geom_line() +
     theme_ggplot() +
     ggplot2::labs(x = NULL, y = "Phase") +
     ggplot2::scale_x_continuous(NULL,
                        breaks = x_lab_at*pi,
                        labels = parse(text=xlabel_ggplot(x_lab_at)))
+}
+#' @export
+ggplot_phase.moving_average <- function(x, nxlab = 7,
+                                        xlim = c(0, pi), normalized = FALSE, q = 0,
+                                        n = 101, ...){
+  x_values <- seq.int(xlim[1], xlim[2], length.out = n)
+  gsym <- rjd3filters::get_properties_function(x, "Symmetric Phase")
+  y_val <- gsym(x_values)
+
+  data = data.frame(x = x_values, value = y_val, variable = "x")
+  x_lab_at <- seq(xlim[1]/pi, xlim[2]/pi, length.out = nxlab)
+  x_lab_at <- seq(xlim[1]/pi, xlim[2]/pi, length.out = nxlab)
+  ggplot2::ggplot(data = data,
+                  ggplot2::aes(x = x, y = value, group = variable,
+                               colour = variable)) +
+    ggplot2::geom_line() +
+    theme_ggplot() +
+    ggplot2::labs(x = NULL, y = "Phase") +
+    ggplot2::scale_x_continuous(NULL,
+                                breaks = x_lab_at*pi,
+                                labels = parse(text=xlabel_ggplot(x_lab_at)))
 }
 #' @export
 ggMultisave <- function(filename, out = c("pdf","jpg","svg"),...){
