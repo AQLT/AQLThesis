@@ -6,16 +6,20 @@
 \alias{downturn}
 \title{Detect turning points in a time series}
 \usage{
-turning_points(x, start = NULL, end = NULL, digits = 6)
+turning_points(x, start = NULL, end = NULL, digits = 6, k = 3, m = 1)
 
-upturn(x, start = NULL, end = NULL, digits = 6)
+upturn(x, start = NULL, end = NULL, digits = 6, k = 3, m = 1)
 
-downturn(x, start = NULL, end = NULL, digits = 6)
+downturn(x, start = NULL, end = NULL, digits = 6, k = 3, m = 1)
 }
 \arguments{
-\item{x}{the input time series}
+\item{x}{the input time series.}
 
-\item{start, end}{the interval where to find turning points}
+\item{start, end}{the interval where to find turning points.}
+
+\item{digits}{number of digits used for the comparison of the values.}
+
+\item{k, m}{number of observation before and after the turning point (see details).}
 }
 \description{
 Detect turning points in a time series

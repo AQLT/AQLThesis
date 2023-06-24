@@ -1,4 +1,12 @@
+#'Compute revisions statistics
+#'
+#' `first_est_revisions()` computes relative revisions to the last estimate and
+#' `consecutive_est_revisions()` computes relative revisions to the next estimate.
+#'
+#' @param x list of data with all the estimations.
 #'@export
+#'@name revisions_stats
+#'@rdname revisions_stats
 first_est_revisions <- function(x){
   last_est <- x[[length(x)]]
   while(is.null(last_est) & length(x) >1){
@@ -19,6 +27,7 @@ first_est_revisions <- function(x){
 }
 
 #'@export
+#'@rdname revisions_stats
 consecutive_est_revisions <- function(x){
   revisions_consest <- t(sapply(seq_along(x), function(j){
     if(j == length(x) ||
@@ -35,8 +44,19 @@ consecutive_est_revisions <- function(x){
   revisions_consest
 }
 
+#' Summary statistics on revisions
+#'
+#' Computes summary statistics on revisions, on the the overall data and
+#' around turning-points.
+#'
+#' @inheritParams compute_time_lag
 #' @importFrom stats aggregate na.omit
-#'@importFrom utils tail
+#' @importFrom utils tail
+#' @param annual_frequency_tp number of of observations per unit of time used
+#' before and after the turning-points used to compute revision statistics on turning-points.
+#' For example, `annual_frequency_tp = 2` means that, with monthly data, 12/2=6 months are
+#' used before and after the turning-points.
+#'
 #' @export
 summary_revisions <- function(data,
                               peaks = nber_tp_m[,"Peak"],

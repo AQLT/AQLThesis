@@ -23,7 +23,7 @@ fredmd <- function (file = "", date_start = NULL, date_end = NULL, transform = T
     if (date_start < as.Date("1959-01-01"))
       stop("'date_start' must be later than 1959-01-01.")
   }
-  if (class(date_end) == "Date") {
+  if (inherits(date_end, "Date")) {
     if (as.numeric(format(date_end, "%d")) != 1)
       stop("'date_end' must be Date whose day is 1.")
   }

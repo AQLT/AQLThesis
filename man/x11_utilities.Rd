@@ -20,7 +20,7 @@ selectFilter(x, ...)
 
 \method{selectFilter}{ts}(x, ..., length = 13)
 
-CV(x, horizon = 6)
+CV(x, length = 13)
 }
 \arguments{
 \item{x}{the input time series}

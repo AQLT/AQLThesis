@@ -75,10 +75,11 @@ selectFilter.ts <- function(x, ..., length = 13){
 #' @rdname x11_utilities
 #' @export
 #' @importFrom rjd3filters lp_filter
-CV <- function(x, horizon = 6){
-  if (sum(!is.na(x)) < 2 * horizon + 1)
+CV <- function(x, length = 13){
+  horizon <- (length - 1) / 2
+  if (sum(!is.na(x)) < length)
     return(NA)
-  sc <- henderson(x, length = horizon*2+1, musgrave = FALSE)
+  sc <- henderson(x, length = length, musgrave = FALSE)
   h_coef <- lp_filter(horizon = horizon)$filters.coef
   h_coef0 <- h_coef["t",horizon+1]
   (x-sc)/(1-h_coef0)

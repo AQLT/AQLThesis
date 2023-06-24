@@ -1,5 +1,13 @@
 
-#'@export
+#' Compute Time Lag in Detection of Turning Points
+#'
+#' @param data the data.
+#' @param peaks,troughs the reference dates of peaks and troughs.
+#' @param frequency the annual frequency of the series.
+#' @param type method used to devine the time lag.
+#' @param tp_limit maximal number of periods between the detected turning-point and the reference dates.
+#' @param n_ahead_max maximal number of periods after the final detected turning point used to compute the time lag (when `type ="no_revisions"`).
+#' @export
 compute_time_lag <- function(data,
          peaks = nber_tp_m[,"Peak"],
          troughs = nber_tp_m[,"Trough"],
@@ -22,7 +30,7 @@ compute_time_lag <- function(data,
   list(peaks = peaks_timelag,
        troughs = troughs_timelag)
 }
-
+utils::globalVariables("nber_tp_m")
 compute_tp <- function(data, focus_tp, tp_limit, detection_fun, frequency, n_ahead_max = NULL){
 
   last_tp_det = do.call(c, data[[length(data)]])

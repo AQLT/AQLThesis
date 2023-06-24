@@ -1,14 +1,15 @@
-#' 'ggplot2' functions
+#' 'ggplot2' functions for 'rjd3filters' plots
 #'
-#' @param x the coefficients
+#' @param x,zero_as_na,q,ylab,nxlab,xlim,n,normalized,... see function [rjd3filters::plot_coef].
 #'
 #' @export
-#'
-ggplot_coef <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coefficients", ...){
+#' @name ggplot_filters
+#' @rdname ggplot_filters
+ggplot_coef <- function(x, zero_as_na = TRUE, ylab = "Coefficients", ...){
   UseMethod("ggplot_coef", x)
 }
 #' @export
-ggplot_coef.default <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coefficients", ...){
+ggplot_coef.default <- function(x, zero_as_na = TRUE, ylab = "Coefficients", q = 0, ...){
   if (zero_as_na)
     x <- apply(x, 2, trailingzero_as_na)
   col_to_plot <- sprintf("q=%i",q)
@@ -26,8 +27,10 @@ ggplot_coef.default <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coefficient
     theme_ggplot() +
     ggplot2::labs(x = NULL, y = ylab)
 }
+utils::globalVariables(c("value", "variable", "y"))
+#' @rdname ggplot_filters
 #' @export
-ggplot_coef.finite_filters <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coefficients", ...){
+ggplot_coef.finite_filters <- function(x, zero_as_na = TRUE, ylab = "Coefficients", q = 0, ...){
   ggplot_coef(as.matrix(x),
               zero_as_na = zero_as_na,
               q = q,
@@ -35,9 +38,11 @@ ggplot_coef.finite_filters <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coef
               ...)
 }
 
+#' @importFrom stats coef
 #' @export
-ggplot_coef.moving_average <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coefficients", ...){
+ggplot_coef.moving_average <- function(x, zero_as_na = TRUE, ylab = "Coefficients", ...){
   x <- coef(x)
+  var <- NULL # to avoid warning
   data <- data.frame(date = factor(names(x), levels = names(x), ordered = TRUE),
                      y = x, var = "x")
   ggplot2::ggplot(data = data,
@@ -47,19 +52,23 @@ ggplot_coef.moving_average <- function(x, zero_as_na = TRUE, q = 0, ylab = "Coef
     theme_ggplot() +
     ggplot2::labs(x = NULL, y = ylab)
 }
+#' @rdname ggplot_filters
 #' @export
-ggplot_gain <- function(x, add = FALSE, ...){
+ggplot_gain <- function(x, nxlab = 7,
+                        xlim = c(0, pi),
+                        ..., n = 101){
   UseMethod("ggplot_gain", x)
 }
 #' @export
 ggplot_gain.finite_filters <- function(x, nxlab = 7,
-                        xlim = c(0, pi), q = 0,
-                        n = 101, ...){
+                                       xlim = c(0, pi),
+                                       q = 0,
+                                       ..., n = 101){
   x_values <- seq.int(xlim[1], xlim[2], length.out = n)
   gsym <- rjd3filters::get_properties_function(x, "Symmetric Gain")
   gasym <- rjd3filters::get_properties_function(x, "Asymmetric Gain")
   all_g_f <- c(list(gsym), gasym)
-  names(all_g_f)[1] <- sprintf("q=%i", upper_bound(x@sfilter))
+  names(all_g_f)[1] <- sprintf("q=%i", rjd3filters::upper_bound(x@sfilter))
 
   col_to_plot <- sprintf("q=%i",q)
   col_to_plot <- col_to_plot[col_to_plot %in% names(all_g_f)]
@@ -84,8 +93,8 @@ ggplot_gain.finite_filters <- function(x, nxlab = 7,
 }
 #' @export
 ggplot_gain.moving_average <- function(x, nxlab = 7,
-                                       xlim = c(0, pi), q = 0,
-                                       n = 101, ...){
+                                       xlim = c(0, pi),
+                                       ..., n = 101){
   x_values <- seq.int(xlim[1], xlim[2], length.out = n)
   gsym <- rjd3filters::get_properties_function(x, "Symmetric Gain")
   y_val <- gsym(x_values)
@@ -103,19 +112,22 @@ ggplot_gain.moving_average <- function(x, nxlab = 7,
                                 breaks = x_lab_at*pi,
                                 labels = parse(text=xlabel_ggplot(x_lab_at)))
 }
+#' @rdname ggplot_filters
 #' @export
-ggplot_phase <- function(x, add = FALSE, ...){
+ggplot_phase <- function(x, nxlab = 7,
+                         xlim = c(0, pi), normalized = FALSE,
+                         ..., n = 101){
   UseMethod("ggplot_phase", x)
 }
 #' @export
 ggplot_phase.finite_filters <- function(x, nxlab = 7,
                         xlim = c(0, pi), normalized = FALSE, q = 0,
-                        n = 101, ...){
+                        ..., n = 101){
   x_values <- seq.int(xlim[1], xlim[2], length.out = n)
   gsym <- rjd3filters::get_properties_function(x, "Symmetric Phase")
   gasym <- rjd3filters::get_properties_function(x, "Asymmetric Phase")
   all_g_f <- c(list(gsym), gasym)
-  names(all_g_f)[1] <- sprintf("q=%i", upper_bound(x@sfilter))
+  names(all_g_f)[1] <- sprintf("q=%i", rjd3filters::upper_bound(x@sfilter))
 
   col_to_plot <- sprintf("q=%i",q)
   col_to_plot <- col_to_plot[col_to_plot %in% names(all_g_f)]
@@ -141,8 +153,8 @@ ggplot_phase.finite_filters <- function(x, nxlab = 7,
 }
 #' @export
 ggplot_phase.moving_average <- function(x, nxlab = 7,
-                                        xlim = c(0, pi), normalized = FALSE, q = 0,
-                                        n = 101, ...){
+                                        xlim = c(0, pi), normalized = FALSE,
+                                        ..., n = 101){
   x_values <- seq.int(xlim[1], xlim[2], length.out = n)
   gsym <- rjd3filters::get_properties_function(x, "Symmetric Phase")
   y_val <- gsym(x_values)
@@ -160,10 +172,15 @@ ggplot_phase.moving_average <- function(x, nxlab = 7,
                                 breaks = x_lab_at*pi,
                                 labels = parse(text=xlabel_ggplot(x_lab_at)))
 }
+#' Save a ggplot with multiple extensions
+#'
+#' @param filename File name to create on disk.
+#' @param out extensions used for the export.
+#' @param ... other arguments used in [ggplot2::ggsave].
 #' @export
 ggMultisave <- function(filename, out = c("pdf","jpg","svg"),...){
   invisible(lapply(sprintf("%s.%s", gsub("\\.$","",filename), out),
-                   ggplot2::ggsave,...))
+                   ggplot2::ggsave, ...))
 }
 
 trailingzero_as_na <- function(x){
@@ -188,6 +205,7 @@ theme_ggplot <- function (base_size = 11, base_family = "") {
                    legend.title=ggplot2::element_blank())
 }
 
+#' @importFrom MASS fractions
 xlabel_ggplot <- function(x, symbol = "pi"){
   fracs <- strsplit(attr(MASS::fractions(x), "fracs"), "/")  # convert to fractions
   labels <- sapply(fracs, function(i)
