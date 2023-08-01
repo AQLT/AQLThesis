@@ -7,8 +7,8 @@ Authors@R: c(
                  email = "alain.quartier@yahoo.fr",
                  comment = c(ORCID = "0000-0001-7890-3857"))
                  )
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Utility functions around trend-cycle analysis of revisions
+    and turning-point detections with 'rjd3filters'.
 License: EUPL
 Imports:
   zoo,
