@@ -35,7 +35,7 @@ compute_tp <- function(data, focus_tp, tp_limit, detection_fun, frequency, n_ahe
 
   last_tp_det = do.call(c, data[[length(data)]])
   # vector with phase shift of all the detected tp
-  final_phaseshift = sapply(focus_tp, function(y) abs.min(last_tp_det - y))*frequency
+  final_phaseshift = sapply(focus_tp, function(y) which_abs_min(last_tp_det - y))*frequency
   final_phaseshift = round(final_phaseshift)
   final_phaseshift[abs(final_phaseshift) > tp_limit] <- NA
   names(final_phaseshift) <- focus_tp
@@ -88,6 +88,6 @@ first_detection <- function(x){
   as.numeric(as.numeric(names(x[valid_dates[1]])))
 }
 
-abs.min <- function(x){
+which_abs_min <- function(x){
   x[which.min(abs(x))]
 }
