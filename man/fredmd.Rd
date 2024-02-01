@@ -24,3 +24,6 @@ fredmd(
 \description{
 Import fredmd database
 }
+\author{
+code largely inspired by Yankang (Bennie) Chen function of the 'fbi' package available at \url{https://github.com/cykbennie/fbi}.
+}

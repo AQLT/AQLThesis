@@ -8,6 +8,7 @@
 #'@importFrom readr read_csv cols col_date
 #'@importFrom utils read.csv
 #'@importFrom stats lag
+#'@author code largely inspired by Yankang (Bennie) Chen function of the 'fbi' package available at \url{https://github.com/cykbennie/fbi}.
 fredmd <- function (file = "", date_start = NULL, date_end = NULL, transform = TRUE,
                     log = FALSE)
 {
