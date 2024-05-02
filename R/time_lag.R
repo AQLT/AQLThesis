@@ -25,8 +25,8 @@ compute_time_lag <- function(data,
   peaks <- peaks[!is.na(peaks)]
   troughs <- troughs[!is.na(troughs)]
 
-  troughs_timelag <- compute_tp(data = data, focus_tp = peaks, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency, n_ahead_max = n_ahead_max)
-  peaks_timelag <- compute_tp(data = data, focus_tp = troughs, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency, n_ahead_max = n_ahead_max)
+  troughs_timelag <- compute_tp(data = data, focus_tp = troughs, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency, n_ahead_max = n_ahead_max)
+  peaks_timelag <- compute_tp(data = data, focus_tp = peaks, tp_limit = tp_limit,detection_fun = detection_fun, frequency = frequency, n_ahead_max = n_ahead_max)
   list(peaks = peaks_timelag,
        troughs = troughs_timelag)
 }
