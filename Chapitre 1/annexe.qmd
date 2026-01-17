@@ -1,0 +1,17 @@
+
+\newpage
+<!-- \renewcommand{\thesection}{\arabic{section}} -->
+<!-- \setcounter{section}{0} -->
+
+## Annexes
+
+{{< include 60-annexe_diag.qmd >}}
+
+{{< include 61-annexe_plot_coefs.qmd >}}
+
+{{< include 62-annexe_code_r.qmd >}}
+
+{{< include 64-annexe_noyaux.qmd >}}
+
+
+<!-- \renewcommand{\thesection}{\Alph{chapter}.\alph{section}} -->

@@ -1,0 +1,111 @@
+---
+title: "Détection en temps réel des points de retournement : apport de l'utilisation des filtres asymétriques dans l'analyse conjoncturelle"
+format: docx
+lang: fr
+language:
+ title-block-author-single: Auteur
+---
+
+Résumé court :
+
+Les séries désaisonnalisées sont couramment utilisées pour l'analyse conjoncturelle et l'identification des points de retournement. Toutefois, lorsqu'elles sont trop bruitées, un lissage supplémentaire est nécessaire pour extraire la tendance de court terme, appelée tendance-cycle, qui combine la tendance de long terme et les fluctuations cycliques de court terme. Cette extraction repose généralement sur des moyennes mobiles symétriques. Pour l'estimation en temps réel, en l'absence d'observations futures, il est toutefois nécessaire de s'appuyer sur des filtres asymétriques. Cela entraîne révisions et retards dans la détection des points de retournement au fur et à mesures que de nouvelles observations sont disponibles. Cette thèse vise à préciser pourquoi et comment publier la tendance-cycle et les recommandations pour le faire.\
+Différentes approches récentes de construction de moyennes mobiles asymétriques sont comparées, tant sur le plan théorique qu'empirique. Deux extensions des filtres de Henderson et de Musgrave, classiquement utilisées pour l'estimation de la tendance-cycle, sont proposées :  1) réduction des révisions et délais dans la détection des points de retournement via une paramétrisation locale ; 2) intégration de régresseurs externes pour construire des filtres robustes à certains chocs. \
+Ces travaux s'accompagnent de deux paquets R, rjd3filters et publishTC, qui facilitent l'application des méthodes proposées, l'étude des propriétés des filtres, l'estimation de la tendance-cycle et leur mise en production.
+
+
+Seasonally adjusted series are commonly used for business cycle analysis and turning point identification. However, when they are too noisy, additional smoothing is required to extract the short-term trend, known as the trend-cycle, which combines the long-term trend and short-term cyclical fluctuations. This extraction typically relies on symmetric moving averages. For real-time estimation, in the absence of future observations, it is necessary to use asymmetric filters. This leads to revisions and delays in turning point detection as new observations become available. This thesis aims to clarify why and how to publish the trend-cycle and provide recommendations for doing so.
+
+Different recent approaches to building asymmetric moving averages are compared, both theoretically and empirically. Two extensions of the Henderson and Musgrave filters, traditionally used for trend-cycle estimation, are proposed: 1) reduction of revisions and delays in turning point detection through local parameterization; 2) integration of external regressors to build filters robust to certain shocks.
+This work is accompanied by two R packages, rjd3filters and publishTC, which facilitate the application of the proposed methods, the study of filter properties, trend-cycle estimation, and their implementation in production.
+_____
+
+
+L'analyse du cycle économique, et en particulier la détection rapide des points de retournement, est un sujet de première importance dans l'analyse de la conjoncture économique. 
+Les séries chronologiques se décomposent en trois composantes : les effets saisonniers et les effets de calendrier, la tendance-cycle (permettant d'analyser les points de retournement) et l'irrégulier (le bruit lié à des erreurs d'échantillonnage, chocs économiques, etc.).
+Pour l'analyse conjoncturelle, les indicateurs économiques sont généralement uniquement corrigés des variations saisonnières et des jours ouvrables, laissant ainsi l'effet combiné de la tendance-cycle et de l'irrégulier.
+Toutefois, lorsque l'irrégulier est trop élevé, il peut être nécessaire d'effectuer un lissage supplémentaire afin d'analyser directement la composante tendance-cycle.
+
+Les moyennes mobiles ou les filtres linéaires sont omniprésents dans les méthodes d'extraction du cycle économique et d'ajustement saisonnier. En effet, les méthodes d'extraction de tendance-cycle sont, par construction, étroitement liées aux méthodes de désaisonnalisation puisqu'elles sont généralement appliquées sur des séries corrigées des variations saisonnières, des jours ouvrables et des points atypiques. Ainsi, la méthode de désaisonnalisation X-13ARIMA-SEATS utilise des moyennes mobiles de Henderson et des moyennes mobiles composites pour estimer les principales composantes d'une série chronologique. Au centre de la série, des filtres symétriques sont appliqués. En revanche, en raison du manque d'observations futures, pour estimer les points les plus récents, toutes ces méthodes doivent s'appuyer sur des filtres asymétriques. Par exemple, même si X-13ARIMA-SEATS applique des moyennes symétriques aux prévisions obtenues à partir d'un modèle ARIMA, cela consiste en réalité à appliquer des filtres asymétriques en fin de série, car les valeurs prédites sont des combinaisons linéaires de valeurs passées. 
+
+Si ces moyennes mobiles asymétriques ont de bonnes propriétés concernant la taille des révisions futures induites par le processus de lissage, elles induisent également des déphasages qui retardent en général la détection en temps réel des points de retournement.
+L'objectif de cette thèse est d'étudier des méthodes de constructions de moyennes mobiles permettant l'estimation en temps réel de la tendance-cycle.
+
+
+Le premier article compare différentes approches récentes de construction de moyennes mobiles pour l'estimation en temps réel de la tendance-cycle : filtres polynomiaux locaux, filtres fondés sur les espaces de Hilbert à noyau reproduisant (RKHS) et méthodes fondées sur une optimisation des propriétés des filtres — Fidelity-Smoothness-Timeliness (FST) et Accuracy, Timeliness, Smoothness (ATS). 
+Bien que ces méthodes aient été présentées avec des approches générales de construction des filtres linéaires, leurs propriétés théoriques et leurs performances empiriques n'ont pas été comparées. 
+Cette étude décrit l'ensemble de ces méthodes en développant une formulation générale pour la construction des filtres, permettant de mettre en exergue les spécificités de chacune.
+Toutes ces méthodes sont également comparées empiriquement sur des séries simulées et sur des séries réelles désaisonnalisées.\
+Toutes les méthodes décrites sont implémentées package R `rjd3filters`, développé lors de la thèse, qui propose également de nombreux outils pour manipuler les moyennes mobiles et évaluer la qualité des estimations.\
+Plan :
+
+1. Descriptions des propriétés des moyennes mobiles
+
+1.1  Fonctions de gain et de déphasage
+
+1.2 Propriétés souhaitables d'une moyenne mobile
+
+1.3 Estimation en temps réel et moyennes mobiles asymétriques
+
+2. Régression non paramétrique et régression polynomiale locale
+
+2.1 Régression polynomiale : approche de Proietti et Luati
+
+2.2. Paramétrisation locale des filtres asymétriques
+
+2.3 Extension avec le critère de *timeliness*
+
+2.4 Régression polynomiale : Gray et Thomson
+
+2.5 Reproducing Kernel Hilbert Space (RKHS) : approche de Dagum et Bianconcin
+
+3. Approche Fidelity-Smoothness-Timeliness (FST)
+
+4. Filtres dépendant des données : trilemme ATS
+
+5. Comparaison des différentes méthodes
+
+Lien vers l'étude : <https://inseefrlab.github.io/DT-est-tr-tc/>.
+
+
+Le deuxième article s'intéresse plus spécifiquement aux moyennes mobiles construites avec une régression polynomiale locale. 
+Cette approche permet les filtres symétriques de Henderson et asymétriques de Musgrave utilisés dans l'algorithme de désaisonnalisation X-13ARIMA-SEATS et classiquement utilisés dans l'extraction de la tendance-cycle.
+L'article propose deux extensions de ces méthodes : 1) en ajoutant un critère permettant de contrôler le déphasage (délai dans la détection des points de retournement) ; 2) en proposant une procédure permettant de paramétrer localement les moyennes mobiles asymétriques alors qu'ils sont généralement paramétrés globalement, ce qui peut être sous-optimal autour des points de retournement.
+Même si le premier article décrivait également ces extensions, ce deuxième article décrit plus précisément les fondements théoriques de l'approche polynomiale locale, compare également les méthodes sur la période du COVID-19, sur des séries trimestrielles et propose une marche à suivre pour l'application sur des données haute fréquence.\
+Plan :
+
+1. Modélisation locale de la tendance-cycle et moyennes mobiles
+
+2. Régression non-paramétrique et régression polynomiale locale
+
+3. Comparaison des résultats
+
+Lien vers l'étude : <https://doi.org/10.1177/0282423X241283207>.
+
+
+Le troisième article s'intéresse à l'estimation en temps réel de la tendance-cycle autour de chocs et de points de retournement. Les moyennes mobiles linéaires classiquement utilisées pour l'estimation de la tendance-cycle, sensibles à la présence de points atypiques, sont comparées à des méthodes non-linéaires robustes. Cet article propose également une méthodologie pour étendre les moyennes mobiles de Henderson et de Musgrave afin de prendre en compte des informations extérieurs et ainsi construire des moyennes mobiles robustes à la présence de certains chocs. Il montre comment estimer des intervalles de confiance pour les estimations issues de moyennes mobiles, ce qui permet de valider l'utilisation de ces nouvelle moyennes mobiles. En comparant les méthodes sur des séries simulées et réelles, cet article montre que : construire des moyennes mobiles robustes permet de réduire les révisions et de mieux modéliser les points de retournement autour de chocs, sans dégrader les estimations lorsqu'aucun choc n'est observé ; les méthodes non-linéaires robustes ne permettent pas d'extraire une composante tendance-cycle satisfaisante pour l'analyse conjoncturelle, avec parfois des révisions importantes.\
+Plan :
+
+1. Méthodologie (description des méthodes robustes, des moyennes mobiles utilisées, de la façon de construire des méthodes robustes et de construire des intervalles de confiance)
+
+2. Description des résultats sur séries simulées et réelles.
+
+Lien vers l'étude : <https://aqlt.github.io/robustMA/>.
+
+Le quatrième article s'intéresse à la publication et la mise en production de la composante tendance-cycle.
+Il décrit l'intérêt de publier cette composante tendance-cycle, les méthodes utilisées par Statistique Canada et l'Australian Bureau of Statistic (les deux seuls instituts à publier régulièrement cette composante) ainsi que deux extensions permettant de réduire le biais des estimations en temps réel et de prendre directement en compte l'impact de points atypiques afin d'éviter qu'ils ne biaisent l'estimation (articles 2 et 3).
+Il détaille également les recommandations de présentation de cette composante et s'accompagne d'un package R, `publishTC`, permettant de facilement mettre en œuvre toutes les méthodes et recommandations.
+Il propose aussi un modèle simplifié de mise en production avec des créations automatiques de rapports, appliqué à une dizaine de publications de l'Insee (environ 80 séries).\
+Plan :
+
+1. Qu'est-ce que la composante tendance-cycle, pourquoi l'estimer et la publier ?
+
+2. Comment estimer une tendance-cycle ?
+
+3. Recommandations de présentation de la tendance-cycle
+
+4. Comment mettre en place une chaine de production automatique ?
+
+Lien vers l'étude : <https://aqlt.github.io/publishTC.wp/> (en cours de finalisation).
+
+
+

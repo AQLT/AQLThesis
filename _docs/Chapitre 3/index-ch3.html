@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alain Quartier-la-Tente">
+
+<title>4&nbsp; Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques – Estimation en temps réel de la tendance-cycle à l'aide de moyennes mobiles&nbsp;: apports dans l'analyse conjoncturelle</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Chapitre 4/ch4.html" rel="next">
+<link href="../Chapitre 2/index-ch2.html" rel="prev">
+<link href="../img/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-485d01fc63b59abcd3ee1bf1e8e2748d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
+  }
+}</script>
+<script type="application/json" class="js-hypothesis-config">
+{
+  "theme": "clean"
+}
+</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../template/style.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Chapitre 3/index-ch3.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Estimation en temps réel de la tendance-cycle à l’aide de moyennes mobiles&nbsp;: apports dans l’analyse conjoncturelle</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/AQLT/AQLThesis.wp/" title="Code source" class="quarto-navigation-tool px-1" aria-label="Code source"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Recherche"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"> <span>Résumé</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../intro_generale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction générale</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Chapitre 1/index-ch1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Estimation de la tendance-cycle et formule générale de construction des moyennes mobiles</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Chapitre 2/index-ch2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Amélioration des estimations de tendance-cycle grâce à la paramétrisation locale des filtres de régression polynomiale</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Chapitre 3/index-ch3.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Chapitre 4/ch4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Et si l’on publiait la tendance-cycle&nbsp;?</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../conclusion_generale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Conclusion générale</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliographie</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table des matières</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">4.1</span> Introduction</a></li>
+  <li><a href="#sec-methodo" id="toc-sec-methodo" class="nav-link" data-scroll-target="#sec-methodo"><span class="header-section-number">4.2</span> Méthodologie</a>
+  <ul class="collapse">
+  <li><a href="#sec-methodes-robustes" id="toc-sec-methodes-robustes" class="nav-link" data-scroll-target="#sec-methodes-robustes"><span class="header-section-number">4.2.1</span> Méthodes robustes</a></li>
+  <li><a href="#sec-methodes-lineaires" id="toc-sec-methodes-lineaires" class="nav-link" data-scroll-target="#sec-methodes-lineaires"><span class="header-section-number">4.2.2</span> Moyennes mobiles linéaires classiques</a></li>
+  <li><a href="#sec-constr-mm" id="toc-sec-constr-mm" class="nav-link" data-scroll-target="#sec-constr-mm"><span class="header-section-number">4.2.3</span> Construction de moyennes mobiles robustes</a></li>
+  <li><a href="#sec-ic" id="toc-sec-ic" class="nav-link" data-scroll-target="#sec-ic"><span class="header-section-number">4.2.4</span> Construction d’intervalles de confiance pour des moyennes mobiles</a></li>
+  </ul></li>
+  <li><a href="#sec-results" id="toc-sec-results" class="nav-link" data-scroll-target="#sec-results"><span class="header-section-number">4.3</span> Résultats</a>
+  <ul class="collapse">
+  <li><a href="#sec-res-series-simul" id="toc-sec-res-series-simul" class="nav-link" data-scroll-target="#sec-res-series-simul"><span class="header-section-number">4.3.1</span> Séries simulées</a></li>
+  <li><a href="#sec-res-series-reelles" id="toc-sec-res-series-reelles" class="nav-link" data-scroll-target="#sec-res-series-reelles"><span class="header-section-number">4.3.2</span> Séries réelles</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">4.4</span> Conclusion</a></li>
+  <li><a href="#annexes" id="toc-annexes" class="nav-link" data-scroll-target="#annexes"><span class="header-section-number">4.5</span> Annexes</a>
+  <ul class="collapse">
+  <li><a href="#sec-annexes-ch3-mm" id="toc-sec-annexes-ch3-mm" class="nav-link" data-scroll-target="#sec-annexes-ch3-mm"><span class="header-section-number">4.5.1</span> Moyennes mobiles utilisées</a></li>
+  <li><a href="#sec-df-var" id="toc-sec-df-var" class="nav-link" data-scroll-target="#sec-df-var"><span class="header-section-number">4.5.2</span> Calcul du degré de liberté de la variance</a></li>
+  <li><a href="#sec-autres-ex" id="toc-sec-autres-ex" class="nav-link" data-scroll-target="#sec-autres-ex"><span class="header-section-number">4.5.3</span> Autres exemples sur des séries réelles</a></li>
+  <li><a href="#sec-an-lms-lts" id="toc-sec-an-lms-lts" class="nav-link" data-scroll-target="#sec-an-lms-lts"><span class="header-section-number">4.5.4</span> Moindres carrés médians (LMS) et moindres carrés élagués (LTS) avec une tendance de degré 2</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+    
+    <div style="display:none" aria-hidden="true">
+    \(
+
+        \newcommand\llb{[\![}
+        \newcommand\rrb{]\!]}
+        \newcommand\1{{\mathbb 1}}
+        \newcommand\ud{\,\mathrm{d}}
+        \newcommand{\transp}[1]{{}^t\!#1}
+        \newcommand{\bf}[1]{{\boldsymbol #1}}
+        \newcommand{\cov}[2]{\Cov\left(#1,#2\right)}
+        \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+        \newcommand\N{\mathbb{N}}
+        \newcommand\Norm{\mathcal{N}}
+        \newcommand\R{\mathbb{R}}
+        \newcommand\Z{\mathbb{Z}}
+        \newcommand{\ps}[2]{\left\langle #1 \,,\, #2 \right\rangle}
+        \newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+        \DeclareMathOperator*{\argmax}{argmax}
+        \DeclareMathOperator*{\argmin}{argmin}
+        \DeclareMathOperator*{\med}{med}
+        \DeclareMathOperator{\tr}{tr}
+        \DeclareMathOperator{\Cov}{Cov}
+        \DeclareMathOperator{\e}{e}
+    \)
+    </div>
+    
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques</span></h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Auteur</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Alain Quartier-la-Tente <a href="https://orcid.org/0000-0001-7890-3857" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            LEMNA
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- Les séries désaisonnalisées sont usuellement utilisées pour l'analyse de la conjoncture et des points de retournement. -->
+<!-- Lorsque l'irrégulier est trop élevé, il est préférable de lisser la série afin d'analyser directement la composante tendance-cycle. -->
+<!-- Cette étude s'intéresse à l'estimation en temps réel de cette composante autour de chocs et de points de retournement. -->
+<!-- Les moyennes mobiles linéaires classiquement utilisées pour l'estimation de la tendance-cycle, sensibles à la présence de points atypiques, sont comparées à des méthodes non-linéaires robustes. -->
+<!-- Nous proposons également une méthodologie pour étendre les moyennes mobiles de Henderson et de Musgrave afin de prendre en compte des informations extérieurs et ainsi construire des moyennes mobiles robustes à la présence de certains chocs. -->
+<!-- Nous décrivons comment estimer des intervalles de confiance pour les estimations issues de moyennes mobiles, ce qui permet de valider l'utilisation de ces nouvelle moyennes mobiles. -->
+<!-- En comparant les méthodes sur des séries simulées et réelles, nous montrons que : construire des moyennes mobiles robustes permet de réduire les révisions et de mieux modéliser les points de retournement autour de chocs, sans dégrader les estimations lorsqu'aucun choc n'est observé ; les méthodes non-linéaires robustes ne permettent pas d'extraire une composante tendance-cycle satisfaisante pour l'analyse conjoncturelle, avec parfois des révisions importantes. -->
+<!-- Cette étude est entièrement reproductible et tous les codes utilisés sont disponibles sous <https://github.com/AQLT/robustMA>. -->
+<p>Références de l’article&nbsp;:<br>
+Quartier-la-Tente, A. (2025). Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques. arXiv&nbsp;: <a href="https://arxiv.org/abs/2507.10704">2507.10704 [stat.ME]</a>. <a href="https://aqlt.github.io/robustMA/" class="uri">https://aqlt.github.io/robustMA/</a>.</p>
+<section id="introduction" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">4.1</span> Introduction</h2>
+<p>L’analyse du cycle économique, et en particulier la détection rapide des points de retournement, est un sujet de première importance dans l’analyse de la conjoncture économique. Les séries chronologiques se décomposent en trois composantes&nbsp;: les effets saisonniers et les effets de calendrier, la tendance-cycle (permettant d’analyser les points de retournement) et l’irrégulier (le bruit lié à des erreurs d’échantillonnage, chocs économiques, etc.). Pour l’analyse conjoncturelle, les indicateurs économiques sont généralement uniquement corrigés des variations saisonnières et des jours ouvrables, laissant ainsi l’effet combiné de la tendance-cycle et de l’irrégulier. Toutefois, lorsque l’irrégulier est trop élevé, il peut être nécessaire d’effectuer un lissage supplémentaire afin d’analyser directement la composante tendance-cycle. Par construction, les méthodes d’extraction de tendance-cycle sont étroitement liées aux méthodes de désaisonnalisation. En effet, afin d’estimer la composante saisonnière, les algorithmes de désaisonnalisation estiment préalablement une composante tendance-cycle. Ainsi, même si les méthodes d’extraction de tendance-cycle sont généralement appliquées sur des séries corrigées des variations saisonnières, l’estimation de ces séries dépend également des méthodes d’estimation de la tendance-cycle.</p>
+<p>Les moyennes mobiles, ou les filtres linéaires, sont omniprésents dans les méthodes d’extraction du cycle économique et d’ajustement saisonnier. Par exemple, la méthode de désaisonnalisation X-11 <span class="citation" data-cites="ladiray2011seasonal">(<a href="../references.html#ref-ladiray2011seasonal" role="doc-biblioref">Ladiray et Quenneville 2011</a>)</span>, utilisée dans le logiciel X-13ARIMA-SEATS <span class="citation" data-cites="x13">(<a href="../references.html#ref-x13" role="doc-biblioref">Monsell 2007</a>)</span>, utilise des moyennes mobiles pour estimer les principales composantes d’une série chronologique. Au centre de la série, des filtres symétriques sont appliqués (utilisation d’autant de points dans le passé et dans le futur et le même poids est associé aux observations passées et futures). Pour l’extraction de la tendance-cycle, le filtre symétrique le plus connu est celui de <span class="citation" data-cites="henderson1916note">Henderson (<a href="../references.html#ref-henderson1916note" role="doc-biblioref">1916</a>)</span>, notamment utilisé dans l’algorithme de désaisonnalisation X-13ARIMA-SEATS. En revanche, pour les estimations en temps réel, en raison de l’absence d’observations futures, toutes ces méthodes doivent s’appuyer sur des filtres asymétriques pour estimer les points les plus récents. Par exemple, pour l’extraction de la tendance-cycle tendances-cycles, X-11 utilise le filtre symétrique de Henderson et les filtres asymétriques de <span class="citation" data-cites="musgrave1964set">Musgrave (<a href="../references.html#ref-musgrave1964set" role="doc-biblioref">1964</a>)</span> sur une série étendue utilisant un modèle ARIMA. Comme les valeurs prédites sont des combinaisons linéaires des valeurs passées, cela revient à appliquer des moyennes mobiles asymétriques à la fin de la série.</p>
+<p>Ces moyennes mobiles, comme tout opérateur linéaire, sont sensibles à la présence de points atypiques. L’application directe des méthodes peut donc conduire à des estimations biaisées, du fait de leur présence. alors que les méthodes de désaisonnalisation (comme X-13ARIMA-SEATS) ont un module de correction des points atypiques.</p>
+<p>L’objectif de cette troisième étude est d’étudier et de comparer différentes approches permettant l’extraction de tendance-cycle en temps-réel en présence de chocs. Les moyennes mobiles linéaires classiques sont comparées à des méthodes non-linéaires robustes. Nous montrons également comment étendre les moyennes mobiles de Henderson et de Musgrave pour prendre en compte des informations extérieurs et permettant notamment de modéliser des chocs et donc de les rendre robustes à ces derniers&nbsp;: nous parlerons alors de moyennes mobiles «&nbsp;robustes&nbsp;». Nous décrivons aussi comment construire des intervalles de confiance pour les estimations à l’aide de moyennes mobiles, permettant de valider les modélisations retenues pour les moyennes mobiles «&nbsp;robustes&nbsp;».</p>
+<p>Toutes ces méthodes sont comparées sur des séries simulées (en modélisant des chocs ponctuels et des ruptures en niveau) et sur des séries réelles (autour de chocs et de points de retournement). Cela permet de montrer que les moyennes mobiles «&nbsp;robustes&nbsp;» permettent, par rapport aux moyennes mobiles classiques, de réduire les révisions et de mieux modéliser les points de retournement autour de chocs (par exemple pendant la crise financière de 2008 ou le COVID-19), sans dégrader les estimations lorsqu’aucun choc n’est observé. En revanche, les méthodes non-linéaires robustes étudiées ne permettent pas d’extraire une composante tendance-cycle satisfaisante pour l’analyse conjoncturelle, avec parfois des révisions importantes.</p>
+</section>
+<section id="sec-methodo" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="sec-methodo"><span class="header-section-number">4.2</span> Méthodologie</h2>
+<p>L’hypothèse de base utilisée dans les méthodes de décomposition de séries temporelles est que la série chronologique observée, <span class="math inline">\(y_t\)</span>, peut être décomposée en une composante de signal <span class="math inline">\(\mu_t\)</span> et une composante erratique <span class="math inline">\(\varepsilon_t\)</span> (appelée composante irrégulière)&nbsp;: <span class="math display">\[
+f(y_t)=\mu_t+\varepsilon_t
+\]</span> où <span class="math inline">\(f\)</span> désigne une transformation appropriée (généralement logarithmique ou aucune transformation). Pour simplifier les notations ultérieures, <span class="math inline">\(y_t\)</span> désignera la série observée transformée. La composante de bruit <span class="math inline">\(\varepsilon_t\)</span> est généralement supposée être un bruit blanc. En supposant que la série chronologique initiale est désaisonnalisée (ou sans saisonnalité), le signal <span class="math inline">\(\mu_t\)</span> représente la tendance (variations sur une longue période) et le cycle (mouvements cycliques superposés à la tendance à long terme), estimés ici conjointement et appelé tendance-cycle <span class="math inline">\(TC_t\)</span>. L’estimation de la composante tendance-cycle permet faciliter l’analyse des retournements conjoncturels dans le cycle classique (également appelé cycle des affaires)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. On parle de point de retournement lorsque l’on passe d’une phase de récession (diminutions successives) à une phase d’expansion de l’économie (augmentations successives)&nbsp;: on parle alors de redressement ou, dans le cas contraire, de ralentissement. Même si plusieurs formules peuvent être utilisées pour définir ces phases, la définition de <span class="citation" data-cites="Zellner1991">Zellner, Hong, et Min (<a href="../references.html#ref-Zellner1991" role="doc-biblioref">1991</a>)</span> est généralement utilisée pour déterminer les points de retournement&nbsp;: on a un point de retournement à la date <span class="math inline">\(t\)</span> lorsque <span class="math inline">\(TC_{t-3}\geq TC_{t-2}\geq TC_{t-1}&lt;TC_t\leq TC_{t+1}\)</span> (redressement) ou <span class="math inline">\(TC_{t-3}\leq TC_{t-2}\leq TC_{t-1}&gt;TC_t\geq TC_{t+1}\)</span> (ralentissement).</p>
+<p>La composante tendance-cycle peut être déterministe ou stochastique. En effet, autour d’un voisinage <span class="math inline">\(h\)</span> de <span class="math inline">\(t\)</span>, cette composante peut être approximée localement par un polynôme de degré <span class="math inline">\(d\)</span>&nbsp;: <span class="math display">\[
+TC_{t+i} = \sum_{j=0}^d\beta_j{i}^j+\xi_{t+i}\quad\forall i\in\{-h,-h+1,\dots,t+h\}
+\]</span> avec <span class="math inline">\(\xi_t\)</span> un processus stochastique non corrélé avec <span class="math inline">\(\varepsilon_t\)</span> représentant l’erreur d’approximation. Même si certains articles modélisent <span class="math inline">\(\xi_t\)</span> et <span class="math inline">\(\varepsilon_t\)</span> séparément <span class="citation" data-cites="GrayThomson2002">(voir par exemple <a href="../references.html#ref-GrayThomson2002" role="doc-biblioref">Gray et Thomson 2002</a>)</span>, une hypothèse habituelle, utilisée dans cet article, est de rassembler <span class="math inline">\(\xi_t\)</span> et <span class="math inline">\(\varepsilon_t\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Les coefficients <span class="math inline">\((\beta_0,\dots,\beta_d)\)</span> peuvent être estimés par la méthode des moindres carrés pondérés. L’estimation <span class="math inline">\(\hat \beta_0\)</span> fournit l’estimation du cycle de tendance <span class="math inline">\(\widehat{TC}_t\)</span> et on peut montrer que cela équivaut à appliquer une moyenne mobile. Cette moyenne mobile est généralement symétrique (<span class="math inline">\(\widehat{TC}_t\)</span> est estimée en utilisant autant d’observations avant et après <span class="math inline">\(t\)</span>) mais pour l’estimation des derniers points (lorsque l’on ne peut pas utiliser autant d’observations avant et après <span class="math inline">\(t\)</span>) il est nécessaire de s’appuyer sur des moyennes mobiles <em>ad hoc</em> qui sont asymétriques.</p>
+<p>L’estimation de <span class="math inline">\(\widehat{TC}_t\)</span> étant faite par un méthode linéaire, elle est sensible à la présence de points atypiques qui peuvent notamment entraîner des révisions importantes. C’est par exemple le cas pendant la crise du COVID-19 qui a conduit Statistiques Canada et Australian Bureau of Statistics à suspendre la publication des tendances-cycles pendant cette période. Lors de périodes de fortes «&nbsp;turbulences&nbsp;» (comme la crise du COVID-19) où les points atypiques sont importants, les estimations directes de la tendance-cycle peuvent être biaisées. Comme notamment discuté par <span class="citation" data-cites="matthewssapw4">Matthews (<a href="../references.html#ref-matthewssapw4" role="doc-biblioref">2022</a>)</span>, différentes stratégies peuvent alors être adoptées&nbsp;:</p>
+<ul>
+<li><p>Ne pas publier les estimations pendant cette période&nbsp;: c’est ce qui est fait par l’Australian Bureau of Statistics pour la période du COVID-19 en ne publiant pas d’estimation tendance-cycle entre avril 2020 et mars 2022.</p></li>
+<li><p>Estimer les points atypiques avec un modèle RegARIMA, estimer la tendance-cycle sur la série corrigée et «&nbsp;réintroduire&nbsp;» les effets corrigés sur la tendance-cycle. L’inconvénient de cette approche est que l’estimation des points atypiques dépend du modèle ARIMA utilisé et de la période d’estimation. Si le modèle est réestimé à chaque nouvelle observation, la tendance-cycle peut donc potentiellement être révisée pendant de nombreuses périodes. Par exemple, <span class="citation" data-cites="JMS2018DL">Ladiray et Quartier-la-Tente (<a href="../references.html#ref-JMS2018DL" role="doc-biblioref">2018</a>)</span> montrent que dans la majorité des cas il faut attendre au moins 3 ans pour que l’estimation du coefficient associé à une rupture converge. C’est l’approche privilégiée par l’Australian Bureau of Statistics lors de ruptures dans la tendance <span class="citation" data-cites="abs2003">(<a href="../references.html#ref-abs2003" role="doc-biblioref">Trewin 2003</a>)</span>.</p></li>
+<li><p>Estimer la tendance-cycle sur l’ensemble de la période et remplacer les données estimées après la rupture par celles estimées en commençant la série après la rupture (série segmentée d’un côté). L’inconvénient de cette approche est que les estimations avant la rupture vont être biaisées par la présence du choc et que celles après la rupture reposent sur des moyennes mobiles asymétriques (avec un biais plus important que les moyennes mobiles symétriques utilisées pour les estimations finales, et peuvent créer un déphasage, c’est-à-dire un décalage dans les points de retournement).</p></li>
+<li><p>Diviser la série en deux au niveau de la rupture et estimer la tendance-cycle sur chaque segment (série segmentée des deux côtés). L’inconvénient de cette approche est que les estimations avant la rupture et après la rupture reposent sur des moyennes mobiles asymétriques (avec les mêmes inconvénients que précédemment). C’est l’approche privilégiée par Statistique Canada pendant le COVID-19 <span class="citation" data-cites="matthewssapw4">(<a href="../references.html#ref-matthewssapw4" role="doc-biblioref">Matthews 2022</a>)</span> et celle qui était par l’Australian Bureau of Statistics lors des premières publications des estimations de la tendance-cycle <span class="citation" data-cites="abs_smoothing_1987">(<a href="../references.html#ref-abs_smoothing_1987" role="doc-biblioref">Australian Bureau of Statistics 1987</a>)</span>.</p></li>
+</ul>
+<p>L’objectif de cet article est d’étudier des approches alternatives à celles de <span class="citation" data-cites="matthewssapw4">Matthews (<a href="../references.html#ref-matthewssapw4" role="doc-biblioref">2022</a>)</span>. D’une part en étudiant les estimations en temps réel de méthodes non-linéaires robustes à la présence de points (<a href="#sec-methodes-robustes" class="quarto-xref"><span>Section 4.2.1</span></a>)&nbsp;; d’autre part en les comparant aux estimations des moyennes mobiles classiques (<a href="#sec-methodes-lineaires" class="quarto-xref"><span>Section 4.2.2</span></a>) et en proposant une méthode de construction de moyennes mobiles linéaires robustes (<a href="#sec-constr-mm" class="quarto-xref"><span>Section 4.2.3</span></a>). Nous montrons également comment construire des intervalles de confiance pour les estimations issues de moyennes mobiles (<a href="#sec-ic" class="quarto-xref"><span>Section 4.2.4</span></a>), ce qui permet de valider le choix de construction d’une moyenne mobile linéaire robuste.</p>
+<section id="sec-methodes-robustes" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="sec-methodes-robustes"><span class="header-section-number">4.2.1</span> Méthodes robustes</h3>
+<p>Dans cette étude nous étudions six méthodes robustes d’estimation locale de la moyenne implémentées dans la fonction <code>robfilter::robreg.filter()</code> <span class="citation" data-cites="robfilter">(<a href="../references.html#ref-robfilter" role="doc-biblioref">Fried, Schettlinger, et Borowski 2024</a>)</span>. Dans le <em>package</em> <code>robfilter</code>, la tendance-cycle est supposée être localement linéaire&nbsp;: <span class="math display">\[
+y_{t+i}=\underbrace{\beta_{0,t}+\beta_{1,t}i}_{TC_{t+i}}+\varepsilon_{t,i}
+\]</span> On a donc <span class="math inline">\(\widehat{TC}_t = \hat\beta_{0,t}\)</span> et l’on note <span class="math inline">\(r_{t+i}= y_{t+i}- (\beta_{0,t}+ \beta_{1,t}i)\)</span>.</p>
+<p>Les différentes méthodes étudiées sont&nbsp;:</p>
+<ul>
+<li>Médiane mobile (MED)&nbsp;:</li>
+</ul>
+<p><span class="math display">\[
+\widehat{TC}_t =
+\underset{i=-h,\dots,h}{\med}y_{t+i}.
+\]</span></p>
+<ul>
+<li><p>Régression médiane répétée — <em>Repeated Median</em> (RM) <span class="citation" data-cites="rm">(<a href="../references.html#ref-rm" role="doc-biblioref">Siegel 1982</a>)</span> <span class="math display">\[
+\hat{\beta}_{1,t}=
+\underset{i=-h,\dots,h}{\med}
+\left\{ \underset{i\ne j}{\med}\frac{y_{t+i}-y_{t+j}}{i-j} \right\}
+\]</span> et <span class="math display">\[
+\widehat{TC}_t=
+\underset{i=-h,\dots,h}{\med}
+\left\{ y_{t+i}-i\hat{\beta}_{1,t} \right\}.
+\]</span></p></li>
+<li><p>Régression des moindres carrés médians — <em>Least Median of Squares</em> (LMS) <span class="citation" data-cites="lms">(<a href="../references.html#ref-lms" role="doc-biblioref">Peter J. Rousseeuw 1984</a>)</span>&nbsp;: <span class="math display">\[
+(\widehat{TC}_t,\hat\beta_{1,t})=
+\underset{\beta_{0,t},\beta_{1,t}}{\argmin}
+\left\{ \underset{i=-h,\dots,h}{\med}r^2_{t+i} \right\}.
+\]</span></p></li>
+<li><p>Régression des moindres carrés élagués — <em>Least Trimmed Squares</em> (LTS) <span class="citation" data-cites="lts">(<a href="../references.html#ref-lts" role="doc-biblioref">Peter J. Rousseeuw 1985</a>)</span>&nbsp;: <span class="math display">\[
+(\widehat{TC}_t,\hat\beta_{1,t})=
+\underset{\beta_{0,t},\beta_{1,t}}{\argmin}
+\left\{ \sum_{i=-h}^h r^2_{t+i} \right\}.
+\]</span></p></li>
+<li><p>Régression des moindres quartiles différenciés — <em>Least Quartile Difference</em> (LQD) <span class="citation" data-cites="lqd">(<a href="../references.html#ref-lqd" role="doc-biblioref">Christophe Croux et Hössjer 1994</a>)</span>&nbsp;: <span class="math display">\[
+\hat\beta_{1,t}=\underset{\beta_{1,t}}{\argmin}
+Q_{2h+1}(r_{t-h},\dots,r_{t+h})
+\]</span> avec <span class="math display">\[
+Q_{2h+1}(r_{t-h},\dots,r_{t+h}) = \left\{
+|r_i-r_j|;i&lt;j
+\right\}_{\binom{h_p}{2}:\binom{2h+1}{2}}
+\]</span> le quantile d’ordre <span class="math inline">\(\binom{h_p}{2}\)</span> sur les <span class="math inline">\(\binom{2h+1}{2}\)</span> éléments de l’ensemble <span class="math inline">\(\{|r_i-r_j|;i&lt;j\}\)</span> et <span class="math inline">\(h_p=[(2h+1+p+1)/2]\)</span> avec <span class="math inline">\(p=1\)</span> le nombre de régresseurs (hors constante). La fonction objectif ne dépendant pas de la constante, elle est estimée a posteriori par exemple en utilisant la formule&nbsp;: <span class="math display">\[
+\widehat{TC}_t =
+\underset{i=-h,\dots,h}{\med}y_{t+i}-\hat \beta_{1,t}i.
+\]</span></p></li>
+<li><p>Régression profonde — <em>Deepest Regression</em> (DR) <span class="citation" data-cites="DeepestRegression">(<a href="../references.html#ref-DeepestRegression" role="doc-biblioref">Peter J. Rousseeuw et Hubert 1999</a>)</span> <span class="math display">\[
+(\widehat{TC}_t,\hat\beta_{1,t})=\underset{\tilde\beta_{0},\tilde\beta_{1}}{\argmax}\left\{ rdepth(\tilde\beta_{0},\tilde\beta_{1}) \right\}
+\]</span> où la profondeur de la régression — <em>regression depth</em> (<span class="math inline">\(rdepth\)</span>) — d’un ajustement <span class="math inline">\((\tilde\beta_{0},\tilde\beta_{1})\)</span> est définie comme&nbsp;: <span class="math display">\[
+rdepth(\tilde\beta_{0},\tilde\beta_{1}) = \underset{-h\leq i\leq h}{\min}
+\left\{ \min \left\{ L^+(i) + R^-(i);R^+(i) + L^-(i) \right\}\right\}
+\]</span> avec&nbsp;: <span class="math display">\[
+\begin{cases}
+L^+(i) = L^+_{\tilde\beta_{0},\tilde\beta_{1}}(i) = cardinal \left\{ j\in\{-h,\dots,i\} : r_j(\tilde\beta_{0},\tilde\beta_{1})\leq 0 \right\} \\
+R^-(i) = R^-_{\tilde\beta_{0},\tilde\beta_{1}}(i) = cardinal \left\{ j\in\{i+1,\dots,h\} : r_j(\tilde\beta_{0},\tilde\beta_{1})&lt; 0 \right\}
+\end{cases}
+\]</span> et <span class="math inline">\(L^-(i)\)</span> et <span class="math inline">\(R^+(i)\)</span> définis de manière analogue.</p></li>
+</ul>
+<p>Pour les estimations intermédiaires (i.e., lorsque pour estimer la tendance-cycle à la date <span class="math inline">\(t\)</span> on ne possède pas <span class="math inline">\(h\)</span> observations avant ou après <span class="math inline">\(t\)</span>), le <em>package</em> <code>robfilter</code> extrapole les données à partir du dernier modèle estimé. C’est-à-dire que si les données observées sont <span class="math inline">\(y_1, \dots, y_n\)</span>, alors pour <span class="math inline">\(q\in \{1,\dots, 6\}\)</span>&nbsp;: <span class="math display">\[
+\widehat{TC}_{n-h+q} = \widehat{TC}_{n-h}+q\times\hat\beta_{1,n-h}.
+\]</span> Pour la médiane mobile, cela revient à prolonger par la dernière valeur connue. Cette méthode n’est pas pertinente pour l’analyse conjoncturelle puisque les points de retournement sont détectés avec <span class="math inline">\(h\)</span> périodes de retard. Une approche alternative consiste à appliquer les mêmes modèles mais en n’utilisant que les observations disponibles (pour estimer <span class="math inline">\(\widehat{TC}_{n-h+1}\)</span> on utilise les <span class="math inline">\(2h\)</span> observations entre <span class="math inline">\(n-2h+1\)</span> et <span class="math inline">\(n\)</span>, …, et pour estimer <span class="math inline">\(\widehat{TC}_{n}\)</span> on utilise les <span class="math inline">\(h+1\)</span> observations entre <span class="math inline">\(n-h\)</span> et <span class="math inline">\(n\)</span>). Cette approche n’est pas implémentée dans <code>robfilter</code> mais peut être obtenue en ajoutant <span class="math inline">\(h\)</span> valeurs manquantes au début et à la fin de la série&nbsp;: c’est ce qui sera effectué dans cet article.</p>
+<p>Dans le cadre de l’analyse conjoncturelle, il n’est généralement pas plausible de modéliser, autour des points de retournement, une tendance de degré 1<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Il n’est toutefois pas possible de changer cela dans le <em>package</em> <code>robfilter</code> et il n’existe pas d’autre <em>package</em> permettant d’appliquer simplement toutes ces méthodes. Même si cette modélisation n’est pas toujours optimale, elle reste plausible dans la majorité des cas et la facilité d’utilisation de <code>robfilter</code> font de ces méthodes un bon point de comparaison aux moyennes mobiles linéaires classiquement utilisées pour l’estimation de la tendance-cycle et présentées dans la section suivante. Toutefois, les méthodes LTS et LMS sont implémentées dans le <em>package</em> <code>MASS</code> <span class="citation" data-cites="MASS">(<a href="../references.html#ref-MASS" role="doc-biblioref">Venables et Ripley 2002</a>)</span><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, il est possible de réimplémenter le processus d’estimation locale avec une tendance de degré 2, ce qui a été fait dans l’annexe <a href="#sec-an-lms-lts" class="quarto-xref"><span>4.5.4</span></a>.</p>
+</section>
+<section id="sec-methodes-lineaires" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="sec-methodes-lineaires"><span class="header-section-number">4.2.2</span> Moyennes mobiles linéaires classiques</h3>
+<section id="sec-lp" class="level4" data-number="4.2.2.1">
+<h4 data-number="4.2.2.1" class="anchored" data-anchor-id="sec-lp"><span class="header-section-number">4.2.2.1</span> Moyenne mobile de Henderson et de Musgrave</h4>
+<p>Les moyennes mobiles classiques peuvent être obtenues par analogie avec la régression polynomiale locale. En reprenant les notations de <span class="citation" data-cites="proietti2008">Proietti et Luati (<a href="../references.html#ref-proietti2008" role="doc-biblioref">2008</a>)</span>, on suppose que notre série chronologique <span class="math inline">\(y_t\)</span> peut être décomposée en&nbsp;: <span class="math display">\[
+y_t=TC_t+\varepsilon_t,
+\]</span> où <span class="math inline">\(TC_t\)</span> est la tendance-cycle et <span class="math inline">\(\varepsilon_{t}\overset{i.i.d}{\sim}\mathcal{N}(0,\sigma^{2})\)</span> est le bruit. La tendance-cycle <span class="math inline">\(TC_t\)</span> est localement approchée par un polynôme de degré <span class="math inline">\(d\)</span>, de sorte que dans un voisinage <span class="math inline">\(h\)</span> de <span class="math inline">\(t\)</span> on a <span class="math inline">\(TC_t\simeq m_{t}\)</span> avec&nbsp;: <span class="math display">\[
+\forall j\in\left\{-h,-h+1,\dots,h\right\},\:
+y_{t+j}=m_{t+j}+\varepsilon_{t+j},\quad m_{t+j}=\sum_{i=0}^{d}\beta_{i,t}j^{i}.
+\]</span> En notation matricielle&nbsp;: <span id="eq-lpp"><span class="math display">\[
+\underbrace{\begin{pmatrix}y_{t-h}\\
+y_{t-(h-1)}\\
+\vdots\\
+y_{t}\\
+\vdots\\
+y_{t+(h-1)}\\
+y_{t+h}
+\end{pmatrix}}_{\boldsymbol y_t}=\underbrace{\begin{pmatrix}1 &amp; -h &amp; h^{2} &amp; \cdots &amp; (-h)^{d}\\
+1 &amp; -(h-1) &amp; (h-1)^{2} &amp; \cdots &amp; (-(h-1))^{d}\\
+\vdots &amp; \vdots &amp; \vdots &amp; \cdots &amp; \vdots\\
+1 &amp; 0 &amp; 0 &amp; \cdots &amp; 0\\
+\vdots &amp; \vdots &amp; \vdots &amp; \cdots &amp; \vdots\\
+1 &amp; h-1 &amp; (h-1)^{2} &amp; \cdots &amp; (h-1)^{d}\\
+1 &amp; h &amp; h^{2} &amp; \cdots &amp; h^{d}
+\end{pmatrix}}_{\boldsymbol X}\underbrace{\begin{pmatrix}\beta_{0,t}\\
+\beta_{1,t}\\
+\vdots\\
+\vdots\\
+\vdots\\
+\vdots\\
+\beta_{d,t}
+\end{pmatrix}}_{\boldsymbol \beta_t}+\underbrace{\begin{pmatrix}\varepsilon_{t-h}\\
+\varepsilon_{t-(h-1)}\\
+\vdots\\
+\varepsilon_{t}\\
+\vdots\\
+\varepsilon_{t+(h-1)}\\
+\varepsilon_{t+h}
+\end{pmatrix}}_{\boldsymbol \varepsilon_t}.
+\tag{4.1}\]</span></span></p>
+<p>L’estimation des paramètres <span class="math inline">\(\boldsymbol \beta_t\)</span> peut être obtenue moindres carrés pondérés — <em>weighted least squares</em> (WLS) — à partir d’un ensemble de poids <span class="math inline">\((\kappa_j)_{-h\leq j \leq h}\)</span> appelés noyaux. En notant <span class="math inline">\(\boldsymbol K=diag(\kappa_{-h},\dots,\kappa_{h})\)</span> il vient <span class="math inline">\(\hat{\boldsymbol\beta_t}=(\transp{\boldsymbol X}\boldsymbol K\boldsymbol X)^{-1}\transp{\boldsymbol X}\boldsymbol K\boldsymbol y_t.\)</span> Avec <span class="math inline">\(\boldsymbol e_1=\transp{\begin{pmatrix}1 &amp;0 &amp;\cdots&amp;0 \end{pmatrix}}\)</span>, l’estimation de la tendance-cycle est&nbsp;: <span id="eq-mmsym-ch3"><span class="math display">\[
+\widehat{TC}_t=\widehat{\beta}_{0,t}=\transp{\boldsymbol e_{1}}\hat{\boldsymbol \beta_t}=\transp{\boldsymbol \theta}\boldsymbol y_t=\sum_{j=-h}^{h}\theta_{j}y_{t-j}\text{ avec }\boldsymbol \theta=\boldsymbol K\boldsymbol X(\transp{\boldsymbol X}\boldsymbol K\boldsymbol X)^{-1}\boldsymbol e_{1}.
+\tag{4.2}\]</span></span> En somme, l’estimation de la tendance <span class="math inline">\(\hat{m}_{t}\)</span> est obtenue en appliquant une moyenne mobile symétrique <span class="math inline">\(\boldsymbol \theta\)</span> à <span class="math inline">\(y_t\)</span>.</p>
+<p>On retrouve la moyenne mobile de Henderson avec <span class="math inline">\(d=2\)</span> (ou <span class="math inline">\(d=3\)</span>) et en utilisant les noyaux&nbsp;: <span class="math display">\[
+\kappa_{j}=\left[1-\frac{j^2}{(h+1)^2}\right]
+\left[1-\frac{j^2}{(h+2)^2}\right]
+\left[1-\frac{j^2}{(h+3)^2}\right].
+\]</span> <!-- De plus, puisque $\transp{\boldsymbol X}\boldsymbol \theta=\boldsymbol e_{1}$ on a: --> <!-- $$ --> <!-- \sum_{j=-h}^{h}\theta_{j}=1,\quad\forall r\in\left\{1,2,\dots,d\right\}:\sum_{j=-h}^{h}j^{r}\theta_{j}=0. --> <!-- $$ --> <!-- La moyenne mobile $\boldsymbol \theta$ conserve donc les tendances polynomiales de degré $d$. --></p>
+<p>Pour le cas asymétrique, <span class="citation" data-cites="proietti2008">Proietti et Luati (<a href="../references.html#ref-proietti2008" role="doc-biblioref">2008</a>)</span> proposent une méthode générale pour construire les filtres asymétriques qui permet de faire un compromis biais-variance. Il s’agit d’une généralisation des filtres asymétriques de <span class="citation" data-cites="musgrave1964set">Musgrave (<a href="../references.html#ref-musgrave1964set" role="doc-biblioref">1964</a>)</span> (utilisés dans l’algorithme de désaisonnalisation X-13ARIMA-SEATS). En récrivant l’<a href="#eq-lpp" class="quarto-xref">équation&nbsp;<span>4.1</span></a>&nbsp;: <span id="eq-lpgeneralmodel-ch3"><span class="math display">\[
+\boldsymbol y_t=\begin{pmatrix}\boldsymbol U &amp;\boldsymbol Z\end{pmatrix}
+\begin{pmatrix}\boldsymbol \gamma_t \\ \boldsymbol \delta_t\end{pmatrix}+
+\boldsymbol \varepsilon_t =
+\boldsymbol U\boldsymbol \gamma_t + \boldsymbol Z \boldsymbol \delta_t +\boldsymbol \varepsilon_t,
+\quad
+\boldsymbol \varepsilon_t\sim\mathcal{N}(0,\boldsymbol D).
+\tag{4.3}\]</span></span> où <span class="math inline">\([\boldsymbol U,\boldsymbol Z]\)</span> est de rang plein et forme un sous-ensemble des colonnes de <span class="math inline">\(\boldsymbol X\)</span>. L’objectif est de trouver une moyenne mobile asymétrique <span class="math inline">\(\boldsymbol \theta^{(a)}\)</span> qui minimise l’erreur quadratique moyenne de révision (à la moyenne mobile symétrique <span class="math inline">\(\boldsymbol \theta\)</span>) sous certaines contraintes. Ces contraintes sont représentées par la matrice <span class="math inline">\(\boldsymbol U=\transp{\begin{pmatrix}\transp{\boldsymbol U_{p}}&amp;\transp{\boldsymbol U_{f}}\end{pmatrix}}\)</span>&nbsp;: <span class="math inline">\(\transp{\boldsymbol U_p}\boldsymbol \theta^{(a)}=\transp{\boldsymbol U}\boldsymbol \theta\)</span> (avec <span class="math inline">\(\boldsymbol U_p\)</span> la matrice <span class="math inline">\((h+q+1)\times (d+1)\)</span> qui contient les observations de la matrice <span class="math inline">\(\boldsymbol U\)</span> connues lors de l’estimation par le filtre asymétrique). C’est ce qui est implémenté dans la fonction <code>rjd3filters::mmsre_filter()</code> du <em>package</em> R <code>rjd3filters</code> <span class="citation" data-cites="rjd3filters">(<a href="../references.html#ref-rjd3filters" role="doc-biblioref">Palate et Quartier-la-Tente 2024</a>)</span>.</p>
+<p>Lorsque <span class="math inline">\(\boldsymbol U\)</span> correspond aux <span class="math inline">\(d^*+1\)</span> premières colonnes de <span class="math inline">\(\boldsymbol X\)</span>, <span class="math inline">\(d^*&lt;d\)</span>, la contrainte consiste à reproduire des tendances polynomiales de degré <span class="math inline">\(d^*\)</span>. Cela introduit du biais (sur les tendances de degré <span class="math inline">\(d^*+1\)</span> à <span class="math inline">\(d\)</span>) mais réduit la variance. Le filtre de Musgrave se retrouve en modélisant une tendance localement linéaire (<span class="math inline">\(d=1\)</span>), en imposant que <span class="math inline">\(\theta^{(a)}\)</span> préserve les constantes (<span class="math inline">\(d^*=0\)</span>) et en prenant le filtre d’Henderson comme filtre symétrique. C’est-à-dire que l’on a <span class="math inline">\(\boldsymbol U=\transp{\begin{pmatrix}1&amp;\cdots&amp;1\end{pmatrix}}\)</span>, <span class="math inline">\(\boldsymbol Z=\transp{\begin{pmatrix}-h&amp;\cdots&amp;+h\end{pmatrix}}\)</span>, <span class="math inline">\(\boldsymbol \delta_t=\delta_{1,t}\)</span>, <span class="math inline">\(\boldsymbol D=\sigma^2\boldsymbol I\)</span>. Ce filtre dépend du rapport <span class="math inline">\(\lvert\delta_{1,t}/\sigma\rvert\)</span> (modélisant le biais), qui est à fixer par l’utilisateur. En supposant que la tendance est linéaire et le biais constant (<span class="math inline">\(\delta_{1,t}=\delta_1\)</span>), ce rapport est lié à l’I-C ratio <span class="math inline">\(R=\frac{\bar{I}}{\bar{C}}=\frac{\sum\lvert I_t-I_{t-1}\rvert}{\sum\lvert C_t-C_{t-1}\rvert}\)</span> (et l’on a <span class="math inline">\(\delta_1/\sigma=2/(R\sqrt{\pi})\)</span>), qui est notamment utilisé dans X-11 pour déterminer la longueur de la moyenne mobile de Henderson à utiliser. Pour des données mensuelles&nbsp;:</p>
+<ul>
+<li><p>Si le rapport est élevé (<span class="math inline">\(3,5&lt; R\)</span>), un filtre symétrique à 23 termes est utilisé (pour éliminer plus de bruit) et le rapport <span class="math inline">\(R=4,5\)</span> est utilisé dans X-11 pour définir le filtre de Musgrave.</p></li>
+<li><p>Si le rapport est faible (<span class="math inline">\(R&lt;1\)</span>), un filtre symétrique à 9 termes est utilisé et le rapport <span class="math inline">\(R=1\)</span> est utilisé dans X-11 pour définir le filtre de Musgrave.</p></li>
+<li><p>Dans le cas contraire (<span class="math inline">\(1\leq R \leq 3,5\)</span>, la plupart des cas), un filtre symétrique à 13 termes est utilisé et le rapport <span class="math inline">\(R=3,5\)</span> est utilisé dans X-11 pour définir le filtre de Musgrave.</p></li>
+</ul>
+<p>Dans cet article, seules des séries mensuelles sont étudiés et le filtre de Henderson à 13 termes sera utilisé comme filtre symétrique. Par simplification et par cohérence avec ce qui est utilisé dans X-11, le ratio <span class="math inline">\(\delta_1/\sigma\)</span> sera fixé de sorte à avoir <span class="math inline">\(R=3,5\)</span>. C’est également ce qui est fait par l’Australian Bureau of Statistics <span class="citation" data-cites="abs2003">(<a href="../references.html#ref-abs2003" role="doc-biblioref">Trewin 2003</a>)</span>. Toutefois, comme notamment montré dans <span class="citation" data-cites="jos2024AQLT">Quartier-la-Tente (<a href="../references.html#ref-jos2024AQLT" role="doc-biblioref">2024</a>)</span>, une paramétrisation locale de ce paramètre pourrait être préférée.</p>
+<p>Par simplification, dans cette étude on parle d’estimation via la moyenne mobile de Henderson pour désigner l’utilisation des moyennes mobiles de Henderson pour l’estimation finale et des moyennes mobiles de Musgrave pour les estimations intermédiaires. Les coefficients des différentes moyennes mobiles étudiées dans cet article sont représentés dans l’annexe <a href="#sec-annexes-ch3-mm" class="quarto-xref"><span>4.5.1</span></a>.</p>
+</section>
+<section id="filtres-cascade" class="level4" data-number="4.2.2.2">
+<h4 data-number="4.2.2.2" class="anchored" data-anchor-id="filtres-cascade"><span class="header-section-number">4.2.2.2</span> Filtres cascade</h4>
+<p>Les moyennes mobiles étant des opérateurs linéaires, ils sont sensibles à la présence de points atypiques. Du fait de leur présence, l’application directe des méthodes peut donc conduire à des estimations biaisées alors que les méthodes de désaisonnalisation (comme la méthode X-13ARIMA-SEATS) ont un module de correction des points atypiques. Par ailleurs, comme notamment montré par <span class="citation" data-cites="dagum1996new">Dagum (<a href="../references.html#ref-dagum1996new" role="doc-biblioref">1996</a>)</span>, le filtre symétrique final utilisé par X-11 pour extraire la tendance-cycle (et donc celui indirectement utilisé lorsqu’on applique les méthodes sur les séries désaisonnalisées) laisse passer environ 72 % des cycles de 9 ou 10 mois (généralement associés à du bruit plutôt qu’à la tendance-cycle). Les filtres asymétriques finaux amplifient même les cycles de 9 ou 10 mois. Cela peut avoir pour conséquence l’introduction d’ondulations indésirables, c’est-à-dire la détection de faux points de retournement. Ce problème est réduit par la correction des points atypiques (ces cycles étant considérés comme de l’irrégulier). C’est ainsi que le <em>Nonlinear Dagum Filter</em> (NLDF) a été développé et consiste à&nbsp;:</p>
+<ol type="1">
+<li><p>appliquer l’algorithme de correction des points atypiques de X-11 sur la série désaisonnalisée, puis la prolonger par un modèle ARIMA&nbsp;;</p></li>
+<li><p>effectuer une nouvelle correction des points atypiques en utilisant un seuil bien plus strict et appliquer ensuite le filtre symétrique de 13 termes. En supposant une distribution normale cela revient à modifier 48 % des valeurs de l’irrégulier.</p></li>
+</ol>
+<p>Les <em>cascade linear filter</em> <span class="citation" data-cites="clf">(CLF, <a href="../references.html#ref-clf" role="doc-biblioref">Dagum et Luati 2009</a>)</span>, correspondent à une approximation des NLDF en utilisant un filtre de 13 termes et lorsque les prévisions sont obtenues à partir d’un modèle ARIMA(0,1,1) où <span class="math inline">\(\theta=0,40.\)</span> De manière similaire, des moyennes mobiles asymétriques, <em>Asymmetric Linear Filter</em> (ALF), peuvent être construites.</p>
+<p>C’est la moyenne mobile CLF qui est utilisée par Statistique Canada pour l’estimation de la tendance-cycle<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. Pour l’estimation en temps réel, Statistique Canada utilise la méthode «&nbsp;couper-et-normaliser&nbsp;» qui consiste à recalculer les poids, à partir de la moyenne mobile symétrique, en n’utilisant que les poids associées aux observations disponibles (couper) et en renormalisant pour que la somme des coefficients soit égale à 1 (normaliser). C’est l’approche qui sera utilisé dans cet article (plutôt que l’utilisation des ALF).</p>
+<div class="proof remark">
+<p><span class="proof-title"><em>Remarque</em>. </span>Les CLF ne préservent, localement, que les droites (tendances de degré 1) et les moyennes mobiles asymétriques associées que les constantes (tendances de degré 0). En revanche la moyenne mobile de Henderson préserve les tendances locales de degré 3 et les moyennes mobiles de Musgrave que les constantes.</p>
+</div>
+</section>
+</section>
+<section id="sec-constr-mm" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="sec-constr-mm"><span class="header-section-number">4.2.3</span> Construction de moyennes mobiles robustes</h3>
+<p>Une autre façon de construire des moyennes mobiles robustes aux points atypiques est d’exploiter l’approche polynomiale locale présentée dans la <a href="#sec-lp" class="quarto-xref"><span>Section 4.2.2.1</span></a>. Pour la construire la moyenne mobile utilisée pour l’estimation finale de la tendance-cycle, il suffit pour cela d’ajouter dans l’<a href="#eq-lpp" class="quarto-xref">équation&nbsp;<span>4.1</span></a> un ou plusieurs régresseurs <span class="math inline">\(\boldsymbol O_t\)</span> pour prendre en compte l’effet du point atypique modélisé&nbsp;: <span class="math display">\[
+y_{t+j}=\sum_{i=0}^{d}\beta_{i,t}j^{i} + \boldsymbol O_{t+j} \boldsymbol\zeta_t+\varepsilon_{t+j}.
+\]</span></p>
+<p>On a alors&nbsp;: <span class="math display">\[
+\widehat{TC}_t=\transp{\boldsymbol \theta_t^{(r)}}\boldsymbol y_t=\sum_{j=-h}^{h}\theta_{j,t}^{(r)}y_{t-j}
+\]</span> avec <span class="math display">\[
+\boldsymbol \theta_t^{(r)}=\boldsymbol K\begin{pmatrix}\boldsymbol X &amp;  \mathcal O_{t}\end{pmatrix}\left(\transp{\begin{pmatrix}\boldsymbol X &amp;  \mathcal O_{t}\end{pmatrix}}\boldsymbol K \begin{pmatrix}\boldsymbol X &amp;  \mathcal O_{t}\end{pmatrix}\right)^{-1}\boldsymbol e_{1}
+\text{ et }
+\mathcal O_{t} = \begin{pmatrix}
+\boldsymbol O_{t-h} \\ \vdots\\\boldsymbol O_{t+h}
+\end{pmatrix}.
+\]</span></p>
+<p>Le filtre de Henderson peut être obtenu par approximation locale d’un polynôme de degré 2. Puisqu’il est symétrique, il préserve également les tendances de degré 3 et peut également être obtenu par approximation locale d’un polynôme de degré 3. En revanche, même si la moyenne mobile <span class="math inline">\(\boldsymbol \theta_t^{(r)}\)</span> est centrée (autant de points avant et après <span class="math inline">\(t\)</span> sont utilisés pour estimer <span class="math inline">\(\widehat{TC}_t\)</span>), elle n’est plus forcément symétrique (pour au moins un <span class="math inline">\(i\in\{1,\dots,h\}\)</span> on a <span class="math inline">\(\theta_{-i,t}^{(r)}\ne\theta_{i,t}^{(r)}\)</span>). Pour construire une moyenne mobile robuste associée au filtre de Henderson, le choix entre modélisation d’un polynôme local de degré 2 (<span class="math inline">\(d=2\)</span>) ou 3 (<span class="math inline">\(d=3\)</span>) aura donc un impact sur la moyenne mobile finale. Dans cet article nous utiliserons par convention la valeur <span class="math inline">\(d=3\)</span> afin de préserver sans biais les mêmes tendances que la moyenne mobile de Henderson.</p>
+<p>Pour la construction des moyennes mobiles asymétriques, le même principe est appliqué à l’<a href="#eq-lpgeneralmodel-ch3" class="quarto-xref">équation&nbsp;<span>4.3</span></a> en estimant sans biais <span class="math inline">\(\boldsymbol\zeta_t\)</span>&nbsp;: <span class="math display">\[
+\boldsymbol y_t=\begin{pmatrix}\boldsymbol U &amp; \mathcal O_{t}\end{pmatrix}\begin{pmatrix}\boldsymbol \gamma_t \\ \boldsymbol\zeta_t \end{pmatrix}+\boldsymbol Z\boldsymbol \delta_t+\boldsymbol \varepsilon_t,\quad
+\boldsymbol \varepsilon_t\sim\mathcal{N}(\boldsymbol 0,\boldsymbol D).
+\]</span> La moyenne mobile asymétrique <span class="math inline">\(\boldsymbol \theta^{(a)(r)}_t\)</span> est trouvée par minimisation de l’erreur quadratique moyenne de révision (à la moyenne mobile <span class="math inline">\(\boldsymbol \theta_t^{(r)}\)</span>) sous contraintes. Ces contraintes sont représentées par la matrice <span class="math inline">\(\begin{pmatrix}\boldsymbol U &amp; \mathcal O_{t}\end{pmatrix} = \begin{pmatrix}\boldsymbol U_{p} &amp; \mathcal O_{p,t} \\\boldsymbol U_{f} &amp; \mathcal O_{f,t} \end{pmatrix}\)</span>&nbsp;: <span class="math display">\[
+\transp{\begin{pmatrix}\boldsymbol U_{p} &amp; \mathcal O_{p,t} \end{pmatrix}}\boldsymbol \theta^{(a)}=\transp{\begin{pmatrix}\boldsymbol U &amp; \mathcal O_{t}\end{pmatrix}} \boldsymbol \theta_t^{(r)}.
+\]</span></p>
+<p>Par convention, lorsque <span class="math inline">\(\mathcal O_{t}\)</span> ou <span class="math inline">\(\mathcal O_{p,t}\)</span> est la matrice nulle, on garde la modélisation de la <a href="#sec-lp" class="quarto-xref"><span>Section 4.2.2.1</span></a> (sans introduction de régresseur supplémentaire).</p>
+<p>Dans cette étude, les deux types de points atypiques les plus couramment rencontrés dans l’analyse de données macroéconomiques sont étudiés&nbsp;:</p>
+<ul>
+<li><p>Les points atypiques additifs (AO, <em>additive outlier</em>)&nbsp;: un choc ponctuelle à une date particulière puis un retour à la normal (grève, mesure exceptionnelle, erreur de mesure par exemple liée à de la non réponse, etc.). Le choc affecte donc l’irrégulier et ne devrait pas avoir d’impact sur la tendance-cycle. Si le choc apparaît à la date <span class="math inline">\(t_0\)</span> il peut être modélisé par le régresseur <span class="math inline">\(O_t^{AO}=\1_{t=t_0}\)</span> qui vaut <span class="math inline">\(1\)</span> à la date <span class="math inline">\(t_0\)</span> et <span class="math inline">\(0\)</span> sinon.<br>
+Si l’on souhaite que le choc soit affecté à la tendance-cycle et non pas à l’irrégulier (par exemple pendant la période du COVID-19), il faut utiliser le régresseur <span class="math inline">\(O_{t+j}=O_{t+j}^{AO}=\1_{t+j= t_0}\)</span> lorsque <span class="math inline">\(t&lt; t_0\)</span> ou <span class="math inline">\(t=t_0+h\)</span> (estimations des points avant le choc et dernière moyenne mobile modifiée) et <span class="math inline">\(O_{t+j}=1-O_{t+j}^{AO}=\1_{t+j\ne t_0}\)</span> lorsque <span class="math inline">\(t_0\leq t &lt; t_0+h\)</span> (estimations des points après le choc sauf dernière moyenne mobile modifiée). Une distinction est faite pour <span class="math inline">\(t=t_0+h\)</span> car dans ce cas le régresseur <span class="math inline">\(\1_{t+j\ne t_0}\)</span> est égal à <span class="math inline">\(\1_{t+j&gt; t_0}\)</span> ce qui revient à créer une rupture en niveau (cf.&nbsp;<em>infra</em>) et introduit un pic indésirable à l’estimation en <span class="math inline">\(t_0+h\)</span>.</p></li>
+<li><p>Les ruptures en niveau (LS, <em>level shift</em>)&nbsp;: un changement soudain et durable du niveau moyen de la série (choc structurel, changement de politique économique, etc.). Le choc affecte donc la tendance-cycle et ne devrait pas avoir d’impact sur l’irrégulier. Si le choc est à la date <span class="math inline">\(t_0\)</span> il peut être modélisé par le régresseur <span class="math inline">\(O_{t+j}=1-\1_{t+j&lt; t_0}\)</span> si <span class="math inline">\(t\leq t_0\)</span> (l’estimation de <span class="math inline">\(\beta_{0,t}\)</span> ne prend pas en compte le choc en niveau) et <span class="math inline">\(O_{t+j}=\1_{t+j\geq t_0}\)</span> si <span class="math inline">\(t_0&lt;t\)</span> (l’estimation de <span class="math inline">\(\beta_{0,t}\)</span> prend en compte le choc en niveau).</p></li>
+</ul>
+<p>Cette méthode a été implémentée dans la fonction <code>publishTC::henderson_robust_smoothing()</code> du <em>package</em> <code>publishTC</code> <span class="citation" data-cites="publishTC">(<a href="../references.html#ref-publishTC" role="doc-biblioref">Quartier-la-Tente 2025</a>)</span> qui permet de modéliser des chocs ponctuels (affectés à l’irrégulier ou à la tendance-cycle) et des ruptures en niveau (affectées à la tendance-cycle).</p>
+<p>L’inconvénient de cette approche, par rapport aux méthodes robustes présentées dans la <a href="#sec-methodes-robustes" class="quarto-xref"><span>Section 4.2.1</span></a>, est que cela suppose de connaître la date et la nature du point atypique. Une approche en deux temps peut être utilisée&nbsp;:</p>
+<ol type="1">
+<li><p>Partir sur un a priori basé sur une information économique (ex&nbsp;: baisse attendue de l’économie au moment des confinements durant le COVID-19, hausse attendue suite à une mise en place d’une politique…) ou sur des modèles statistiques (comme le module de détection des points atypiques de X-13ARIMA-SEATS basé sur un modèle RegARIMA).</p></li>
+<li><p>Valider la modélisation retenue en comparant l’intervalle de confiance de l’estimation de la tendance-cycle avec les moyennes mobiles de Henderson et de Musgrave avec l’estimation en utilisant les moyennes mobiles robustes. La <a href="#sec-ic" class="quarto-xref"><span>Section 4.2.4</span></a> décrit la méthodologie pour la construction d’intervalles de confiance pour des estimations basées sur des moyennes mobiles.</p></li>
+</ol>
+<p>Toutefois, pour l’estimation en temps réel, sauf à avoir une information extérieure, il est difficile de distinguer un <em>level shift</em> (LS) d’un ou plusieurs <em>additive outlier</em> (AO) consécutifs. Le choix du type de point atypique aura une influence forte sur l’estimation (puisque les LS affectent la tendance-cycle et les AO l’irrégulier) et passer d’une spécification à l’autre entraînera des révisions importantes. Ces révisions seront même plus importantes que si, avant de décider de la bonne modélisation à adopter, les premières estimations avaient été faites avec des moyennes mobiles classiques.</p>
+<p>Par rapport au préajustement des points atypiques par un modèle <em>ad hoc</em>, comme le module de pré-ajustement de X-13ARIMA-SEATS basé sur un modèle RegARIMA, l’approche ici présentée a l’avantage de ne pas être dépendante de l’identification d’un modèle et de la période d’estimation (pas de biais lié à l’identification des paramètres ou à l’utilisation d’une période d’estimation trop courte ou trop longue).</p>
+<p>Dans la suite ces moyennes mobiles seront appelées moyennes mobiles de Henderson ou de Musgrave robustes. Par simplification, nous appellerons également moyenne mobile de Henderson robuste l’utilisation des moyennes de mobiles de Henderson (pour l’estimation finale) et de Musgrave (pour les estimations intermédiaires) robustes construits selon la même méthodologie.</p>
+</section>
+<section id="sec-ic" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="sec-ic"><span class="header-section-number">4.2.4</span> Construction d’intervalles de confiance pour des moyennes mobiles</h3>
+<p>Soit <span class="math inline">\(y_1,\dots,y_n\)</span> une série chronologique observée. On suppose qu’elle peut être décomposée en <span class="math display">\[
+y_t=\mu_t+\varepsilon_t,
+\]</span> où <span class="math inline">\(\mu_t\)</span> est une composante signal à estimer et <span class="math inline">\(\varepsilon_{t}\overset{i.i.d}{\sim}\mathcal{N}(0,\sigma^{2})\)</span> est le bruit.</p>
+<p>Soit <span class="math inline">\(\boldsymbol\theta = \begin{pmatrix}\theta_{-p},\dots,\theta_f\end{pmatrix}\)</span> une moyenne mobile permettant d’estimer localement la composante inobservable <span class="math inline">\(\mu_t\)</span> (dans cette étude la tendance-cycle <span class="math inline">\(TC_t\)</span>) à partir de <span class="math inline">\(y_t\)</span>. Cette estimation est donnée par <span class="math inline">\(\hat \mu_t = \sum_{i=-p}^{+f}\theta_iy_{t+i}.\)</span></p>
+<p>Un intervalle de confiance de <span class="math inline">\(\mathbb E[\hat{\mu}_t]\)</span> au seuil <span class="math inline">\(\alpha\)</span> peut être calculé à partir de la formule&nbsp;: <span id="eq-ic"><span class="math display">\[
+I_t=\left[\hat{\mu}_t - |q_{\alpha/2}|\sqrt{\hat \sigma^2}\sqrt{\sum_{i=-p}^{+f}\theta_i^2};
+\hat{\mu}_t  + |q_{1-\alpha/2}|\sqrt{\hat \sigma^2}\sqrt{\sum_{i=-p}^{+f}\theta_i^2}\right]
+\tag{4.4}\]</span></span> où <span class="math display">\[
+\hat\sigma^2=\frac{1}{(n-p-f)\left(1-2\theta_0^2+\sum_{i=-p}^{+f} \theta_i^2\right)}\sum_{t=p+1}^{n-f}(y_t-\widehat{\mu}_t)^2
+\]</span> et <span class="math inline">\(q_{\alpha/2}\)</span> est le quantile d’ordre <span class="math inline">\(\alpha/2\)</span> d’une certaine loi de Student. C’est un intervalle de confiance de <span class="math inline">\(\mu_t\)</span> lorsque l’on a un estimateur sans biais de <span class="math inline">\(\mu_t\)</span> (<span class="math inline">\(\mathbb E[\hat{\mu}_t]= \sum_{i=-p}^{+f}\theta_iy_{t+i}= \mu_t\)</span>), ce qui n’est généralement pas le cas, mais le biais est négligeable lorsque la fenêtre <span class="math inline">\(p+f+1\)</span> est petite.</p>
+<p>Ces formules se retrouvent par analogie avec la régression polynomiale locale. En reprenant les notations de <span class="citation" data-cites="Loader1999">Loader (<a href="../references.html#ref-Loader1999" role="doc-biblioref">1999</a>)</span> pour la régression polynomiale locale et en adaptant à l’utilisation de moyennes mobiles, la variance <span class="math inline">\(\hat\sigma^2\)</span> peut être estimée par la somme des carrés des résidus normalisés&nbsp;: <span class="math display">\[
+\hat\sigma^2=\frac{1}{(n-p-f)-2\nu_1+\nu_2}\sum_{t=p+1}^{n-f}(y_t-\widehat{\mu}_t)^2.
+\]</span> <span class="math inline">\(n-p-f\)</span> termes sont utilisés car avec la moyenne mobile <span class="math inline">\(\boldsymbol \theta\)</span> seulement <span class="math inline">\(n-p-f\)</span> observations peuvent être utilisées pour estimer <span class="math inline">\(\sigma^2\)</span>. <span class="math inline">\(\nu_1\)</span> et <span class="math inline">\(\nu_2\)</span> sont deux définitions de degrés de liberté d’une estimation locale (généralisation du nombre de paramètres d’un modèle paramétrique). Notons <span class="math inline">\(\boldsymbol H\)</span> la <em>matrice chapeau</em> de taille <span class="math inline">\(n\times n\)</span> permettant de faire correspondre les données aux valeurs estimées&nbsp;: <span class="math display">\[
+\begin{pmatrix}
+\hat{\mu}_1\\ \vdots \\ \hat{\mu}_n
+\end{pmatrix} = \boldsymbol H \boldsymbol Y
+\text{ avec }
+\boldsymbol Y = \begin{pmatrix}
+y_1\\ \vdots \\ y_n
+\end{pmatrix}.
+\]</span> En considérant par convention que <span class="math inline">\(\hat\mu_1=\dots=\hat{\mu}_p=\hat\mu_{n-f+1}=\dots=\hat\mu_n=0\)</span> (puisque l’on ne peut pas estimer ces quantités avec la moyenne mobile <span class="math inline">\(\boldsymbol \theta\)</span>), on a donc&nbsp;: <span class="math display">\[
+\boldsymbol H=\begin{pmatrix}
+&amp;&amp;\boldsymbol0_{p\times n} \\
+\theta_{-p} &amp; \cdots &amp; \theta_f  &amp; 0 &amp; \cdots\\
+0 &amp; \theta_{-p} &amp; \cdots &amp; \theta_f  &amp; 0 &amp; \cdots
+\\ &amp; \ddots &amp;&amp;&amp;\ddots\\
+0 &amp;\cdots&amp;0&amp; \theta_{-p} &amp; \cdots &amp; \theta_f \\
+&amp;&amp;\boldsymbol0_{f\times n}
+\end{pmatrix},
+\]</span> où <span class="math inline">\(\boldsymbol 0_{p\times n}\)</span> est la matrice de taille <span class="math inline">\(p\times n\)</span> ne contenant que de zéros. On a&nbsp;: <span class="math display">\[
+\begin{cases}
+\nu_1 =\tr (\boldsymbol H) = (n-p-f)\theta_0\\
+\nu_2 = \tr (\transp{\boldsymbol H}\boldsymbol H) = (n-p-f) \sum_{i=-p}^{+f} \theta_i^2
+\end{cases}.
+\]</span> Si les bruits <span class="math inline">\(\varepsilon_t\)</span> sont indépendants et de variance <span class="math inline">\(\sigma^2\)</span>, alors&nbsp;: <span class="math display">\[
+\V{y_t-\hat{\mu}_t}=\sigma^2 -
+2\underbrace{\cov{y_t}{\hat{\mu}_t}}_{=\theta_0\sigma^2} +
+\underbrace{\V{\hat{\mu}_t}}_{=\sigma^2\sum_{i=-p}^{+f} \theta_i^2}
+\]</span> et l’on a donc&nbsp;: <span class="math display">\[
+\E{\hat\sigma^2}=\sigma^2 + \frac{1}{(n-p-f)-2\nu_1+\nu_2}\sum_{t=p+1}^{n-f}(\E{\hat \mu_t}-\mu_t)^2.
+\]</span> L’estimateur <span class="math inline">\(\hat\sigma^2\)</span> est donc sans biais si <span class="math inline">\(\hat\mu_t\)</span> l’est aussi.</p>
+<p>La somme des carrés des résidus peut s’écrire sous forme quadratique&nbsp;: <span class="math display">\[
+\sum_{t=p+1}^{n-f}(y_t-\widehat{\mu}_t)^2 =
+\transp{\boldsymbol Y}\boldsymbol \Delta\boldsymbol Y
+\]</span> avec <span class="math inline">\({\boldsymbol Y} = \transp{\begin{pmatrix} y_1 &amp; \cdots &amp; y_n\end{pmatrix}}\)</span> et&nbsp;: <span class="math display">\[
+\boldsymbol \Delta = \transp{(\boldsymbol I - \boldsymbol H)}(\boldsymbol I - \boldsymbol H\boldsymbol),\,
+\boldsymbol I = \begin{pmatrix}
+&amp;\boldsymbol0_{p\times n} \\
+\boldsymbol 0_{(n-p-f)\times p} &amp;\boldsymbol I_{n-p-f} &amp; \boldsymbol 0_{(n-p-f)\times f}  \\
+&amp;\boldsymbol0_{f\times n}
+\end{pmatrix}
+\]</span> et <span class="math inline">\(\boldsymbol I_{n-p-f}\)</span> la matrice identité de taille <span class="math inline">\(n-p-f.\)</span> On a donc&nbsp;: <span class="math display">\[
+\hat\sigma^2=\frac{1}{\tr{\boldsymbol \Delta}}\transp{\boldsymbol Y}\boldsymbol \Delta\boldsymbol Y.
+\]</span> Si les bruits <span class="math inline">\(\varepsilon_t\)</span> sont normalement distribués indépendants et <span class="math inline">\(\hat\sigma^2\)</span>, la distribution est&nbsp;: <span class="math display">\[
+\transp{\boldsymbol Y}\boldsymbol \Delta\boldsymbol Y\overset{\mathcal L}{=}\sigma^2\sum_{j=1}^n\lambda_jZ_j,
+\]</span> où les <span class="math inline">\(\lambda_j\)</span> sont les valeurs propres de <span class="math inline">\(\boldsymbol\Delta\)</span> et les <span class="math inline">\(Z_j\)</span> sont des lois indépendantes du chi-deux à 1 degré de liberté. Il vient&nbsp;: <span class="math display">\[
+\begin{cases}
+\E{\hat\sigma^2}=\sigma^2\frac{1}{\tr{\boldsymbol \Delta}}\underbrace{\sum_{j=1}^n\lambda_j}_{=\tr{\boldsymbol \Delta}}=\sigma^2\\
+\V{\hat\sigma^2}=\sigma^4\frac{1}{\tr{(\boldsymbol \Delta)}^2}\sum_{j=1}^n2\lambda_j^2=2\sigma^4\frac{\tr(\boldsymbol \Delta^2)}{\tr(\boldsymbol \Delta)^2}
+\end{cases}.
+\]</span> En notant <span class="math inline">\(\nu = \tr(\boldsymbol \Delta)^2 / \tr(\boldsymbol \Delta^2)\)</span>, on a donc&nbsp;: <span class="math display">\[
+\begin{cases}
+\E{\nu\frac{\hat\sigma^2}{\sigma^2}}=\nu\\
+\V{\nu\frac{\hat\sigma^2}{\sigma^2}}=2\nu
+\end{cases}.
+\]</span> Les deux premiers moments de <span class="math inline">\(\nu \hat\sigma^2/\sigma^2\)</span> sont donc identiques à ceux d’un loi du chi-deux avec <span class="math inline">\(\nu\)</span> degrés de liberté. La loi <span class="math inline">\(\hat\sigma^2\)</span> étant difficile à calculer dans le cadre de la régression locale, on donc approximer sa distribution par une loi du chi-deux.</p>
+<p>Puisque <span class="math inline">\(\V{\mu_t}=\sigma^2\sum_{i=-p}^{+f} \theta_i^2\)</span>, on retrouve la formule de l’intervalle de confiance de l’<a href="#eq-ic" class="quarto-xref">équation&nbsp;<span>4.4</span></a>&nbsp;: <span class="math display">\[
+\frac{\hat\mu_t-\E{\mu_t}}{\sqrt{\V{\mu_t}}}=\frac{\hat\mu_t-\E{\mu_t}}{\sqrt{\sigma^2\sum_{i=-p}^{+f} \theta_i^2}}
+\text{ et }
+\frac{\hat\mu_t-\E{\mu_t}}{\sqrt{\hat\sigma^2}\sqrt{\sum_{i=-p}^{+f} \theta_i^2}}\sim\mathcal{T}(\nu).
+\]</span> Le numérateur de <span class="math inline">\(\nu\)</span> se calcule facilement puisque l’on a&nbsp;: <span class="math display">\[
+\tr(\boldsymbol \Delta) = (n-p-f)\left(1-2\theta_0+\sum_{i=-p}^{+f} \theta_i^2\right).
+\]</span> En revanche il est difficile d’avoir une formule simplifiée pour le dénominateur <span class="math inline">\(\tr(\boldsymbol \Delta^2).\)</span> Ce dernier peut être calculé en reconstruisant la matrice <span class="math inline">\(\boldsymbol \Delta\)</span> (produit de matrices de taille <span class="math inline">\(n\times n\)</span>) ou, comme proposé dans cet article, par le produit d’une matrice de taille <span class="math inline">\(1\times (p+f+1)\)</span> et d’une matrice de taille <span class="math inline">\((p+f+1)\times(p+f+1)\)</span> pour réduire le temps de calcul (annexe <a href="#sec-df-var" class="quarto-xref"><span>4.5.2</span></a>)&nbsp;: <span class="math display">\[
+\tr(\boldsymbol \Delta^2)=(n-(p+f))L_0^2+2\sum_{k=1}^{p+f}(n-(p+f)-k)L_k^2
+\]</span> où <span class="math inline">\(L_0,\dots,L_{p+f}\)</span> sont définis par&nbsp;: <span class="math display">\[
+\begin{pmatrix}w_{-p} &amp; \cdots &amp; w_f\end{pmatrix}
+\begin{pmatrix}
+w_{-p} &amp;0 &amp; 0 &amp;\cdots&amp; 0 \\
+w_{-p+1} &amp; w_{-p} &amp; 0 &amp; \ddots &amp; \vdots \\
+w_{-p+2} &amp; w_{-p+1}&amp; w_{-p} &amp; \ddots &amp; \vdots\\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp;\vdots \\
+w_f &amp; w_{f-1} &amp; w_{f-2}&amp;\ddots&amp;w_{-p}\\
+\end{pmatrix}=\begin{pmatrix} L_0 &amp; \cdots &amp; L_{p+f} \end{pmatrix}
+\]</span> avec <span class="math inline">\(\boldsymbol w = \begin{pmatrix}w_{-p},\dots,w_f\end{pmatrix}\)</span> la moyenne mobile telle que <span class="math inline">\(w_0=1-\theta_0\)</span> et <span class="math inline">\(w_i=-\theta_i\)</span> pour <span class="math inline">\(i\ne0\)</span>. C’est la méthode de calcul utilisée par défaut dans <code>rjd3filters</code>. Le calcul de <span class="math inline">\(\nu\)</span> peut aussi être approximé par <span class="math inline">\(\tr(\boldsymbol \Delta)\)</span> (<code>rjd3filters::confint_filter(exact_df = FALSE)</code>) ce qui permet de réduire davantage le temps de calcul<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.</p>
+<div class="proof remark">
+<p><span class="proof-title"><em>Remarque</em>. </span>Lorsque l’estimation de la tendance-cycle est basée sur des moyennes mobiles construites à l’aide d’un régresseur externe (<a href="#sec-constr-mm" class="quarto-xref"><span>Section 4.2.3</span></a>), les formules ici présentées ne sont pas applicables puisque des moyennes mobiles différentes sont utilisées pour l’estimation finale. Pour la construction d’intervalles de confiance, le plus simple est alors de reconstruire la matrice <span class="math inline">\(\boldsymbol H.\)</span> Pour les estimations récentes, lorsque des moyennes mobiles asymétriques sont utilisées, le calcul des intervalles de confiance nécessite la création d’une matrice <span class="math inline">\(\boldsymbol H\)</span> fictive (qui correspondrait à la matrice utilisée si toutes les estimations étaient faites avec une moyenne mobile asymétrique). Toutefois, lorsque plusieurs <em>outliers</em> consécutifs sont utilisés dans le passé, la construction d’une moyenne mobile asymétrique robuste n’est pas toujours possible&nbsp;: dans ce cas il est possible d’utiliser par défaut la moyenne mobile asymétrique linéaire de référence (ce qui a pour effet d’augmenter la variance estimée). C’est l’approche implémentée dans <code>rjd3filters</code>.</p>
+</div>
+<div class="proof remark">
+<p><span class="proof-title"><em>Remarque</em>. </span>La matrice <span class="math inline">\(\boldsymbol H\)</span> pourrait également être construite en complétant les <span class="math inline">\(p\)</span> premières et <span class="math inline">\(f\)</span> dernières lignes par les moyennes mobiles asymétriques utilisées. Toutefois, puisque les modèles sous-jacents aux moyennes mobiles asymétriques sont différents de ceux des moyennes mobiles symétriques (par exemple Musgrave modélise une tendance de degré 1 alors que Henderson modélise une tendance de degré 3), on peut supposer les variances différentes pour chaque moyenne mobile et estimer celles associées aux moyennes mobiles asymétriques en utilisant l’ensemble des données. C’est l’approche implémentée dans <code>rjd3filters</code>.</p>
+</div>
+</section>
+</section>
+<section id="sec-results" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="sec-results"><span class="header-section-number">4.3</span> Résultats</h2>
+<p>Les différentes méthodes sont tout d’abord comparées sur des séries simulées (choc de 10 %, tendance de degré 0, 1 ou 2, <a href="#sec-res-series-simul" class="quarto-xref"><span>Section 4.3.1</span></a>) puis sur des séries réelles (<a href="#sec-res-series-reelles" class="quarto-xref"><span>Section 4.3.2</span></a>).</p>
+<section id="sec-res-series-simul" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="sec-res-series-simul"><span class="header-section-number">4.3.1</span> Séries simulées</h3>
+<p>Afin d’illustrer les performances des différentes méthodes, les estimations sont comparées sur des séries simulées dans un cas extrême&nbsp;: lorsque l’irrégulier est nul. Trois tendances sont simulées, de degré 0, 1 ou 2, et un choc positif de 10 % est introduit en janvier 2022&nbsp;: soit un choc ponctuel (<em>additive outlier</em>, affectant l’irrégulier) soit un choc permanent (<em>level shift</em>, affectant la tendance-cycle). Les séries simulées commencent en janvier 2018, soit 4 ans avant le choc afin de limiter l’impact des points atypiques sur le calcul des intervalles de confiance (puisque l’irrégulier est nul, l’intervalle de confiance est également nul avant l’introduction du choc). La <a href="#fig-simul-y" class="quarto-xref">figure&nbsp;<span>4.1</span></a> montre les différentes séries simulées.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-simul-y" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.1&nbsp;- Séries simulées avec un choc ponctuel (<em>additive outlier</em>, AO) ou permanent (<em>level shift</em>, LS) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-simul-y-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p>Pour les chocs ponctuels (<em>additive outlier</em>, AO), lorsque la tendance est de degré 0, aucune des méthodes robustes n’est influencée par la présence de l’AO, tout comme la moyenne mobile de Henderson robuste (<a href="#fig-simul-ao-out-td0-est" class="quarto-xref">figure&nbsp;<span>4.2</span></a>). Les estimations avec les moyennes mobiles de Henderson et CLF sont biaisées avec des révisions importantes à la date du choc, légèrement plus petites pour la méthode CLF. L’analyse des intervalles de confiance valident clairement la présence du point atypique (<a href="#fig-simul-ao-out-td0-ci" class="quarto-xref">figure&nbsp;<span>4.3</span></a>).<br>
+Lorsque la tendance est de degré 1 les résultats sont similaires sauf pour la médiane mobile qui sous-estime la tendance pour les estimations intermédiaires (figures <a href="#fig-simul-ao-out-td1-est" class="quarto-xref"><span>4.4</span></a> et <a href="#fig-simul-ao-out-td1-ci" class="quarto-xref"><span>4.5</span></a>). Comme notamment indiqué par <span class="citation" data-cites="gather2006online">Gather, Schettlinger, et Fried (<a href="../references.html#ref-gather2006online" role="doc-biblioref">2006</a>)</span>, cela suggère d’utiliser des quantiles plus élevés que la médiane pour les estimations en temps réel avec les méthodes robustes. Un léger biais négatif s’observe pour la méthode de Henderson robuste&nbsp;: cela provient du fait que pour la création de ces moyennes mobiles la pente est fixé (ratio <span class="math inline">\(\delta_1/\sigma\)</span> fixé et <span class="math inline">\(\sigma\)</span> a priori fixé) à une valeur différente de la pente simulée. Cela suggère de préférer une paramétrisation locale de ce paramètre, comme proposé par <span class="citation" data-cites="jos2024AQLT">Quartier-la-Tente (<a href="../references.html#ref-jos2024AQLT" role="doc-biblioref">2024</a>)</span><a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.<br>
+Lorsque la tendance est de degré 2, les résultats avec les moyennes mobiles sont similaires (révisions importantes autour du choc pour Henderson et CLF et faibles pour Henderson robuste, figures <a href="#fig-simul-ao-out-td2-est" class="quarto-xref"><span>4.6</span></a> et <a href="#fig-simul-ao-out-td2-ci" class="quarto-xref"><span>4.7</span></a>). Pour les méthodes robustes, les estimations finales reproduisent bien le retournement de tendance malgré le fait qu’elles ne modélisent qu’une tendance de degré 1. Pour les estimations en temps réel, les tendances sont surestimées mais les révisions faibles&nbsp;: cela s’explique par le faible degré de courbure de la série simulée et pourraient être minimisées en modélisant des tendances de degré supérieur (voir annexe <a href="#sec-an-lms-lts" class="quarto-xref"><span>4.5.4</span></a> pour les résultats avec les méthodes LMS et LTS).</p>
+<div id="fig-simul-ao-out-td0-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ao-out-td0-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.2&nbsp;- Estimations en temps réel de la tendance-cycle pour une série simulée avec une tendance de degré 0 et un choc ponctuel (<em>additive outlier</em>, AO) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ao-out-td0-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-simul-ao-out-td0-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-simul-ao-out-td0-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ao-out-td0-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.3&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour une série simulée avec une tendance de degré 0 et un choc ponctuel (<em>additive outlier</em>, AO) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ao-out-td0-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-simul-ao-out-td0-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-simul-ao-out-td1-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ao-out-td1-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.4&nbsp;- Estimations en temps réel de la tendance-cycle pour une série simulée avec une tendance de degré 1 et un choc ponctuel (<em>additive outlier</em>, AO) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ao-out-td1-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-simul-ao-out-td1-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-simul-ao-out-td1-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ao-out-td1-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.5&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes pour une série simulée avec une tendance de degré 1 et un choc ponctuel (<em>additive outlier</em>, AO) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ao-out-td1-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-simul-ao-out-td1-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-simul-ao-out-td2-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ao-out-td2-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.6&nbsp;- Estimations en temps réel de la tendance-cycle pour une série simulée avec une tendance de degré 2 et un choc ponctuel (<em>additive outlier</em>, AO) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ao-out-td2-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-simul-ao-out-td2-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-simul-ao-out-td2-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ao-out-td2-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.7&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour une série simulée avec une tendance de degré 1 et un choc ponctuel (<em>additive outlier</em>, AO) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ao-out-td2-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-simul-ao-out-td2-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p>Pour les chocs permanents (<em>level shift</em>, LS), à l’exception de la régression profonde (DR) et de la régression médiane répétée (RM), les estimations finales de la tendance-cycle avec les méthodes robustes ne sont pas influencées par la présence du choc (figures <a href="#fig-simul-ls-out-td0-est" class="quarto-xref"><span>4.8</span></a>, <a href="#fig-simul-ls-out-td1-est" class="quarto-xref"><span>4.10</span></a> et <a href="#fig-simul-ls-out-td2-est" class="quarto-xref"><span>4.12</span></a>). En revanche, aucune des estimations intermédiaires ne prend en compte le changement de niveau à la bonne date&nbsp;: il faut attendre l’estimation de juin 2022 pour que le changement de niveau soit pris en compte à la bonne date pour la méthode LQD et juillet 2022 (soit l’estimation finale) pour les autres méthodes, même lorsque la tendance est de degré 0. Modéliser, dans ces méthodes, une tendance de degré 2 ne change pas ce résultat (annexe <a href="#sec-an-lms-lts" class="quarto-xref"><span>4.5.4</span></a>). Cela suggère encore d’utiliser des quantiles plus élevés que la médiane pour les estimations en temps réel.<br>
+Les moyennes mobiles linéaires classiques (Henderson et CLF) donnent des résultats similaires&nbsp;: la rupture en niveau est lissée, les points avant le choc sont donc surestimés et ceux après le choc sous-estimés. Il y a également d’importantes révisions pour la première estimation de janvier 2022 (date du choc). Il n’y a en revanche quasiment aucune révision pour les moyennes mobile de Henderson robuste à un choc permanent en janvier 2022.<br>
+Les intervalles de confiance des estimations de la moyenne mobile de Henderson sont comparés à la moyenne mobile de Henderson robuste à un choc permanent en janvier 2022 ou à un choc ponctuel en janvier et février 2022 (figures <a href="#fig-simul-ls-out-td0-ci" class="quarto-xref"><span>4.9</span></a>, <a href="#fig-simul-ls-out-td1-ci" class="quarto-xref"><span>4.11</span></a> et <a href="#fig-simul-ls-out-td2-ci" class="quarto-xref"><span>4.13</span></a>). Cela permet de simuler le cas où on ne sait pas, en temps réel, trancher sur la nature du choc&nbsp;: soit un choc permanent, soit un choc ponctuel (lorsque l’on se place en janvier 2022), soit deux chocs ponctuels (lorsque l’on se place en février 2022). En mars 2022, l’observation de trois chocs de même ampleur confirme qu’il s’agit d’un choc permanent et non ponctuel. Si l’on s’est trompé dans la nature du choc, jusqu’en février 2022 les révisions sont nulles pour les estimations avant le choc mais importantes pour celles après (janvier et février, puisque le choc est affecté à l’irrégulier et non pas à la tendance-cycle).</p>
+<div id="fig-simul-ls-out-td0-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ls-out-td0-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.8&nbsp;- Estimations en temps réel de la tendance-cycle pour une série simulée avec une tendance de degré 0 et un choc permanent (<em>level shift</em>, LS) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ls-out-td0-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-simul-ls-out-td0-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-simul-ls-out-td0-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ls-out-td0-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.9&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour une série simulée avec une tendance de degré 0 et un choc permanent (<em>level shift</em>, LS) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ls-out-td0-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-simul-ls-out-td0-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-simul-ls-out-td1-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ls-out-td1-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.10&nbsp;- Estimations en temps réel de la tendance-cycle pour une série simulée avec une tendance de degré 1 et un choc permanent (<em>level shift</em>, LS) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ls-out-td1-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-simul-ls-out-td1-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-simul-ls-out-td1-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ls-out-td1-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.11&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour une série simulée avec une tendance de degré 1 et un choc permanent (<em>level shift</em>, LS) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ls-out-td1-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-simul-ls-out-td1-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-simul-ls-out-td2-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ls-out-td2-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.12&nbsp;- Estimations en temps réel de la tendance-cycle pour une série simulée avec une tendance de degré 2 et un choc permanent (<em>level shift</em>, LS) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ls-out-td2-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-simul-ls-out-td2-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-simul-ls-out-td2-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-simul-ls-out-td2-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.13&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour une série simulée avec une tendance de degré 2 et un choc permanent (<em>level shift</em>, LS) en janvier 2022
+</figcaption>
+<div aria-describedby="fig-simul-ls-out-td2-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-simul-ls-out-td2-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-res-series-reelles" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="sec-res-series-reelles"><span class="header-section-number">4.3.2</span> Séries réelles</h3>
+<p>Puisque les résultats sont similaires à ceux sur les données simulées, les performances des différentes méthodes sur des séries réelles lors d’un choc ponctuel (AO) et d’un choc permanent (LS) sont données dans l’annexe <a href="#sec-autres-ex" class="quarto-xref"><span>4.5.3</span></a>&nbsp;: les moyennes mobiles classiques (Henderson/Musgrave et CLF) donnent de fortes révisions autour des chocs et ces révisions sont faibles avec les moyennes mobiles robustes. Contrairement aux données simulées, sur les données réelles, même lorsque la tendance semble être linéaire, les estimations intermédiaires issues des méthodes robustes peuvent être très erratiques, conduisant à des estimations parfois peu plausibles et des révisions importantes.</p>
+<p>Dans cette section, nous nous concentrerons sur l’illustration d’autres cas&nbsp;:</p>
+<ul>
+<li><p>Un choc ponctuel suivi d’un choc permanent (<a href="#sec-ex-ao-ls" class="quarto-xref"><span>Section 4.3.2.1</span></a>) à partir de l’analyse des immatriculations de voitures particulières neuves, corrigée des variations saisonnières (CVS) et des jours ouvrables (CJO), publiée par l’Insee (série <a href="https://www.insee.fr/fr/statistiques/serie/010756763"><code>010756763</code></a> téléchargée en octobre 2024). Le choc ponctuel s’observe en août 2018, suivi d’un choc permanent en septembre 2018.</p></li>
+<li><p>La crise financière de 2008 (<a href="#sec-ex-crise-financiere" class="quarto-xref"><span>Section 4.3.2.2</span></a>) à partir des ventes au détail et services de restauration aux États-Unis. Les données issues de la base FRED-MD <span class="citation" data-cites="fredmd">(<a href="../references.html#ref-fredmd" role="doc-biblioref">McCracken et Ng 2016</a>)</span> contenant des séries économiques sur les États-Unis<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> (série <code>RETAILx</code>). Pour cette série la crise financière de 2008 peut s’étudier comme deux chocs permanents consécutifs en octobre et novembre 2008.</p></li>
+<li><p>La crise du COVID-19 (<a href="#sec-ex-covid" class="quarto-xref"><span>Section 4.3.2.3</span></a>) à partir l’indice de la production industrielle (IPI) dans l’industrie manufacturière CVS-CJO, publié par l’Insee (série <a href="https://www.insee.fr/fr/statistiques/serie/010768307"><code>010768307</code></a> publiée le 04 octobre 2024). Deux autres exemples sont donnés dans l’annexe <a href="#sec-autres-ex" class="quarto-xref"><span>4.5.3</span></a>.</p></li>
+<li><p>Un point de retournement qui n’est pas associé à un choc (<a href="#sec-ex-retournement" class="quarto-xref"><span>Section 4.3.2.4</span></a>) à partir du niveau d’emploi aux États-Unis (série <code>CE16OV</code> de la base FRED-MD). Un autre exemple est donné dans l’annexe <a href="#sec-autres-ex" class="quarto-xref"><span>4.5.3</span></a>.</p></li>
+</ul>
+<p>Toutes ces séries sont représentées dans la <a href="#fig-ex-y" class="quarto-xref">figure&nbsp;<span>4.14</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ex-y" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ex-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.14&nbsp;- Séries des immatriculations de voitures particulières neuves en France, ventes au détail et services de restauration aux États-Unis, IPI dans l’industrie manufacturière en France et niveau d’emploi aux États-Unis
+</figcaption>
+<div aria-describedby="fig-ex-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ex-y-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<section id="sec-ex-ao-ls" class="level4" data-number="4.3.2.1">
+<h4 data-number="4.3.2.1" class="anchored" data-anchor-id="sec-ex-ao-ls"><span class="header-section-number">4.3.2.1</span> Choc ponctuel (AO) suivi d’un choc permanent (LS)</h4>
+<p>L’entrée en vigueur de la procédure d’essai mondiale harmonisée pour les véhicules légers (<em>Worldwide harmonized Light vehicles Test Procedures</em>, WLTP) en septembre 2018 a eu pour effet une forte hausse des immatriculations de voitures particulières neuves en août 2018 (choc ponctuel), les constructeurs ayant déstocké des modèles qui n’étaient plus autorisés à la vente à partir de cette date. À partir du mois de septembre, le niveau des immatriculations était plus faible par contre-coup de la hausse du mois d’août. Même si ce choc en niveau semble temporaire sur 5 mois (retour au niveau de juillet 2018 à partir de février), il est, par simplification, modélisé dans la construction des moyennes mobiles robustes comme un choc permanent.</p>
+<p>Les méthodes robustes ne sont pas affectées par le choc ponctuel mais ne reproduisent pas le changement de niveau à la bonne date (<a href="#fig-imat2018-est" class="quarto-xref">figure&nbsp;<span>4.15</span></a>). Les moyennes mobiles linéaires de Henderson et CLF ont des résultats similaires&nbsp;: fortes révisions en août 2018, un point de retournement détecté en avance (juillet 2018). Les moyennes mobiles robustes conduisent à peu de révisions autour des chocs. Lorsque l’on ne modélise que le choc ponctuel d’août (<a href="#fig-imat2018-ci" class="quarto-xref">figure&nbsp;<span>4.16</span></a>) un point de retournement est détecté en mars 2018, ce qui parait peu plausible.</p>
+<div id="fig-imat2018-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-imat2018-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.15&nbsp;- Estimations en temps réel de la tendance-cycle des immatriculations de voitures particulières neuves à partir d’août 2018
+</figcaption>
+<div aria-describedby="fig-imat2018-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-imat2018-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-imat2018-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-imat2018-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.16&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour les immatriculations de voitures particulières neuves à partir d’août 2018
+</figcaption>
+<div aria-describedby="fig-imat2018-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-imat2018-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-ex-crise-financiere" class="level4" data-number="4.3.2.2">
+<h4 data-number="4.3.2.2" class="anchored" data-anchor-id="sec-ex-crise-financiere"><span class="header-section-number">4.3.2.2</span> Crise financière de 2008 (deux chocs permanents consécutifs)</h4>
+<p>La crise financière de 2008 est illustrée à partir des ventes au détail et services de restauration. Sur cette série, on observe deux chocs consécutifs en niveau&nbsp;: en octobre et en novembre 2008. Seules deux méthodes robustes (médiane mobile et LMS) reproduisent ces chocs dans les estimations finales (<a href="#fig-retailx2008-est" class="quarto-xref">figure&nbsp;<span>4.17</span></a>)&nbsp;; certaines estimations intermédiaires sont éloignées des estimations finales (par exemple pour les médianes mobiles ou les points de décembre 2008 et janvier 2009 RM, LMS, LTS et LQD) ce qui conduit à des révisions importantes. Les moyennes mobiles linéaires donnent des estimations avec relativement peu de révisions (en particulier pour les moyennes mobiles robustes) mais le retournement conjoncturel est détecté trop tôt pour Henderson et CLF. En temps-réel, si l’on ne sait pas que ce sont des chocs permanents, les chocs peuvent être modélisés comme deux chocs ponctuels dont on attribuerait l’effet à la tendance-cycle. Cette modélisation conduit à des révisions importantes entre novembre et décembre 2008 (<a href="#fig-retailx2008-ci" class="quarto-xref">figure&nbsp;<span>4.18</span></a>). En mars 2009 (où l’on se doute que les chocs sont permanents et non ponctuels), l’utilisation de cette mauvaise spécifications donnent des estimations de la tendance-cycle proches des moyennes mobiles de Henderson avant octobre 2008 (avec un point de retournement qui est donc détecté trop tôt) et proches des moyennes mobiles robustes à deux chocs permanents après octobre 2008.</p>
+<div id="fig-retailx2008-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-retailx2008-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.17&nbsp;- Estimations en temps réel de la tendance-cycle des ventes au détail et services de restauration aux États-Unis à partir d’octobre 2008
+</figcaption>
+<div aria-describedby="fig-retailx2008-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-retailx2008-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-retailx2008-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-retailx2008-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.18&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour les ventes au détail et services de restauration aux États-Unis à partir d’octobre 2008
+</figcaption>
+<div aria-describedby="fig-retailx2008-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-retailx2008-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-ex-covid" class="level4" data-number="4.3.2.3">
+<h4 data-number="4.3.2.3" class="anchored" data-anchor-id="sec-ex-covid"><span class="header-section-number">4.3.2.3</span> COVID-19</h4>
+<p>Le COVID-19 est illustré sur l’indice de la production industrielle (IPI) CVS-CJO dans l’industrie manufacturière. Sur cette série, on observe deux chocs négatifs en mars et avril 2020, suivis d’une remontée progressive jusqu’en juillet 2020 vers un niveau légèrement inférieur à celui d’avant crise. Pour cette période, il est attendu de l’estimation finale de la tendance-cycle qu’elle permette de détecter les deux points de retournement en février 2020 (pic) et avril 2020 (creux). Les méthodes robustes peinent à reproduire ces retournements&nbsp;: les estimations finales sont robustes aux chocs, les révisions sont importantes et les retournement conjoncturels détectés semblent plutôt provenir des périodes post-chocs, ce qui conduit à détecter les points de retournement avec décalage (<a href="#fig-ipi-manuf-covid-est" class="quarto-xref">figure&nbsp;<span>4.19</span></a>) Les moyennes mobiles de Henderson et CLF conduisent, encore une fois, à détecter les points de retournement avec un décalage&nbsp;; les révisions sont importantes autour des chocs (mars, mai et juin) et plus faibles pour les autres mois.</p>
+<p>Pour la construction des moyennes mobiles robustes, même si l’on pourrait construire des régresseurs spécifiques, il a ici été choisi de rester sur la modélisation de chocs ponctuels et permanents ce qui permet de garder une approche simple et plus facilement généralisable à d’autres cas. La <a href="#fig-ipi-manuf-covid-ci" class="quarto-xref">figure&nbsp;<span>4.20</span></a> compare les estimations des moyennes mobiles robustes construites en modélisant deux chocs ponctuels consécutifs (dont on attribuerait l’effet à la tendance-cycle plutôt qu’à l’irrégulier), deux chocs permanents consécutifs ou un choc ponctuel suivi d’un choc permanent. La modélisation de deux chocs permanents consécutifs en mars et avril 2020 permet de détecter les points de retournement aux bonnes dates, la reprise de la production en mai est détecté dès la première estimation. Ce n’est pas le cas de la modélisation par deux chocs ponctuels consécutifs&nbsp;: il faut attendre les estimations de juin 2020 pour reproduire le creux d’avril (les estimations de mai et juin donne une baisse entre avril et mai) et le pic de février n’est pas conservé. La modélisation d’un choc ponctuel suivi d’un choc permanent permet bien de tracer le pic d’avril et le creux d’avril mais un pic indésirable est créé en juin 2020. C’est donc la modélisation par deux chocs permanents consécutifs qui donne ici les meilleurs résultats.</p>
+<p>D’autres exemples sont donnés dans l’annexe <a href="#sec-autres-ex-covid" class="quarto-xref"><span>4.5.3.3</span></a>.</p>
+<div id="fig-ipi-manuf-covid-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-manuf-covid-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.19&nbsp;- Estimations en temps réel de la tendance-cycle de l’IPI CVS-CJO dans l’industrie manufacturière à partir de mars 2020
+</figcaption>
+<div aria-describedby="fig-ipi-manuf-covid-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-ipi-manuf-covid-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ipi-manuf-covid-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-manuf-covid-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.20&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l’IPI dans l’industrie manufacturière à partir de mars 2020
+</figcaption>
+<div aria-describedby="fig-ipi-manuf-covid-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ipi-manuf-covid-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-ex-retournement" class="level4" data-number="4.3.2.4">
+<h4 data-number="4.3.2.4" class="anchored" data-anchor-id="sec-ex-retournement"><span class="header-section-number">4.3.2.4</span> Points de retournement</h4>
+<p>Un point de retournement, non associé à un choc, est illustré à partir du niveau d’emploi aux États-Unis autour de février 2001. Parmi les méthodes robustes, seule la régression profonde (DR) permet de détecter le point de retournement à la bonne date (à partir des estimations de juin 2021, <a href="#fig-ce16ov2001-est" class="quarto-xref">figure&nbsp;<span>4.21</span></a>)&nbsp;: les médianes mobiles (MED) et les médianes répétées (RM) ne détectent aucun point de retournement et les autres méthodes le détecte en janvier 2001 (à partir des estimations de juillet 2001, pour les estimations antérieures il est bien détecté en février). En revanche, modéliser une tendance locale de degré 2 permet de détecter le point de retournement à la bonne date (annexe <a href="#sec-an-lms-lts" class="quarto-xref"><span>4.5.4</span></a>) Les révisions sont plus faibles pour les estimations issues de moyennes mobiles et le fait de considérer à tort le mois de février comme un choc ponctuel n’a pas d’impact sur les estimations. Les estimations issues des moyennes mobiles robustes restent dans l’intervalle de confiance des estimations des moyennes mobiles de Henderson (<a href="#fig-ce16ov2001-ci" class="quarto-xref">figure&nbsp;<span>4.22</span></a>).</p>
+<div id="fig-ce16ov2001-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ce16ov2001-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.21&nbsp;- Estimations en temps réel de la tendance-cycle de l’emploi aux États-Unis à partir de février 2001
+</figcaption>
+<div aria-describedby="fig-ce16ov2001-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-ce16ov2001-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ce16ov2001-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ce16ov2001-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.22&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l’emploi aux États-Unis à partir de février 2001
+</figcaption>
+<div aria-describedby="fig-ce16ov2001-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ce16ov2001-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">4.4</span> Conclusion</h2>
+<p>En conclusion, cette étude montre comment, à partir des moyennes mobiles de Henderson et de Musgrave (répandues pour l’extraction de la tendance-cycle) il est possible d’ajouter des régresseurs externe pour construire des moyennes mobiles avec une meilleure décomposition tendance-cycle et irrégulier. Cela permet notamment de modéliser des chocs ponctuels (dont l’effet est généralement associé à l’irrégulier) et des chocs permanents (dont l’effet est associé à la tendance-cycle).</p>
+<p>Les moyennes mobiles linéaires classiques (Henderson, Musgrave, <em>cascade linear filter</em>…) vont naturellement conduire à des estimations biaisées&nbsp;: lors d’un choc permanent positif, la rupture va être lissée et la tendance-cycle va être surestimée avant le choc et sous-estimée après le choc&nbsp;; lors d’un choc ponctuel (dont l’effet est attribué à l’irrégulier), la tendance-cycle va être sur ou sous-estimée autour du choc (en fonction du signe du choc). Cela va également mener à de fortes révisions des estimations autour des chocs. Lorsqu’un choc est associé à un point de retournement de l’économie (par exemple lors de la crise financière de 2008 ou lors de la pandémie du COVID-19), les estimations de la tendance-cycle vont conduire à un décalage dans la détection des points de retournement (contraction détectée en avance et reprise en retard), ce qui peut perturber l’utilisateur lors de l’analyse de ces séries. À l’inverse, la construction de moyennes mobiles robustes permet de minimiser les révisions des chocs et de bien détecter les points de retournement. La comparaison entre moyennes mobiles robustes et classiques, à l’aide de la construction d’intervalles de confiance et d’une analyse économique, permet de valider la modélisation retenue. De plus, lorsque aucun choc n’est observé, l’utilisation à tort d’une moyenne mobile robuste donnera des résultats très proches des moyennes mobiles classiques et ne dégrade donc pas les résultats. En revanche, lors de l’estimation en temps réel, le choix d’une mauvaise spécification (par exemple choc ponctuel, affecté à l’irrégulier, plutôt que choc permanent, affecté à la tendance-cycle) peut entraîner des révisions importantes lorsque la bonne spécification est finalement retenue. Pour minimiser les révisions, en cas de doute sur la nature du choc il est donc préférable d’utiliser les moyennes mobiles linéaires classiques avant d’être sûr de la spécification à adopter.</p>
+<p>Afin d’éviter le biais lié à la présence de points atypiques, le logiciel de désaisonnalisation X-13ARIMA-SEATS (où sont notamment utilisées les moyennes mobiles de Henderson et de Musgrave) possède plusieurs modules de correction des chocs&nbsp;: la série est d’abord pré-corrigée et les chocs sont à la fin réintroduit dans la bonne composante (saisonnalité, tendance-cycle ou irrégulier). Toutefois, les rares instituts qui publient des estimations de la tendance-cycle (comme Statistique Canada et l’Australian Bureau of Statistics) ne semblent pas utiliser le logiciel X-13ARIMA-SEATS pour l’estimation de cette composante et appliquent plutôt une moyenne mobile sur le série désaisonnalisées. Cela peut par exemple s’expliquer lorsque ce ne sont pas les mêmes équipes qui effectuent la désaisonnalisation et l’estimation de la tendance-cycle ou pour simplifier le processus. Même si ces modules de corrections peuvent être appliqués sur les séries désaisonnalisées (par exemple via un modèle RegARIMA), l’estimation de l’ampleur du choc dépend du modèle utilisé et de la période d’estimation retenue, ce qui augmente le risque de mauvaise spécification et l’incertitude autour des estimations. À l’inverse, l’approche proposée dans cet article garde les mêmes spécifications que celle des moyennes mobiles de Henderson et de Musgrave et, par construction, le nombre de périodes révisées ne dépend que de la longueur de la moyenne mobile.</p>
+<p>Dans cette étude, les performances des moyennes mobiles linéaires sont également comparées à des méthodes non-linéaires robustes pour la plupart basées sur la médiane. Lorsque les tendances sont lisses et le bruit faible (par exemple sur des séries simulées), ces méthodes fournissent des bonnes alternatives aux méthodes classiques en étant robustes aux chocs ponctuels et en reproduisant, dans la tendance-cycle, les chocs permanents (mais pour qu’ils soient reproduits à la bonne date il faut attendre l’estimation finale). Toutefois, sur des séries réelles, les révisions sont plus importantes (avec parfois des estimations intermédiaires non cohérentes), ce qui suggère, comme notamment indiqué par <span class="citation" data-cites="gather2006online">Gather, Schettlinger, et Fried (<a href="../references.html#ref-gather2006online" role="doc-biblioref">2006</a>)</span>, d’utiliser des quantiles plus élevés que la médiane pour les estimations en temps réel. Par ailleurs, lorsque les points de retournement sont associés à des chocs (comme lors du COVID-19), en étant naturellement robustes aux chocs, ces méthodes ne vont pas permettre d’estimer une tendance-cycle qui reproduirait les points de retournement. <!-- Tout cela fait que, dans le cadre de l'analyse conjoncturelle et l'analyse des points de retournement, les méthodes robustes ici étudiées ne sont pas à privilégier pour l'extraction de la tendance-cycle. --></p>
+<p>En somme, pour l’analyse de la conjoncture et des points de retournement, l’utilisation de méthodes linéaires locales (telles que des moyennes mobiles) est à privilégier. Afin de mieux représenter la réalité économique et de minimiser les révisions, il est important d’avoir une analyse locale par série&nbsp;: en analysant les chocs et en les prenant en compte dans la construction des moyennes mobiles comme proposé dans cette étude&nbsp;; ou encore en fixant localement les hyperparamètres utilisés dans les moyennes mobiles asymétriques (lorsque l’on ne possède pas assez de point dans le futur pour utiliser une moyenne mobile symétrique), comme suggéré par <span class="citation" data-cites="jos2024AQLT">Quartier-la-Tente (<a href="../references.html#ref-jos2024AQLT" role="doc-biblioref">2024</a>)</span>, pour réduire les révisions en évitant des biais systématiques lorsque la tendance est localement linéaire (par exemple reprise d’activité progressive après un choc). Toutefois, pour la production de données, il peut être difficile d’avoir le temps d’analyser chaque série pour déterminer les chocs. Il peut alors être intéressant d’étudier des procédures automatiques pour identifier ces chocs, par exemple via des modèles <em>ad hoc</em> (du type modèles RegARIMA) ou bien en reproduisant le processus de lissage des moyennes mobiles par une modélisation plus générale (par exemple modélisation espace-état).</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="annexes" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="annexes"><span class="header-section-number">4.5</span> Annexes</h2>
+<section id="sec-annexes-ch3-mm" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="sec-annexes-ch3-mm"><span class="header-section-number">4.5.1</span> Moyennes mobiles utilisées</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mm-musgrave" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-mm-musgrave-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.23&nbsp;- Moyennes mobiles de Henderson et de Musgrave (<span class="math inline">\(R=3,5\)</span>)
+</figcaption>
+<div aria-describedby="fig-mm-musgrave-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-mm-musgrave-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-clf" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-clf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.24&nbsp;- Cascade linear filter (CLF) et <em>Asymmetric Linear Filter</em> (ALF) ou méthode « couper-et-normaliser&nbsp;»
+</figcaption>
+<div aria-describedby="fig-clf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-clf-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-robust-ao" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-robust-ao-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.25&nbsp;- Moyennes mobiles de Henderson et de Musgrave (<span class="math inline">\(R=3,5\)</span>) robustes à la présence d’un choc ponctuel (AO) à la dernière date
+</figcaption>
+<div aria-describedby="fig-robust-ao-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-robust-ao-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-robust-aols" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-robust-aols-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.26&nbsp;- Moyennes mobiles de Henderson et de Musgrave (<span class="math inline">\(R=3,5\)</span>) à un choc ponctuel (AO) suivi d’un choc permanent (LS) à la dernière date
+</figcaption>
+<div aria-describedby="fig-robust-aols-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-robust-aols-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-robust-ls" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-robust-ls-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.27&nbsp;- Moyennes mobiles de Henderson et de Musgrave d’un ou deux chocs permanents (LS) présents à la dernière date (ou deux dernières dates)
+</figcaption>
+<div aria-describedby="fig-robust-ls-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-robust-ls-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-df-var" class="level3" data-number="4.5.2">
+<h3 data-number="4.5.2" class="anchored" data-anchor-id="sec-df-var"><span class="header-section-number">4.5.2</span> Calcul du degré de liberté de la variance</h3>
+<p>Soient <span class="math inline">\(\boldsymbol\theta = \begin{pmatrix}\theta_{-p},\dots,\theta_f\end{pmatrix}\)</span> et <span class="math inline">\(\boldsymbol \Delta = \transp{(\boldsymbol I - \boldsymbol H)}(\boldsymbol I - \boldsymbol H\boldsymbol)\)</span> avec&nbsp;: <span class="math display">\[
+\boldsymbol H=\begin{pmatrix}
+&amp;&amp;\boldsymbol0_{p\times n} \\
+\theta_{-p} &amp; \cdots &amp; \theta_f  &amp; 0 &amp; \cdots\\
+0 &amp; \theta_{-p} &amp; \cdots &amp; \theta_f  &amp; 0 &amp; \cdots
+\\ &amp; \ddots &amp;&amp;&amp;\ddots\\
+0 &amp;\cdots&amp;0&amp; \theta_{-p} &amp; \cdots &amp; \theta_f \\
+&amp;&amp;\boldsymbol0_{f\times n}
+\end{pmatrix}\text{ et }
+\boldsymbol I = \begin{pmatrix}
+&amp;\boldsymbol0_{p\times n} \\
+\boldsymbol 0_{(n-p-f)\times p} &amp;\boldsymbol I_{n-p-f} &amp; \boldsymbol 0_{(n-p-f)\times f}  \\
+&amp;\boldsymbol0_{f\times n}
+\end{pmatrix},
+\]</span> où <span class="math inline">\(\boldsymbol 0_{p\times n}\)</span> est la matrice de taille <span class="math inline">\(p\times n\)</span> ne contenant que de zéros et <span class="math inline">\(\boldsymbol I_{n-p-f}\)</span> la matrice identité de taille <span class="math inline">\(n-p-f.\)</span></p>
+<p>L’objectif de cette annexe est de montrer que le calcul de <span class="math inline">\(\tr(\boldsymbol \Delta^2)\)</span> peut se simplifier par le produit d’une matrice de taille <span class="math inline">\(1\times (p+f+1)\)</span> et d’une matrice de taille <span class="math inline">\((p+f+1)\times(p+f+1)\)</span>, ce qui permet de réduire le temps de calcul du degré de liberté de la loi de Student utilisée pour la construction d’intervalles de confiance&nbsp;: <span class="math display">\[
+\tr({\boldsymbol \Delta}^2)=(n-(p+f))L_0^2+2\sum_{k=1}^{p+f}(n-(p+f)-k)L_k^2
+\]</span> où <span class="math inline">\(L_0,\dots,L_{p+f}\)</span> sont définis par&nbsp;: <span class="math display">\[
+\begin{pmatrix}w_{-p} &amp; \cdots &amp; w_f\end{pmatrix}
+\begin{pmatrix}
+w_{-p} &amp;0 &amp; 0 &amp;\cdots&amp; 0 \\
+w_{-p+1} &amp; w_{-p} &amp; 0 &amp; \ddots &amp; \vdots \\
+w_{-p+2} &amp; w_{-p+1}&amp; w_{-p} &amp; \ddots &amp; \vdots\\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp;\vdots \\
+w_f &amp; w_{f-1} &amp; w_{f-2}&amp;\ddots&amp;w_{-p}\\
+\end{pmatrix}=\begin{pmatrix} L_0 &amp; \cdots &amp; L_{p+f} \end{pmatrix}
+\]</span> avec <span class="math inline">\(\boldsymbol w = \begin{pmatrix}w_{-p},\dots,w_f\end{pmatrix}\)</span> la moyenne mobile telle que <span class="math inline">\(w_i=\1_{i=0}-\theta_i\)</span>.</p>
+<p>Soient <span class="math inline">\(i,j\in\{1,\dots,n\},\)</span> posons par convention <span class="math inline">\(w_i=0\)</span> pour <span class="math inline">\(i\notin[-p,f].\)</span> Notons <span class="math inline">\(\boldsymbol \Gamma=\boldsymbol I -\boldsymbol H.\)</span> On a <span class="math inline">\({\boldsymbol H}_{i,j}=\theta_{i-j}\1_{i\in[p+1,n-f]}\)</span> et donc <span class="math inline">\({\boldsymbol \Gamma}_{i,j}=w_{i-j}\1_{i\in[p+1,n-f]}\)</span> et ensuite&nbsp;: <span class="math display">\[\begin{align*}
+(\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})_{i,j} &amp;=\sum_{k=1}^n{\boldsymbol \Gamma}_{k,i}{\boldsymbol \Gamma}_{k,j}=\sum_{k=1}^nw_{k-i}w_{k-j} \1_{(i,j)\in[p+1,n-f]^2}\\
+&amp;=\sum_{k=-p}^fw_{k}w_{i-j+k}\1_{(i,j)\in[p+1,n-f]^2}.
+\end{align*}\]</span> Puis&nbsp;: <span class="math display">\[\begin{align*}
+((\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})^2)_{i,i} &amp;= \sum_{j=1}^n(\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})_{i,j}(\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})_{j,i}\\
+&amp;=\sum_{j=1}^n(\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})_{i,j}^2\text{ car la matrice }\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma}\text{ est symétrique} \\
+&amp;=\sum_{j=1}^n\left(\sum_{k=-p}^fw_{k}w_{i-j/k}\1_{(i,j)\in[p+1,n-f]^2}\right)^2\\
+&amp;=\sum_{j=p}^{n-f}\left(\sum_{k=-p}^fw_{k}w_{i-j+k}\right)^2\1_{i\in[p+1,n-f]}.
+\end{align*}\]</span> Donc <span class="math inline">\(((\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})^2)_{i,i} = 0\)</span> si <span class="math inline">\(i\notin [p+1,n-f].\)</span> Pour <span class="math inline">\(i\in[p+1,n-f],\)</span> comme pour tout <span class="math inline">\(k\in [-p,f]\)</span> on a <span class="math inline">\(w_{i-j+k} =0\)</span> si <span class="math inline">\(j&lt;i-(f+p)\)</span> ou si <span class="math inline">\(j&gt;i-(f+p)\)</span>, il vient&nbsp;: <span class="math display">\[\begin{align*}
+((\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})^2)_{i,i} &amp;= \sum_{j=\max(i-(f+p),1)}^{\min(i+(f+p),n)}\left(\sum_{k=-p}^fw_{k}w_{i-j+k}\right)^2 \\
+&amp;=\sum_{j=-(f+p)}^{f+p}\left(\sum_{k=-p}^fw_{k}w_{k-j}\right)^2\1_{j\in [1-i,n-i]} \\
+&amp;=\sum_{j=-(f+p)}^{f+p}\left(L_{|j|}\right)^2\1_{j\in [1-i,n-i]}\text{ par symétrie autour de }0.
+\end{align*}\]</span> En somme&nbsp;: <span class="math display">\[\begin{align*}
+\tr({\boldsymbol \Delta^2})&amp; = \sum_{i=p}^{n-f} \sum_{j=-(f+p)}^{f+p}\left(L_{|j|}\right)^2\1_{j\in [1-i,n-i]} \\
+&amp;= (n-(p+f))L_0^2+2(n-(p+f)-1)L_1^2 + 2(n-(p+f)-2)L_2^2 +\\
+&amp;\phantom{=}\dots+2(n-2(p+f))L_{p+f}^2 \\
+&amp;=(n-(p+f))L_0^2+2\sum_{k=1}^{p+f}(n-(p+f)-k)L_k^2.
+\end{align*}\]</span></p>
+<p>Cette optimisation computationnelle a ensuite été implémentée dans la fonction <code>rjd3filters::confint_filter()</code>.</p>
+</section>
+<section id="sec-autres-ex" class="level3" data-number="4.5.3">
+<h3 data-number="4.5.3" class="anchored" data-anchor-id="sec-autres-ex"><span class="header-section-number">4.5.3</span> Autres exemples sur des séries réelles</h3>
+<section id="sec-autres-ex-ao" class="level4" data-number="4.5.3.1">
+<h4 data-number="4.5.3.1" class="anchored" data-anchor-id="sec-autres-ex-ao"><span class="header-section-number">4.5.3.1</span> Chocs ponctuels (<em>additive outlier</em>, AO)</h4>
+<p>Les chocs ponctuels (<em>additive outlier</em>, AO) sont illustrés sur l’indice de la production industrielle (IPI) dans la construction de véhicules automobiles, corrigé des variations saisonnières (CVS) et des jours ouvrables (CJO), publié par l’Insee (série <a href="https://www.insee.fr/fr/statistiques/serie/010768140"><code>010768140</code></a> publiée le 04 octobre 2024). Trois chocs ponctuels s’observent clairement sur les mois d’août de 1998, 1999 et 2004 (<a href="#fig-ipi-voitures-out-y" class="quarto-xref">figure&nbsp;<span>4.28</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ipi-voitures-out-y" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-voitures-out-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.28&nbsp;- IPI CVS-CJO dans la construction de véhicules automobiles autour des points atypiques d’août 1998, 1999 et 2004
+</figcaption>
+<div aria-describedby="fig-ipi-voitures-out-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ipi-voitures-out-y-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-ipi-voitures98-out1-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-voitures98-out1-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.29&nbsp;- Estimations en temps réel de la tendance-cycle pour l’IPI dans la construction de véhicules automobiles à partir d’août 1998
+</figcaption>
+<div aria-describedby="fig-ipi-voitures98-out1-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-ipi-voitures98-out1-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ipi-voitures98-out1-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-voitures98-out1-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.30&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l’IPI dans la construction de véhicules automobiles à partir d’août 1998
+</figcaption>
+<div aria-describedby="fig-ipi-voitures98-out1-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ipi-voitures98-out1-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-ipi-voitures98-out2-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-voitures98-out2-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.31&nbsp;- Estimations en temps réel de la tendance-cycle pour l’IPI dans la construction de véhicules automobiles à partir d’août 1999
+</figcaption>
+<div aria-describedby="fig-ipi-voitures98-out2-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-ipi-voitures98-out2-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ipi-voitures98-out2-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-voitures98-out2-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.32&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l’IPI dans la construction de véhicules automobiles à partir d’août 1999
+</figcaption>
+<div aria-describedby="fig-ipi-voitures98-out2-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ipi-voitures98-out2-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-ipi-voitures2004-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-voitures2004-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.33&nbsp;- Estimations en temps réel de la tendance-cycle pour l’IPI dans la construction de véhicules automobiles à partir d’août 2004
+</figcaption>
+<div aria-describedby="fig-ipi-voitures2004-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-ipi-voitures2004-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ipi-voitures2004-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-voitures2004-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.34&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l’IPI dans la construction de véhicules automobiles à partir d’août 2004
+</figcaption>
+<div aria-describedby="fig-ipi-voitures2004-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ipi-voitures2004-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-autres-ex-ls" class="level4" data-number="4.5.3.2">
+<h4 data-number="4.5.3.2" class="anchored" data-anchor-id="sec-autres-ex-ls"><span class="header-section-number">4.5.3.2</span> Choc permanent (<em>level shift</em>, LS)</h4>
+<p>Les chocs permanents (<em>level shift</em>, LS) sont illustrés sur l’indice de la production industrielle (IPI) dans l’extraction de pétrole brut, corrigé des variations saisonnières (CVS) et des jours ouvrables (CJO), publié par l’Insee (série <a href="https://www.insee.fr/fr/statistiques/serie/010767578"><code>010767578</code></a>) le 04 octobre 2024 (données alors disponibles jusqu’en août 2024). Un choc permanent s’observe en juin 2010. Pour la construction des intervalles de confiance, la série est tronquée pour ne prendre que les valeurs après janvier 2001 avant d’éviter que le début de la série, dont le profil est assez différent de celui sur la fin de la série, n’augmente l’estimation de la variance de l’irrégulier.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ipi-petrole-brut10-y" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-petrole-brut10-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.35&nbsp;- IPI CVS-CJO dans l’extraction de pétrole brut autour du choc permanent de juin 2010
+</figcaption>
+<div aria-describedby="fig-ipi-petrole-brut10-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ipi-petrole-brut10-y-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-ipi-petrole-brut10-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-petrole-brut10-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.36&nbsp;- Estimations en temps réel de la tendance-cycle pour l’IPI dans l’extraction de pétrole brut à partir de juin 2010
+</figcaption>
+<div aria-describedby="fig-ipi-petrole-brut10-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-ipi-petrole-brut10-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ipi-petrole-brut10-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ipi-petrole-brut10-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.37&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l’IPI dans l’extraction de pétrole brut à partir de juin 2010
+</figcaption>
+<div aria-describedby="fig-ipi-petrole-brut10-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ipi-petrole-brut10-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-autres-ex-covid" class="level4" data-number="4.5.3.3">
+<h4 data-number="4.5.3.3" class="anchored" data-anchor-id="sec-autres-ex-covid"><span class="header-section-number">4.5.3.3</span> COVID-19</h4>
+<p>Deux autres exemples de l’estimation de la tendance-cycle pendant le COVID-19 sont données à partir du niveau d’emploi (série <code>CE16OV</code>) et des ventes au détail et services de restauration (série <code>RETAILx</code>) aux États-Unis, séries issues de la base FRED-MD. Les points de retournement officiels de la datation du National Bureau of Economic Research (NBER) sont en février et avril 2020<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. Pour l’emploi le retour à la normal est progressif à partir d’avril 2020 alors qu’il est rapide pour les ventes au détail et services de restauration (<a href="#fig-autresex-covid-y" class="quarto-xref">figure&nbsp;<span>4.38</span></a>).</p>
+<p>Comme pour l’IPI dans l’industrie manufacturière, les méthodes robustes effacent le choc (figures <a href="#fig-ce16ov-covid-est" class="quarto-xref"><span>4.39</span></a> et <a href="#fig-retailx-covid-est" class="quarto-xref"><span>4.41</span></a>), ce qui ne permet pas d’analyser les points de retournement. Les moyennes mobiles linéaires classiques (Henderson/Musgrave et CLF) détectent les points de retournement avec un décalage&nbsp;: pic en octobre 2019 et creux en avril 2020 pour les ventes au détail et services de restauration et juin 2020 pour l’emploi. Pour les moyennes mobiles robustes, le choc est modélisé par deux chocs permanents en mars et avril 2020. Les révisions sont faibles et cela permet de bien détecter les deux retournement conjoncturels contrairement aux moyennes mobiles robustes où l’on considère mars et avril 2020 comme des chocs ponctuels et associant le choc à la tendance-cycle (figures <a href="#fig-ce16ov-covid-ci" class="quarto-xref"><span>4.40</span></a> et <a href="#fig-retailx-covid-ci" class="quarto-xref"><span>4.42</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-autresex-covid-y" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-autresex-covid-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.38&nbsp;- Emploi et ventes au détail et services de restauration aux États-Unis autour de mars 2020
+</figcaption>
+<div aria-describedby="fig-autresex-covid-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-autresex-covid-y-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ce16ov-covid-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ce16ov-covid-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.39&nbsp;- Emploi aux États-Unis à partir de mars 2020
+</figcaption>
+<div aria-describedby="fig-ce16ov-covid-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ce16ov-covid-est-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ce16ov-covid-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ce16ov-covid-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.40&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l’emploi aux États-Unis à partir de mars 2020
+</figcaption>
+<div aria-describedby="fig-ce16ov-covid-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ce16ov-covid-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-retailx-covid-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-retailx-covid-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.41&nbsp;- Estimations en temps réel de la tendance-cycle des ventes au détail et services de restauration aux États-Unis à partir de mars 2020
+</figcaption>
+<div aria-describedby="fig-retailx-covid-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-retailx-covid-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-retailx-covid-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-retailx-covid-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.42&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour les ventes au détail et services de restauration aux États-Unis à partir de mars 2020
+</figcaption>
+<div aria-describedby="fig-retailx-covid-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-retailx-covid-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-autres-ex-retournement" class="level4" data-number="4.5.3.4">
+<h4 data-number="4.5.3.4" class="anchored" data-anchor-id="sec-autres-ex-retournement"><span class="header-section-number">4.5.3.4</span> Points de retournement</h4>
+<p>Un autre exemple de point de retournement est illustré à partir des ventes au détail et services de restauration aux États-Unis (série <code>RETAILx</code> de la base FRED-MD) autour du point de retournement de novembre 2007.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-retailx2007-y" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-retailx2007-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.43&nbsp;- Ventes au détail et services de restauration aux États-Unis autour du point de retournement de novembre 2007
+</figcaption>
+<div aria-describedby="fig-retailx2007-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-retailx2007-y-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-retailx2007-est" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-retailx2007-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.44&nbsp;- Estimations en temps réel de la tendance-cycle des ventes au détail et services de restauration aux États-Unis à partir de novembre 2007
+</figcaption>
+<div aria-describedby="fig-retailx2007-est-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="img/ffig-retailx2007-est-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>&nbsp;: Henderson&nbsp;: Henderson (estimation finale) et Musgrave (estimations intermédiaires)&nbsp;; Henderson robuste&nbsp;: moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires)&nbsp;; CLF&nbsp;: <em>cascade linear filter</em> (estimation finale) et méthode «&nbsp;couper-et-normaliser&nbsp;» (estimations intermédiaires)&nbsp;; MED&nbsp;: Médiane mobile&nbsp;; RM&nbsp;: médiane répétée&nbsp;; LMS&nbsp;: moindres carrés médians&nbsp;; LTS&nbsp;: moindres carrés élagués&nbsp;; LQD&nbsp;: moindres quartiles différenciés&nbsp;; DR&nbsp;: Régression profonde.</p>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-retailx2007-ci" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-retailx2007-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.45&nbsp;- Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour les ventes au détail et services de restauration aux États-Unis à partir de novembre 2007
+</figcaption>
+<div aria-describedby="fig-retailx2007-ci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-retailx2007-ci-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<!-- ici clearpage plutôt que newpage car clearpage permet de prendre en compte les figures qui peuvent aller sur plusieurs pages -->
+</section>
+</section>
+<section id="sec-an-lms-lts" class="level3" data-number="4.5.4">
+<h3 data-number="4.5.4" class="anchored" data-anchor-id="sec-an-lms-lts"><span class="header-section-number">4.5.4</span> Moindres carrés médians (LMS) et moindres carrés élagués (LTS) avec une tendance de degré 2</h3>
+<p>Cette annexe présente les résultats des estimations de la réimplémentation des processus d’estimations locale des moindres carrés médians (LMS, <a href="#fig-lmsd2" class="quarto-xref">figure&nbsp;<span>4.46</span></a>) et moindres carrés élagués (LTS, <a href="#fig-ltsd2" class="quarto-xref">figure&nbsp;<span>4.47</span></a>) avec une tendance de degré 2.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-lmsd2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-lmsd2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.46&nbsp;- Estimations en temps réel de la tendance-cycle pour la méthode des moindres carrés médians (LMS) en modélisant une tendance locale de degré 2
+</figcaption>
+<div aria-describedby="fig-lmsd2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-lmsd2-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ltsd2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-ltsd2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.47&nbsp;- Estimations en temps réel de la tendance-cycle pour la méthode des moindres carrés élagués (LTS) en modélisant une tendance locale de degré 2
+</figcaption>
+<div aria-describedby="fig-ltsd2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/fig-ltsd2-1.png" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-abs_smoothing_1987" class="csl-entry" role="listitem">
+Australian Bureau of Statistics. 1987. <em>A Guide to Smoothing Time Series – Estimates of "Trend"</em>. Canberra, Australia: Australian Bureau of Statistics. <a href="https://www.abs.gov.au/AUSSTATS/abs@.nsf/productsbyCatalogue/C3AFF081DB2BC4B5CA2585A00012ACFA">https://www.abs.gov.au/AUSSTATS/abs@.nsf/productsbyCatalogue/C3AFF081DB2BC4B5CA2585A00012ACFA</a>.
+</div>
+<div id="ref-lqd" class="csl-entry" role="listitem">
+Christophe Croux, Peter J. Rousseeuw, et Ola Hössjer. 1994. <span>«&nbsp;Generalized S-Estimators&nbsp;»</span>. <em>Journal of the American Statistical Association</em> 89 (428): 1271‑81. <a href="https://doi.org/10.1080/01621459.1994.10476867">https://doi.org/10.1080/01621459.1994.10476867</a>.
+</div>
+<div id="ref-cleveland90" class="csl-entry" role="listitem">
+Cleveland, Robert B., William S. Cleveland, Jean E. McRae, et Irma Terpenning. 1990. <span>«&nbsp;STL: A Seasonal-Trend Decomposition Procedure Based on Loess (with Discussion)&nbsp;»</span>. <em>Journal of Official Statistics</em> 6: 3‑73. <a href="https://www.scb.se/contentassets/ca21efb41fee47d293bbee5bf7be7fb3/stl-a-seasonal-trend-decomposition-procedure-based-on-loess.pdf">https://www.scb.se/contentassets/ca21efb41fee47d293bbee5bf7be7fb3/stl-a-seasonal-trend-decomposition-procedure-based-on-loess.pdf</a>.
+</div>
+<div id="ref-loess" class="csl-entry" role="listitem">
+Cleveland, William S. 1979. <span>«&nbsp;Robust Locally Weighted Regression and Smoothing Scatterplots&nbsp;»</span>. <em>Journal of the American Statistical Association</em> 74 (368): 829‑36. <a href="https://doi.org/10.2307/2286407">https://doi.org/10.2307/2286407</a>.
+</div>
+<div id="ref-dagum1996new" class="csl-entry" role="listitem">
+Dagum, Estela Bee. 1996. <span>«&nbsp;A new method to reduce unwanted ripples and revisions in trend-cycle estimates from X-11-ARIMA&nbsp;»</span>. <em>Survey Methodology</em> 22: 77‑84. <a href="https://www150.statcan.gc.ca/n1/en/pub/12-001-x/1996001/article/14383-eng.pdf?st=UY9RsNkK">https://www150.statcan.gc.ca/n1/en/pub/12-001-x/1996001/article/14383-eng.pdf?st=UY9RsNkK</a>.
+</div>
+<div id="ref-clf" class="csl-entry" role="listitem">
+Dagum, Estela Bee, et Alessandra Luati. 2009. <span>«&nbsp;<span>A Cascade Linear Filter to Reduce Revisions and False Turning Points for Real Time Trend-Cycle Estimation</span>&nbsp;»</span>. <em>Econometric Reviews</em> 28 (1-3): 40‑59. <a href="https://doi.org/10.1080/07474930802387837">https://doi.org/10.1080/07474930802387837</a>.
+</div>
+<div id="ref-ferrara2009FR" class="csl-entry" role="listitem">
+Ferrara, Laurent. 2009. <span>«&nbsp;Caract<span>é</span>risation et datation des cycles <span>é</span>conomiques en zone euro&nbsp;»</span>. <em>Revue <span>é</span>conomique</em> 60 (3): 703‑12. <a href="https://doi.org/10.3917/reco.603.0703">https://doi.org/10.3917/reco.603.0703</a>.
+</div>
+<div id="ref-robfilter" class="csl-entry" role="listitem">
+Fried, Roland, Karen Schettlinger, et Matthias Borowski. 2024. <em>robfilter: Robust Time Series Filters</em>. <a href="https://doi.org/10.32614/CRAN.package.robfilter">https://doi.org/10.32614/CRAN.package.robfilter</a>.
+</div>
+<div id="ref-gather2006online" class="csl-entry" role="listitem">
+Gather, Ursula, Karen Schettlinger, et Roland Fried. 2006. <span>«&nbsp;Online signal extraction by robust linear regression&nbsp;»</span>. <em>Computational Statistics</em> 21 (1): 33‑51. <a href="https://doi.org/10.1007/s00180-006-0249-8">https://doi.org/10.1007/s00180-006-0249-8</a>.
+</div>
+<div id="ref-GrayThomson2002" class="csl-entry" role="listitem">
+Gray, Alistair G, et Peter J Thomson. 2002. <span>«&nbsp;<span>On a Family of Finite Moving-Average Trend Filters for the Ends of Series</span>&nbsp;»</span>. <em>Journal of Forecasting</em> 21 (2): 125‑49. <a href="https://doi.org/10.1002/for.817">https://doi.org/10.1002/for.817</a>.
+</div>
+<div id="ref-henderson1916note" class="csl-entry" role="listitem">
+Henderson, Robert. 1916. <span>«&nbsp;Note on graduation by adjusted average&nbsp;»</span>. <em>Transactions of the actuarial society of America</em> 17: 43‑48.
+</div>
+<div id="ref-JMS2018DL" class="csl-entry" role="listitem">
+Ladiray, Dominique, et Alain Quartier-la-Tente. 2018. <span>«&nbsp;Du bon usage des modèles Reg-ARIMA en désaisonnalisation&nbsp;»</span>. <em>XIII<span>è</span>mes Journ<span>é</span>es de M<span>é</span>thodologie Statistique de l’Insee</em>. <a href="https://journees-methodologie-statistique.insee.net/wp-content/uploads/2018/S05_1_ACTEv3_QUARTIERLATENTE_JMS2018.pdf">https://journees-methodologie-statistique.insee.net/wp-content/uploads/2018/S05_1_ACTEv3_QUARTIERLATENTE_JMS2018.pdf</a>.
+</div>
+<div id="ref-ladiray2011seasonal" class="csl-entry" role="listitem">
+Ladiray, Dominique, et Benoît Quenneville. 2011. <em>Seasonal Adjustment with the X-11 Method</em>. Springer. <a href="https://doi.org/10.1007/978-1-4613-0175-2">https://doi.org/10.1007/978-1-4613-0175-2</a>.
+</div>
+<div id="ref-Loader1999" class="csl-entry" role="listitem">
+Loader, Clive. 1999. <em>Local regression and likelihood</em>. New York: Springer-Verlag. <a href="https://doi.org/10.1007/b98858">https://doi.org/10.1007/b98858</a>.
+</div>
+<div id="ref-matthewssapw4" class="csl-entry" role="listitem">
+Matthews, Steve. 2022. <span>«&nbsp;Trend-Cycle Estimation in Topsy-Turvy Times&nbsp;»</span>. <a href="https://community.amstat.org/governmentstatisticssection/conferences/pastconference210/seasonal-adjustment-practitioners-workshop-2022">https://community.amstat.org/governmentstatisticssection/conferences/pastconference210/seasonal-adjustment-practitioners-workshop-2022</a>.
+</div>
+<div id="ref-fredmd" class="csl-entry" role="listitem">
+McCracken, Michael W., et Serena Ng. 2016. <span>«&nbsp;FRED-MD: A Monthly Database for Macroeconomic Research&nbsp;»</span>. <em>Journal of Business &amp; Economic Statistics</em> 34 (4): 574‑89. <a href="https://doi.org/10.1080/07350015.2015.1086655">https://doi.org/10.1080/07350015.2015.1086655</a>.
+</div>
+<div id="ref-x13" class="csl-entry" role="listitem">
+Monsell, Brian C. 2007. <span>«&nbsp;The X-13A-S seasonal adjustment program&nbsp;»</span>. In <em>Proceedings of the Federal Committee On Statistical Methodology Research Conference, November 5–7, 2007</em>, 515. Arlington, Virginia. <a href="https://nces.ed.gov/FCSM/pdf/2007FCSM_Monsell-II-B.pdf">https://nces.ed.gov/FCSM/pdf/2007FCSM_Monsell-II-B.pdf</a>.
+</div>
+<div id="ref-musgrave1964set" class="csl-entry" role="listitem">
+Musgrave, John C. 1964. <span>«&nbsp;A set of end weights to end all end weights&nbsp;»</span>. <em>US Census Bureau [custodian]</em>. <a href="https://www.census.gov/library/working-papers/1964/adrm/musgrave-01.html">https://www.census.gov/library/working-papers/1964/adrm/musgrave-01.html</a>.
+</div>
+<div id="ref-rjd3filters" class="csl-entry" role="listitem">
+Palate, Jean, et Alain Quartier-la-Tente. 2024. <em>rjd3filters: Trend-Cycle Extraction with Linear Filters</em>. <a href="https://github.com/rjdverse/rjd3filters">https://github.com/rjdverse/rjd3filters</a>.
+</div>
+<div id="ref-proietti2008" class="csl-entry" role="listitem">
+Proietti, Tommaso, et Alessandra Luati. 2008. <span>«&nbsp;Real time estimation in local polynomial regression, with application to trend-cycle analysis&nbsp;»</span>. <em>Ann. Appl. Stat.</em> 2 (4): 1523‑53. <a href="https://doi.org/10.1214/08-AOAS195">https://doi.org/10.1214/08-AOAS195</a>.
+</div>
+<div id="ref-jos2024AQLT" class="csl-entry" role="listitem">
+Quartier-la-Tente, Alain. 2024. <span>«&nbsp;Improving real-time trend estimates using local parametrisation of polynomial regression filters&nbsp;»</span>. <em>Journal of Official Statistics</em> 40 (4): 685‑715. <a href="https://doi.org/10.1177/0282423X241283207">https://doi.org/10.1177/0282423X241283207</a>.
+</div>
+<div id="ref-publishTC" class="csl-entry" role="listitem">
+———. 2025. <em>publishTC: Tools to Help to Publish the Trend-Cycle Component</em>.
+</div>
+<div id="ref-lms" class="csl-entry" role="listitem">
+Rousseeuw, Peter J. 1984. <span>«&nbsp;Least median of squares regression&nbsp;»</span>. <em>Journal of the American statistical association</em> 79 (388): 871‑80.
+</div>
+<div id="ref-lts" class="csl-entry" role="listitem">
+Rousseeuw, Peter J. 1985. <span>«&nbsp;Multivariate estimation with high breakdown point&nbsp;»</span>. <em>Mathematical Statistics and Applications B</em>. <a href="https://doi.org/10.2307/2288718">https://doi.org/10.2307/2288718</a>.
+</div>
+<div id="ref-DeepestRegression" class="csl-entry" role="listitem">
+Rousseeuw, Peter J., et Mia Hubert. 1999. <span>«&nbsp;Regression Depth&nbsp;»</span>. <em>Journal of the American Statistical Association</em> 94 (446): 388‑402. <a href="https://doi.org/10.1080/01621459.1999.10474129">https://doi.org/10.1080/01621459.1999.10474129</a>.
+</div>
+<div id="ref-rm" class="csl-entry" role="listitem">
+Siegel, Andrew F. 1982. <span>«&nbsp;Robust regression using repeated medians&nbsp;»</span>. <em>Biometrika</em> 69 (1): 242‑44. <a href="https://doi.org/10.2307/2335877">https://doi.org/10.2307/2335877</a>.
+</div>
+<div id="ref-abs2003" class="csl-entry" role="listitem">
+Trewin, Dennis. 2003. <span>«&nbsp;A guide to interpreting time series - Monitoring trends&nbsp;»</span>. <em>Australian Bureau of Statistics Information Paper</em>. <a href="https://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/1349.0Main+Features12003?OpenDocument">https://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/1349.0Main+Features12003?OpenDocument</a>.
+</div>
+<div id="ref-MASS" class="csl-entry" role="listitem">
+Venables, W. N., et B. D. Ripley. 2002. <em>Modern Applied Statistics with S</em>. Fourth. New York: Springer. <a href="https://www.stats.ox.ac.uk/pub/MASS4/">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-Zellner1991" class="csl-entry" role="listitem">
+Zellner, Arnold, Chansik Hong, et Chung-ki Min. 1991. <span>«&nbsp;Forecasting turning points in international output growth rates using Bayesian exponentially weighted autoregression, time-varying parameter, and pooling techniques&nbsp;»</span>. <em>Journal of Econometrics</em> 49 (1): 275‑304. <a href="https://doi.org/10.1016/0304-4076(91)90016-7">https://doi.org/10.1016/0304-4076(91)90016-7</a>.
+</div>
+</div>
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p> Dans cet article, on ne cherche donc pas à estimer séparément la tendance et le cycle, associée à des méthodes de filtrage de type Hodrick-Prescott ou Baxter-King, qui sont plutôt utilisées pour analyser les points de retournement dans le cycle de croissance (voir <span class="citation" data-cites="ferrara2009FR">Ferrara (<a href="../references.html#ref-ferrara2009FR" role="doc-biblioref">2009</a>)</span> pour une description des différents cycles économiques).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p> Cela revient à supposer que le biais d’approximation de la tendance-cycle par un polynôme local est nul.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p> Dans l’utilisation de méthodes robustes, il est courant de localement modéliser une tendance de degré 1. Par exemple, dans la méthode de lissage Loess, <span class="citation" data-cites="loess">W. S. Cleveland (<a href="../references.html#ref-loess" role="doc-biblioref">1979</a>)</span> recommande d’utiliser une tendance de degré 1 qui permet d’avoir un «&nbsp;bon compromis entre facilité de calcul et besoin de flexibilité&nbsp;». Idem, dans la méthode de désaisonnalisation STL (<em>Seasonal-Trend decomposition based on Loess</em>), <span class="citation" data-cites="cleveland90">R. B. Cleveland et al. (<a href="../references.html#ref-cleveland90" role="doc-biblioref">1990</a>)</span> indiquent&nbsp;: «&nbsp;Il est raisonnable de prendre <span class="math inline">\(d=1\)</span> si le modèle sous-jacent des données présente une légère courbure. Mais si la courbure est importante, par exemple avec des pics et des creux, il est préférable d’opter pour <span class="math inline">\(d=2\)</span>.&nbsp;»<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p> Nous n’avons pas trouvé d’autres fonctions permettant d’utiliser les autres méthodes, même si elles pourraient être réimplémentées facilement.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p> Voir par exemple <a href="https://www.statcan.gc.ca/fr/quo/bdd/tendance-cycle" class="uri">https://www.statcan.gc.ca/fr/quo/bdd/tendance-cycle</a>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p> Sur une série mensuelle de 19 ans (<span class="math inline">\(n=228\)</span>), en utilisant la moyenne mobile de Henderson de 13 termes (<span class="math inline">\(p=f=6\)</span>), le temps de calcul <span class="math inline">\(\nu\)</span> est d’en moyenne 0,11 seconde (sur 1 000 évaluations). Il est divisé d’environ 350 en utilisant la formule proposée dans cet article (environ 0,31 milliseconde) et d’environ 5 800 en utilisant l’approximation <span class="math inline">\(\nu\simeq \tr(\boldsymbol \Delta)\)</span> (environ 0,02 milliseconde).<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p> C’est ce qui a été implémenté dans la fonction <code>publishTC::henderson_robust_smoothing(local_icr = TRUE)</code>.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p> Les séries étudiées correspondent à la base publiée en novembre 2022.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p> <a href="https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions" class="uri">https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions</a><a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copié");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copié");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/aqlt\.github\.io\/AQLThesis\.wp\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Chapitre 2/index-ch2.html" class="pagination-link" aria-label="Amélioration des estimations de tendance-cycle grâce à la paramétrisation locale des filtres de régression polynomiale[\footnote{Références de l'article~: Quartier-la-Tente, A. (2024). Improving Real-Time Trend Estimates Using Local Parametrization of Polynomial Regression Filters. \emph{Journal of Official Statistics}, 40(4), 685-715. \url{https://doi.org/10.1177/0282423X241283207}.}]{.content-visible when-format=&quot;pdf&quot;}">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Amélioration des estimations de tendance-cycle grâce à la paramétrisation locale des filtres de régression polynomiale</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Chapitre 4/ch4.html" class="pagination-link" aria-label="Et si l'on publiait la tendance-cycle&nbsp;?[\footnote{Références de l'article~: Quartier-la-Tente, A. (2025). Et si l'on publiait la tendance-cycle ? \emph{XVèmes Journées de Méthodologie Statistique de l'Insee}. \url{https://github.com/AQLT/publishTC.wp}}]{.content-visible when-format=&quot;pdf&quot;}">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Et si l’on publiait la tendance-cycle&nbsp;?</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Thèse Alain Quartier-la-Tente, 2025</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AQLT">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://aqlt.github.io/">
+      <i class="bi bi-globe" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/alainqlt/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

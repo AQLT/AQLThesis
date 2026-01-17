@@ -1,0 +1,388 @@
+### Moyennes mobiles utilisées {#sec-annexes-ch3-mm}
+
+```{r}
+#| include: false
+#| label: setup-ch3-an
+fig.ext <- ifelse(knitr::is_latex_output(), "pdf", "png")
+```
+
+```{r}
+#| label: fig-mm-musgrave
+#| fig.cap: "Moyennes mobiles de Henderson et de Musgrave ($R=3,5$)"
+#| fig-height: 2
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-mm-musgrave", fig.ext)
+)
+```
+
+```{r}
+#| label: fig-clf
+#| fig.cap: "Cascade linear filter (CLF) et *Asymmetric Linear Filter* (ALF) ou méthode «\ couper-et-normaliser »"
+
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-clf", fig.ext)
+)
+```
+
+
+```{r}
+#| label: fig-robust-ao
+#| fig.cap: "Moyennes mobiles de Henderson et de Musgrave ($R=3,5$) robustes à la présence d'un choc ponctuel (AO) à la dernière date"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-robust-ao", fig.ext)
+)
+```
+
+```{r}
+#| label: fig-robust-aols
+#| fig.cap: "Moyennes mobiles de Henderson et de Musgrave ($R=3,5$)  à un choc ponctuel (AO) suivi d'un choc permanent (LS) à la dernière date"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-robust-aols", fig.ext)
+)
+```
+
+```{r}
+#| label: fig-robust-ls
+#| fig.cap: "Moyennes mobiles de Henderson et de Musgrave d'un ou deux chocs permanents (LS) présents à la dernière date (ou deux dernières dates)"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-robust-ls", fig.ext)
+)
+```
+
+
+### Calcul du degré de liberté de la variance {#sec-df-var}
+
+Soient $\boldsymbol\theta = \begin{pmatrix}\theta_{-p},\dots,\theta_f\end{pmatrix}$ et $\boldsymbol \Delta = \transp{(\boldsymbol I - \boldsymbol H)}(\boldsymbol I - \boldsymbol H\boldsymbol)$ avec :
+$$
+\boldsymbol H=\begin{pmatrix}
+&&\boldsymbol0_{p\times n} \\
+\theta_{-p} & \cdots & \theta_f  & 0 & \cdots\\
+0 & \theta_{-p} & \cdots & \theta_f  & 0 & \cdots
+\\ & \ddots &&&\ddots\\
+0 &\cdots&0& \theta_{-p} & \cdots & \theta_f \\
+&&\boldsymbol0_{f\times n}
+\end{pmatrix}\text{ et }
+\boldsymbol I = \begin{pmatrix}
+&\boldsymbol0_{p\times n} \\
+\boldsymbol 0_{(n-p-f)\times p} &\boldsymbol I_{n-p-f} & \boldsymbol 0_{(n-p-f)\times f}  \\
+&\boldsymbol0_{f\times n}
+\end{pmatrix},
+$$
+où $\boldsymbol 0_{p\times n}$ est la matrice de taille $p\times n$ ne contenant que de zéros et $\boldsymbol I_{n-p-f}$ la matrice identité de taille $n-p-f.$
+
+L'objectif de cette annexe est de montrer que le calcul de $\tr(\boldsymbol \Delta^2)$ peut se simplifier par le produit d'une matrice de taille $1\times (p+f+1)$ et d'une matrice de taille $(p+f+1)\times(p+f+1)$, ce qui permet de réduire le temps de calcul du degré de liberté de la loi de Student utilisée pour la construction d'intervalles de confiance :
+$$
+\tr({\boldsymbol \Delta}^2)=(n-(p+f))L_0^2+2\sum_{k=1}^{p+f}(n-(p+f)-k)L_k^2
+$$
+où $L_0,\dots,L_{p+f}$ sont définis par :
+$$
+\begin{pmatrix}w_{-p} & \cdots & w_f\end{pmatrix}
+\begin{pmatrix}
+w_{-p} &0 & 0 &\cdots& 0 \\
+w_{-p+1} & w_{-p} & 0 & \ddots & \vdots \\
+w_{-p+2} & w_{-p+1}& w_{-p} & \ddots & \vdots\\
+\vdots & \vdots & \vdots & \ddots &\vdots \\
+w_f & w_{f-1} & w_{f-2}&\ddots&w_{-p}\\
+\end{pmatrix}=\begin{pmatrix} L_0 & \cdots & L_{p+f} \end{pmatrix}
+$$
+avec $\boldsymbol w = \begin{pmatrix}w_{-p},\dots,w_f\end{pmatrix}$ la moyenne mobile telle que $w_i=\1_{i=0}-\theta_i$.
+
+Soient $i,j\in\{1,\dots,n\},$ posons par convention $w_i=0$ pour $i\notin[-p,f].$
+Notons $\boldsymbol \Gamma=\boldsymbol I -\boldsymbol H.$
+On a ${\boldsymbol H}_{i,j}=\theta_{i-j}\1_{i\in[p+1,n-f]}$ et donc ${\boldsymbol \Gamma}_{i,j}=w_{i-j}\1_{i\in[p+1,n-f]}$ et ensuite :
+\begin{align*}
+(\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})_{i,j} &=\sum_{k=1}^n{\boldsymbol \Gamma}_{k,i}{\boldsymbol \Gamma}_{k,j}=\sum_{k=1}^nw_{k-i}w_{k-j} \1_{(i,j)\in[p+1,n-f]^2}\\
+&=\sum_{k=-p}^fw_{k}w_{i-j+k}\1_{(i,j)\in[p+1,n-f]^2}.
+\end{align*}
+Puis :
+\begin{align*}
+((\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})^2)_{i,i} &= \sum_{j=1}^n(\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})_{i,j}(\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})_{j,i}\\
+&=\sum_{j=1}^n(\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})_{i,j}^2\text{ car la matrice }\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma}\text{ est symétrique} \\
+&=\sum_{j=1}^n\left(\sum_{k=-p}^fw_{k}w_{i-j/k}\1_{(i,j)\in[p+1,n-f]^2}\right)^2\\
+&=\sum_{j=p}^{n-f}\left(\sum_{k=-p}^fw_{k}w_{i-j+k}\right)^2\1_{i\in[p+1,n-f]}.
+\end{align*}
+Donc $((\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})^2)_{i,i} = 0$ si $i\notin [p+1,n-f].$
+Pour $i\in[p+1,n-f],$ comme pour tout $k\in [-p,f]$ on a $w_{i-j+k} =0$ si $j<i-(f+p)$ ou si $j>i-(f+p)$, il vient :
+\begin{align*}
+((\transp{{\boldsymbol \Gamma}}{\boldsymbol \Gamma})^2)_{i,i} &= \sum_{j=\max(i-(f+p),1)}^{\min(i+(f+p),n)}\left(\sum_{k=-p}^fw_{k}w_{i-j+k}\right)^2 \\
+&=\sum_{j=-(f+p)}^{f+p}\left(\sum_{k=-p}^fw_{k}w_{k-j}\right)^2\1_{j\in [1-i,n-i]} \\
+&=\sum_{j=-(f+p)}^{f+p}\left(L_{|j|}\right)^2\1_{j\in [1-i,n-i]}\text{ par symétrie autour de }0.
+\end{align*}
+En somme :
+\begin{align*}
+\tr({\boldsymbol \Delta^2})& = \sum_{i=p}^{n-f} \sum_{j=-(f+p)}^{f+p}\left(L_{|j|}\right)^2\1_{j\in [1-i,n-i]} \\
+&= (n-(p+f))L_0^2+2(n-(p+f)-1)L_1^2 + 2(n-(p+f)-2)L_2^2 +\\
+&\phantom{=}\dots+2(n-2(p+f))L_{p+f}^2 \\
+&=(n-(p+f))L_0^2+2\sum_{k=1}^{p+f}(n-(p+f)-k)L_k^2.
+\end{align*}
+
+Cette optimisation computationnelle a ensuite été implémentée dans la fonction `rjd3filters::confint_filter()`.
+
+### Autres exemples sur des séries réelles {#sec-autres-ex}
+
+#### Chocs ponctuels (*additive outlier*, AO) {#sec-autres-ex-ao}
+
+Les chocs ponctuels (*additive outlier*, AO) sont illustrés sur l'indice de la production industrielle (IPI) dans la construction de véhicules automobiles, corrigé des variations saisonnières (CVS) et des jours ouvrables (CJO), publié par l'Insee (série [`010768140`](https://www.insee.fr/fr/statistiques/serie/010768140) publiée le 04 octobre 2024).
+Trois chocs ponctuels s'observent clairement sur les mois d'août de 1998, 1999 et 2004 (@fig-ipi-voitures-out-y).
+
+
+```{r}
+#| label: fig-ipi-voitures-out-y
+#| fig.cap: "IPI CVS-CJO dans la construction de véhicules automobiles autour des points atypiques d'août 1998, 1999 et 2004"
+#| fig-height: 2
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-ipi-voitures-out-y", fig.ext)
+)
+```
+
+::: {#fig-ipi-voitures98-out1-est}
+
+```{r}
+#| label: ffig-ipi-voitures98-out1-est
+#| fig-height: 5
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "ffig-ipi-voitures98-out1-est", fig.ext)
+)
+```
+\scriptsize\raggedright
+
+**Note** : Henderson : Henderson (estimation finale) et Musgrave (estimations intermédiaires) ; Henderson robuste : moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires) ; CLF : *cascade linear filter* (estimation finale) et méthode « couper-et-normaliser » (estimations intermédiaires) ; MED : Médiane mobile ; RM : médiane répétée ; LMS : moindres carrés médians ; LTS : moindres carrés élagués ; LQD : moindres quartiles différenciés ; DR : Régression profonde.
+
+Estimations en temps réel de la tendance-cycle pour l'IPI dans la construction de véhicules automobiles à partir d'août 1998
+:::
+
+```{r}
+#| label: fig-ipi-voitures98-out1-ci
+#| fig.cap: "Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l'IPI dans la construction de véhicules automobiles à partir d'août 1998"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-ipi-voitures98-out1-ci", fig.ext)
+)
+```
+
+::: {#fig-ipi-voitures98-out2-est}
+
+```{r}
+#| label: ffig-ipi-voitures98-out2-est
+#| fig-height: 5
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "ffig-ipi-voitures98-out2-est", fig.ext)
+)
+```
+\scriptsize\raggedright
+
+**Note** : Henderson : Henderson (estimation finale) et Musgrave (estimations intermédiaires) ; Henderson robuste : moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires) ; CLF : *cascade linear filter* (estimation finale) et méthode « couper-et-normaliser » (estimations intermédiaires) ; MED : Médiane mobile ; RM : médiane répétée ; LMS : moindres carrés médians ; LTS : moindres carrés élagués ; LQD : moindres quartiles différenciés ; DR : Régression profonde.
+
+Estimations en temps réel de la tendance-cycle pour l'IPI dans la construction de véhicules automobiles à partir d'août 1999
+:::
+
+```{r}
+#| label: fig-ipi-voitures98-out2-ci
+#| fig.cap: "Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l'IPI dans la construction de véhicules automobiles à partir d'août 1999"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-ipi-voitures98-out2-ci", fig.ext)
+)
+```
+
+
+::: {#fig-ipi-voitures2004-est}
+
+```{r}
+#| label: ffig-ipi-voitures2004-est
+#| fig-height: 5
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "ffig-ipi-voitures2004-est", fig.ext)
+)
+```
+\scriptsize\raggedright
+
+**Note** : Henderson : Henderson (estimation finale) et Musgrave (estimations intermédiaires) ; Henderson robuste : moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires) ; CLF : *cascade linear filter* (estimation finale) et méthode « couper-et-normaliser » (estimations intermédiaires) ; MED : Médiane mobile ; RM : médiane répétée ; LMS : moindres carrés médians ; LTS : moindres carrés élagués ; LQD : moindres quartiles différenciés ; DR : Régression profonde.
+
+Estimations en temps réel de la tendance-cycle pour l'IPI dans la construction de véhicules automobiles à partir d'août 2004
+:::
+
+```{r}
+#| label: fig-ipi-voitures2004-ci
+#| fig.cap: "Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l'IPI dans la construction de véhicules automobiles à partir d'août 2004"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-ipi-voitures2004-ci", fig.ext)
+)
+```
+
+#### Choc permanent (*level shift*, LS) {#sec-autres-ex-ls}
+
+Les chocs permanents (*level shift*, LS) sont illustrés sur l'indice de la production industrielle (IPI) dans l'extraction de pétrole brut, corrigé des variations saisonnières (CVS) et des jours ouvrables (CJO), publié par l'Insee (série [`010767578`](https://www.insee.fr/fr/statistiques/serie/010767578)) le 04 octobre 2024 (données alors disponibles jusqu'en août 2024).
+Un choc permanent s'observe en juin 2010.
+Pour la construction des intervalles de confiance, la série est tronquée pour ne prendre que les valeurs après janvier 2001 avant d'éviter que le début de la série, dont le profil est assez différent de celui sur la fin de la série, n'augmente l'estimation de la variance de l'irrégulier.
+
+
+
+```{r}
+#| label: fig-ipi-petrole-brut10-y
+#| fig.cap: "IPI CVS-CJO dans l'extraction de pétrole brut autour du choc permanent de juin 2010"
+#| fig-height: 2
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-ipi-petrole-brut10-y", fig.ext)
+)
+```
+
+::: {#fig-ipi-petrole-brut10-est}
+
+```{r}
+#| label: ffig-ipi-petrole-brut10-est
+#| fig-height: 5
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "ffig-ipi-petrole-brut10-est", fig.ext)
+)
+```
+\scriptsize\raggedright
+
+**Note** : Henderson : Henderson (estimation finale) et Musgrave (estimations intermédiaires) ; Henderson robuste : moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires) ; CLF : *cascade linear filter* (estimation finale) et méthode « couper-et-normaliser » (estimations intermédiaires) ; MED : Médiane mobile ; RM : médiane répétée ; LMS : moindres carrés médians ; LTS : moindres carrés élagués ; LQD : moindres quartiles différenciés ; DR : Régression profonde.
+
+Estimations en temps réel de la tendance-cycle pour l'IPI dans l'extraction de pétrole brut à partir de juin 2010
+:::
+
+```{r}
+#| label: fig-ipi-petrole-brut10-ci
+#| fig.cap: "Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l'IPI dans l'extraction de pétrole brut à partir de juin 2010"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-ipi-petrole-brut10-ci", fig.ext)
+)
+```
+
+
+#### COVID-19 {#sec-autres-ex-covid}
+
+Deux autres exemples de l'estimation de la tendance-cycle pendant le COVID-19 sont données à partir du niveau d'emploi (série `CE16OV`) et des ventes au détail et services de restauration (série `RETAILx`) aux États-Unis, séries issues de la base FRED-MD.
+Les points de retournement officiels de la datation du National Bureau of Economic Research (NBER) sont en février et avril 2020^[
+<https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions>
+].
+Pour l'emploi le retour à la normal est progressif à partir d'avril 2020 alors qu'il est rapide pour les ventes au détail et services de restauration (@fig-autresex-covid-y).
+
+Comme pour l'IPI dans l'industrie manufacturière, les méthodes robustes effacent le choc (figures [-@fig-ce16ov-covid-est] et [-@fig-retailx-covid-est]), ce qui ne permet pas d'analyser les points de retournement.
+Les moyennes mobiles linéaires classiques (Henderson/Musgrave et CLF) détectent les points de retournement avec un décalage : pic en octobre 2019 et creux en avril 2020 pour les ventes au détail et services de restauration et juin 2020 pour l'emploi.
+Pour les moyennes mobiles robustes, le choc est modélisé par deux chocs permanents en mars et avril 2020.
+Les révisions sont faibles et cela permet de bien détecter les deux retournement conjoncturels contrairement aux moyennes mobiles robustes où l'on considère mars et avril 2020 comme des chocs ponctuels et associant le choc à la tendance-cycle (figures [-@fig-ce16ov-covid-ci] et [-@fig-retailx-covid-ci]).
+
+
+```{r}
+#| label: fig-autresex-covid-y
+#| fig.cap: "Emploi et ventes au détail et services de restauration aux États-Unis autour de mars 2020"
+#| fig-height: 2
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-autresex-covid-y", fig.ext)
+)
+```
+
+
+```{r}
+#| label: fig-ce16ov-covid-est
+#| fig.cap: "Emploi aux États-Unis à partir de mars 2020"
+#| fig-height: 5
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-ce16ov-covid-est", fig.ext)
+)
+```
+
+
+```{r}
+#| label: fig-ce16ov-covid-ci
+#| fig.cap: "Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour l'emploi aux États-Unis à partir de mars 2020"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-ce16ov-covid-ci", fig.ext)
+)
+```
+
+
+
+
+
+::: {#fig-retailx-covid-est}
+
+```{r}
+#| label: ffig-retailx-covid-est
+#| fig-height: 5
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "ffig-retailx-covid-est", fig.ext)
+)
+```
+
+\scriptsize\raggedright
+
+**Note** : Henderson : Henderson (estimation finale) et Musgrave (estimations intermédiaires) ; Henderson robuste : moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires) ; CLF : *cascade linear filter* (estimation finale) et méthode « couper-et-normaliser » (estimations intermédiaires) ; MED : Médiane mobile ; RM : médiane répétée ; LMS : moindres carrés médians ; LTS : moindres carrés élagués ; LQD : moindres quartiles différenciés ; DR : Régression profonde.
+
+Estimations en temps réel de la tendance-cycle des ventes au détail et services de restauration aux États-Unis à partir de mars 2020
+:::
+
+```{r}
+#| label: fig-retailx-covid-ci
+#| fig.cap: "Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour les ventes au détail et services de restauration aux États-Unis à partir de mars 2020"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-retailx-covid-ci", fig.ext)
+)
+```
+
+
+
+#### Points de retournement {#sec-autres-ex-retournement}
+
+Un autre exemple de point de retournement est illustré à partir des ventes au détail et services de restauration aux États-Unis (série `RETAILx` de la base FRED-MD) autour du point de retournement de novembre 2007.
+
+```{r}
+#| label: fig-retailx2007-y
+#| fig.cap: "Ventes au détail et services de restauration aux États-Unis autour du point de retournement de novembre 2007"
+#| fig-height: 2
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-retailx2007-y", fig.ext)
+)
+```
+
+::: {#fig-retailx2007-est}
+
+```{r}
+#| label: ffig-retailx2007-est
+#| fig-height: 5
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "ffig-retailx2007-est", fig.ext)
+)
+```
+\scriptsize\raggedright
+
+**Note** : Henderson : Henderson (estimation finale) et Musgrave (estimations intermédiaires) ; Henderson robuste : moyennes mobiles robustes de Henderson (estimation finale) et de Musgrave (estimations intermédiaires) ; CLF : *cascade linear filter* (estimation finale) et méthode « couper-et-normaliser » (estimations intermédiaires) ; MED : Médiane mobile ; RM : médiane répétée ; LMS : moindres carrés médians ; LTS : moindres carrés élagués ; LQD : moindres quartiles différenciés ; DR : Régression profonde.
+
+Estimations en temps réel de la tendance-cycle des ventes au détail et services de restauration aux États-Unis à partir de novembre 2007
+:::
+
+```{r}
+#| label: fig-retailx2007-ci
+#| fig.cap: "Intervalles de confiance pour les filtres de Henderson et filtres de Henderson robustes robuste pour les ventes au détail et services de restauration aux États-Unis à partir de novembre 2007"
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-retailx2007-ci", fig.ext)
+)
+```
+
+
+<!-- ici clearpage plutôt que newpage car clearpage permet de prendre en compte les figures qui peuvent aller sur plusieurs pages -->
+\clearpage
+
+### Moindres carrés médians (LMS) et moindres carrés élagués (LTS) avec une tendance de degré 2 {#sec-an-lms-lts}
+
+Cette annexe présente les résultats des estimations de la réimplémentation des processus d'estimations locale des moindres carrés médians (LMS, @fig-lmsd2) et moindres carrés élagués (LTS, @fig-ltsd2) avec une tendance de degré 2.
+
+
+```{r}
+#| label: fig-lmsd2
+#| fig-cap: "Estimations en temps réel de la tendance-cycle pour la méthode des moindres carrés médians (LMS) en modélisant une tendance locale de degré 2"
+#| fig-height: 10
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-lmsd2", fig.ext)
+)
+```
+
+```{r}
+#| label: fig-ltsd2
+#| fig-cap: "Estimations en temps réel de la tendance-cycle pour la méthode des moindres carrés élagués (LTS) en modélisant une tendance locale de degré 2"
+#| fig-height: 10
+knitr::include_graphics(
+    sprintf("img/%s-1.%s", "fig-ltsd2", fig.ext)
+)
+```

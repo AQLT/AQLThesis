@@ -1,0 +1,308 @@
+## Quelques propriétés sur les moyennes mobiles {#sec-propMM}
+
+Cette section présente les définitions et les propriétés des moyennes mobiles utiles pour comprendre les méthodes présentées dans les prochaines sections. 
+Pour plus de détails sur les moyennes mobiles, voir par exemple @ch12HBSA.
+
+Soient deux entiers $p$ et $f$.
+Une *moyenne mobile* $M_{\boldsymbol\theta}$ est un opérateur linéaire défini par un ensemble de coefficients $\boldsymbol \theta=(\theta_{-p},\dots,\theta_{f})'$ qui transforme toute série temporelle $X_t$ en :
+$$
+M_{\boldsymbol\theta}(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}.
+$$
+On a les définitions suivantes :
+
+- La quantité $p+f+1$ est appelée *ordre de la moyenne mobile*.
+
+- Lorsque $p=f$ la moyenne mobile est dite *centrée*. 
+Si de plus on a $\forall k:\:\theta_{-k} = \theta_k$, la moyenne mobile $M_{\boldsymbol\theta}$ est dite *symétrique*. 
+Dans ce cas, la quantité $p=f$ est appelée *fenêtre* (*bandwidth*).
+
+
+### Fonctions de gain et de déphasage {#sec-gain-deph}
+
+Pour interpréter les notions de gain et de déphasage, il est utile d'illustrer les effets des moyennes mobiles sur les séries harmoniques $X_t=\e^{-i\omega t}$ avec $\omega\in[0,\pi]$.
+La moyenne mobile $M_{\boldsymbol\theta}$ transforme $X_t$ en :
+$$
+Y_t = M_{\boldsymbol\theta}X_t = \sum_{k=-p}^{+f} \theta_k \e^{-i \omega (t+k)}
+= \left(\sum_{k=-p}^{+f} \theta_k \e^{-i \omega k}\right)\cdot X_t.
+$$
+La fonction $\Gamma_{\boldsymbol\theta}(\omega)=\sum_{k=-p}^{+f} \theta_k e^{-i \omega k}$ est appelée *fonction de transfert* ou *fonction de réponse en fréquence* (*frequency response function*)^[
+La fonction de transfert peut être définie de manière équivalente par $\Gamma_{\boldsymbol\theta}(\omega)=\sum_{k=-p}^{+f} \theta_k e^{i \omega k}$ ou $\Gamma_{\boldsymbol\theta}(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}$.
+].
+Elle peut être réécrite en :
+$$
+\Gamma_{\boldsymbol\theta}(\omega) = \rho_{\boldsymbol\theta}(\omega)\e^{i\varphi_{\boldsymbol\theta}(\omega)},
+$$
+où $\rho_{\boldsymbol\theta}(\omega)=G_{\boldsymbol\theta}(\omega)=\lvert\Gamma_{\boldsymbol\theta}(\omega)\rvert$ est la fonction de *gain* ou *d'amplitude* et $\varphi_{\boldsymbol\theta}(\omega)$ est le *déphasage* (*phase shift* ou *time shift*)^[
+Cette fonction est parfois définie comme  $\phi_{\boldsymbol\theta}(\omega)=\frac{\varphi_{\boldsymbol\theta}(\omega)}{\omega}$ pour mesurer le déphasage en termes de période.
+]. 
+Pour tous les filtres symétriques on a $\varphi_{\boldsymbol\theta}(\omega)\equiv 0 \;(mod\;{\pi})$. 
+En effet, la contribution du couple de termes d'ordre $k>0$ s'écrit $\theta_k\e^{i\omega k}+\theta_k\e^{-i\omega k} = 2\theta_k\cos (\omega k),$ sa partie imaginaire est donc nulle.
+Le terme d'ordre $0$ étant $\theta_0,$ la partie imaginaire de la fonction $\Gamma_{\boldsymbol\theta}(\omega)$ est nulle pour tout $\omega\in\R$ et donc $\varphi_{\boldsymbol\theta}(\omega)\equiv 0 \;(mod\;{\pi}).$
+
+En somme, appliquer une moyenne mobile à une série harmonique (de la forme $X_t=\e^{-i\omega t}$) la modifie de deux façons :
+
+- en la multipliant par un coefficient égal à $\rho_{\boldsymbol\theta}\left(\omega\right)$ (gain) ;
+
+- en la « décalant » dans le temps de $\varphi_{\boldsymbol\theta}(\omega)/\omega$, ce qui a un impact sur la détection des points de retournement (déphasage)^[
+Lorsque $\varphi_{\boldsymbol\theta}(\omega)/\omega<0$ le déphasage est négatif : le point de retournement est détecté avec retard.
+].
+
+La décomposition de Fourier permet d'analyser toute série temporelle (stationnaire ou stationnaire autour d'une tendance) comme une somme de séries harmoniques et chaque composante (tendance, cycle, saisonnalité, irrégulier) est associée à un ensemble de fréquences.
+En effet, en notant $\omega = 2\pi/p$, la série harmonique de fréquence $\omega$ représente une série qui se répète toutes les $p$ périodes.
+Par exemple, pour une série mensuelle (12 observations par an), les mouvement saisonniers sont ceux qui se répètent chaque année : ils sont donc associés aux fréquences $2\pi/12$ (périodicité annuelle), $2\pi/12\times 2=2\pi/6,\dots,2\pi/12\times 5.$
+Nous considérons que la tendance-cycle est associée aux fréquences dans l'intervalle $[0, 2\pi/12[$, c'est-à-dire aux mouvements se répétant au moins tous les 12 mois^[
+Même si des fréquences différentes sont parfois retenues (par exemple $[0, 2\pi/36]$ pour ne considérer que les cycles d'au moins 36 mois), cela n'a pas d'impact sur les différentes simulations.
+].
+Les autres fréquences, $[2\pi/12, \pi],$ sont ici associées à l'irrégulier (oscillations indésirables).
+
+La @fig-graphsmusgrave montre la fonction de gain et de déphasage pour le filtre asymétrique de Musgrave (voir @sec-lppasymf) souvent utilisé pour l'estimation en temps-réel de la tendance-cycle (c'est-à-dire lorsqu'aucun point dans le futur n'est connu).
+La fonction de gain est supérieure ou égale à 1 sur les fréquences associées à la tendance-cycle ($[0, 2\pi/12]$) : cela signifie que la tendance-cycle est bien conservée et que les cycles courts de 1 à 2 ans ($[2\pi/24, 2\pi/12]$) sont mêmes amplifiés.
+En revanche, les cycles de 8 à 12 mois ($[2\pi/12, 2\pi/8]$), considérés comme indésirables car associés à l'irrégulier, sont également amplifiés : cela peut engendrer la détection de faux points de retournement.
+Sur les autres fréquences, la fonction de gain est inférieure à 1 mais toujours positive : cela signifie que la série lissée par cette moyenne mobile contiendra toujours du bruit, même si celui-ci est atténué.
+L'analyse du déphasage montre que le déphasage est d'autant plus élevé que les cycles sont courts : cela signifie que sur les séries lissées par cette moyenne mobile, les points de retournement pourraient être détectés à la mauvaise date.
+
+```{r, include = FALSE, cache = FALSE}
+knitr::opts_chunk$set(fig.pos = "H")
+```
+
+```{r, echo=FALSE, out.width="100%"}
+#| label: fig-graphsmusgrave
+#| fig-cap: Coefficients, fonction de gain et de déphasage pour le filtre de Musgrave en temps réel avec $I/C=3,5$.
+img <- sprintf("img/filters_used/%s.%s", tolower("musgrave"), fig.ext)
+knitr::include_graphics(img)
+```
+
+
+### Propriétés souhaitables d'une moyenne mobile
+
+Pour décomposer une série temporelle en une composante saisonnière, une tendance-cycle et l'irrégulier, l'algorithme de décomposition X-11 (utilisé dans X-13ARIMA) utilise une succession de moyennes mobiles ayant toutes des contraintes spécifiques.
+
+Dans notre cas, on suppose que notre série initiale $y_t$ est désaisonnalisée et peut s'écrire comme la somme d'une tendance-cycle, $TC_t$, et d'une composante irrégulière, $I_t$ :
+$$
+y_t=TC_t+I_t.
+$$
+
+L'objectif va notamment être de construire des moyennes mobiles préservant au mieux la tendance-cycle ($M_{\boldsymbol\theta} (TC_t)\simeq TC_t$) et réduisant au maximum le bruit ($M_{\boldsymbol\theta} (I_t)\simeq 0$).
+
+#### Préservation de tendances
+
+Les tendances-cycles sont généralement modélisés par des tendances polynomiales locales (voir @sec-nonparamreg).
+Afin de conserver au mieux les tendances-cycles, on cherche à avoir des moyennes mobiles qui conservent les tendances polynomiales.
+Une moyenne mobile $M_{\boldsymbol\theta}$ conserve une fonction du temps $f(t)$ si $\forall t:\:M_{\boldsymbol\theta} f(t)=f(t)$.
+
+Nous avons les propriétés suivantes pour la moyenne mobile $M_{\boldsymbol\theta}$ :
+
+- Pour conserver les constantes $X_t=a$ il faut :
+$$
+\forall t:M_{\boldsymbol\theta}(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}=\sum_{k=-p}^{+f}\theta_ka=a\sum_{k=-p}^{+f}\theta_k=a.
+$$
+C'est-à-dire qu'il faut que la somme des coefficients $\sum_{k=-p}^{+f}\theta_k$ soit égale à $1$.
+
+- Pour conserver les tendances linéaires $X_t=at+b$ il faut :
+$$
+\forall t:\:M_{\boldsymbol\theta}(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}=\sum_{k=-p}^{+f}\theta_k[a(t+k)+b]=a\sum_{k=-p}^{+f}k\theta_k+(at+b)\sum_{k=-p}^{+f}\theta_k=at+b.
+$$
+Ce qui est équivalent à :
+$$
+\sum_{k=-p}^{+f}\theta_k=1
+\quad\text{et}\quad
+\sum_{k=-p}^{+f}k\theta_k=0.
+$$
+- De manière générale, $M_{\boldsymbol\theta}$ conserves les tendances de degré $d$ si et seulement si :
+$$
+\sum_{k=-p}^{+f}\theta_k=1
+ \text{ et }
+\forall j \in \llb 1,d\rrb:\:
+\sum_{k=-p}^{+f}k^j\theta_k=0.
+$$
+- Si $M_{\boldsymbol\theta}$ est symétrique ($p=f$ et $\theta_{-k} = \theta_k$ pour tout $k$) et conserve les tendances de degré $2d$ alors elle conserve aussi les tendances de degré $2d+1$ car :
+$$
+\sum_{k=-p}^{+p}k^{2d+1}\theta_k= 0\times\theta_0+ \sum_{k=1}^{+p}k^{2d+1}\theta_k +\sum_{k=1}^{+p}(-1)\times k^{2d+1}\underbrace{\theta_{-k}}_{=\theta_k}=0.
+$$
+
+#### Réduction du bruit
+
+Toutes les séries temporelles sont affectées par du bruit qui peut brouiller l'extraction de la tendance et du cycle.
+C'est pourquoi on cherche à réduire ce bruit (en réduisant sa variance) tout en conservant les évolutions pertinentes.
+La somme des carrés des coefficients $\sum_{k=-p}^{+f}\theta_k^2,$ généralement inférieure ou égale à 1, est le rapport de *réduction de la variance*.
+
+En effet, soit $\{\varepsilon_t\}$ une suite de variables aléatoires indépendantes avec $\E{\varepsilon_t}=0$, $\V{\varepsilon_t}=\sigma^2$.
+On a :
+$$
+\V{M_{\boldsymbol\theta}\varepsilon_t}=\V{\sum_{k=-p}^{+f} \theta_k \varepsilon_{t+k}}
+= \sum_{k=-p}^{+f} \theta_k^2 \V{\varepsilon_{t+k}}=
+\sigma^2\sum_{k=-p}^{+f} \theta_k^2.
+$$
+
+
+### Estimation en temps réel et moyennes mobiles asymétriques {#sec-mmasym}
+
+#### Moyennes mobiles asymétriques et prévision {#sec-mmetprev}
+
+Pour les filtres symétriques, la fonction de déphasage est égale à zéro (modulo $\pi$).
+Il n'y a donc aucun retard dans la détection de points de retournement.
+Du fait du manque de données disponibles, ils ne peuvent toutefois pas être utilisés au début et à la fin de la série.
+
+Pour l'estimation en temps réel, plusieurs approches peuvent être utilisées :
+
+1. Utiliser des moyennes mobiles asymétriques pour prendre en compte le manque de données disponibles ;
+
+2. Appliquer les filtres symétriques sur les séries prolongées par prévision.
+Cette méthode semble remonter à @deforest1877adjustment qui suggère également de modéliser en fin de période une tendance polynomiale de degré au plus trois^[
+«\ *As the first $m$ and last $m$ terms of the series cannot be reached directly by the formula, the series should be graphically extended by m terms at both ends, first plotting the observations on paper as ordinates, and then extending the curve along what seems to be its probable course, and measuring the ordinates of the extended portions.*
+*It is not necessary that this extension should coincide with what would be the true course of the curve in those parts. *
+*The important point is that the m terms thus added, taken together with the $m+1$ adjacent given terms, should follow a curve whose form is approximately algebraic and of a degree not higher than the third.* »
+].
+C'est également l'approche utilisée dans la méthode de désaisonnalisation X-13ARIMA qui prolonge la série sur 1 an par un modèle ARIMA.
+
+
+In fine, la seconde méthode revient à utiliser des moyennes mobiles asymétriques puisque les prévisions sont des combinaisons linéaires du passé. 
+
+Inversement, à partir d'une moyenne mobile symétrique de référence, on peut déduire les **prévisions implicites** d'une moyenne mobile asymétrique. 
+Cela permet notamment de juger de la qualité des estimations en temps réel de la tendance-cycle et d'anticiper les futures révisions lorsque les prévisions sont éloignées des évolutions attendues.\
+Notons $\boldsymbol v=(v_{-h},\dots, v_{h})$ la moyenne mobile symétrique de référence et $\boldsymbol w^0,\dots \boldsymbol w^{h-1}$ une suite de moyennes mobiles asymétriques, d'ordre $h+1$ à $2h$ utilisée pour l'estimation des $h$ derniers points avec, pour convention, $w_t^q=0$ pour $t>q$.
+C'est-à-dire que $\boldsymbol w^0=(w_{-h}^0,\dots, w_{0}^0)$ est utilisée pour l'estimation en temps réel (lorsqu'on ne connaît aucun point dans le futur), $\boldsymbol w^1=(w_{-h}^1,\dots, w_{1}^1)$ pour l'estimation de l'avant-dernier point (lorsqu'on ne connaît qu'un point dans le futur), etc.
+Notons également $y_{-h},\dots,y_{0}$ la série étudiée observée et $y_{1}^*,\dots y_h^*$ la prévision implicite induite par $\boldsymbol w^0,\dots \boldsymbol w^{h-1}$.
+Cela signifie, que pour tout $q$ on a :
+$$
+\forall q, \quad \underbrace{\sum_{i=-h}^0 v_iy_i + \sum_{i=1}^h v_iy_i^*}_{\text{lissage par }v\text{ de la série prolongée}}
+=\underbrace{\sum_{i=-h}^0 w_i^qy_i + \sum_{i=1}^h w_i^qy_i^*}_{\text{lissage par }w^q\text{ de la série prolongée}}.
+$$
+Ce qui est équivalent à :
+$$
+\forall q, \quad \sum_{i=1}^h (v_i- w_i^q) y_i^*
+=\sum_{i=-h}^0 (w_i^q-v_i)y_i.
+$$
+En somme, matriciellement, cela revient donc à résoudre :
+$$\scriptstyle
+\begin{pmatrix}
+  v_1 & v_2 & \cdots & v_h \\
+  v_1 - w_1^1 & v_2 & \cdots & v_h \\
+  \vdots & \vdots & \cdots & \vdots \\
+   v_1 - w_1^{h-1} & v_2-w_2^{h-1} & \cdots & v_h
+\end{pmatrix}
+\begin{pmatrix}y_1^* \\ \vdots \\ y_h^*\end{pmatrix}=
+\begin{pmatrix}
+  w_{-h}^0 - v_{-h} & w_{-(h-1)}^0 - v_{-(h-1)} & \cdots & w_{0}^0 - v_{0} \\
+  w_{-h}^1 - v_{-h} & w_{-(h-1)}^1 - v_{-(h-1)} & \cdots & w_{0}^1 - v_{0} \\
+  \vdots & \vdots & \cdots & \vdots \\
+  w_{-h}^{h-1} - v_{-h} & w_{-(h-1)}^{h-1} - v_{-(h-1)} & \cdots & w_{0}^{h-1} - v_{0}
+\end{pmatrix}
+\begin{pmatrix}y_{-h} \\ \vdots \\ y_0\end{pmatrix}.$$
+C'est ce qui implémenté dans la fonction `rjd3filters::implicit_forecast()`.
+
+Comme notamment souligné par @wildischis2004, étendre la série par prévision d'un modèle ARIMA revient à calculer des filtres asymétriques dont les coefficients sont optimisés par rapport à la prévision à horizon d'une période --- *one-step ahead forecasting*.
+Autrement dit, on cherche à minimiser les révisions entre la première et la dernière estimation (avec le filtre symétrique).
+Cependant, le déphasage induit par les filtres asymétriques n'est pas contrôlé : on pourrait préférer avoir une détection plus rapide des points de retournement et une révision plus grande plutôt que de juste minimiser les révisions entre la première et la dernière estimation.
+Par ailleurs, puisque les coefficients du filtre symétrique (et donc le poids associé aux prévisions lointaines) décroissent lentement, il faudrait également s'intéresser à la performance des prévisions à horizon de plusieurs périodes --- *multi-step ahead forecasting*. 
+C'est pourquoi il peut être nécessaire de définir des critères alternatifs pour juger la qualité des moyennes mobiles asymétriques.
+
+
+#### Indicateurs de qualité des moyennes mobiles asymétriques {#sec-crit-qual}
+
+Pour les filtres asymétriques, la majorité des critères proviennent de ceux définis par @ch15HBSA et @trilemmaWMR2019 pour construire les filtres asymétriques. 
+Ils sont résumés dans le @tbl-QC et calculables avec la fonction `rjd3filters::diagnostic_matrix()`.
+
+@ch15HBSA proposent une approche générale pour dériver des filtres linéaires, fondée sur un problème d'optimisation de trois critères : *Fidelity* ($F_g$, Fidélité), *Smoothness* ($S_g$, lissage) et *Timeliness* ($T_g$, rapidité). 
+La fidélité peut être directement reliée à la réduction de variance créée par le filtre et la rapidité à la notion de déphasage, qu'on souhaite là encore faible.  
+
+@trilemmaWMR2019 proposent une approche qui s'appuie sur la décomposition de l'erreur quadratique moyenne entre le filtre symétrique et le filtre asymétrique en quatre quantités : *Accuracy* ($A_w$, précision), *Timeliness* ($T_w$, rapidité), *Smoothness* ($S_w$, lissage) et *Residual* ($R_w$, résidus).
+Voir @sec-WildiMcLeroy pour plus de détails.
+
+
+::: {#tbl-QC}
+```{r, echo = FALSE}
+criteria_mm <- data.frame(
+    Sigle = c("b_c", "b_l", "b_q",
+              "F_g", "S_g", "T_g",
+              "A_w", "T_w", "S_w", "R_w"),
+    Description = c(sprintf("Biais %s", c("constant", "linéaire", "quadratique")),
+                    sprintf("%s (Guggemos)",
+                            c("Réduction de la variance / Fidelity", "Smoothness", "Timeliness")),
+                    sprintf("%s (Wildi)",c("Accuracy", "Timeliness", "Smoothness", "Residual"))),
+    Formule = c("\\sum_{k=-p}^{+f}\\theta_{k}-1",
+                "\\sum_{k=-p}^{+f}k\\theta_{k}",
+                "\\sum_{k=-p}^{+f}k^{2}\\theta_{k}",
+                "\\sum_{k=-p}^{+f}\\theta_{k}^{2}",
+                "\\sum_{j}(\\nabla^{3}\\theta_{j})^{2}",
+                "\\int_{0}^{\\omega_1}\\rho_{\\boldsymbol\\theta}(\\omega)\\sin(\\varphi_{\\boldsymbol\\theta}(\\omega))^{2}\\,\\mathrm{d}\\omega",
+                "2\\int_0^{\\omega_1}\\left(\\rho_{s}(\\omega)-\\rho_{\\boldsymbol\\theta}(\\omega)\\right)^{2}h(\\omega)\\,\\mathrm{d}\\omega",
+                "8\\int_0^{\\omega_1} \\rho_{s}(\\omega)\\rho_{\\boldsymbol\\theta}(\\omega)\\sin^{2}\\left(\\frac{\\varphi_s(\\omega)-\\varphi_{\\boldsymbol\\theta}(\\omega)}{2}\\right)h(\\omega)\\,\\mathrm{d}\\omega",
+                "2\\int_{\\omega_1}^{\\pi}\\left(\\rho_{s}(\\omega)-\\rho_{\\boldsymbol\\theta}(\\omega)\\right)^{2}h(\\omega)\\,\\mathrm{d}\\omega",
+                "8\\int_{\\omega_1}^{\\pi} \\rho_{s}(\\omega)\\rho_{\\boldsymbol\\theta}(\\omega)\\sin^{2}\\left(\\frac{\\varphi_s(\\omega)-\\varphi_{\\boldsymbol\\theta}(\\omega)}{2}\\right)h(\\omega)\\,\\mathrm{d}\\omega"))
+criteria_mm[,1] <- sprintf("$%s$", criteria_mm[,1])
+criteria_mm[,3] <- sprintf("$%s$", criteria_mm[,3])
+
+tbl <- criteria_mm |>
+    kable(
+        align = "c", booktabs = T, row.names = FALSE,
+        escape = FALSE,
+        table.attr = 'data-quarto-disable-processing="true"',
+        format = ifelse(knitr::is_latex_output(), "latex", ifelse(knitr::is_html_output(exclude = "epub"), "html", "pipe"))
+    )  
+if (knitr::is_latex_output()) {
+    tbl <- tbl |>
+        kable_styling(latex_options = "scale_down")
+} else if (knitr::is_html_output(exclude = "epub")) {
+    tbl <- gt::gt(criteria_mm) |>
+        gt::fmt_markdown()  |>
+        gt::tab_style(
+            style = gt::cell_text(align = "center"),
+            locations = gt::cells_body()
+        ) |>
+        gt::tab_options(
+            heading.align = "center"
+        ) 
+}
+tbl
+```
+
+
+```{=latex}
+{\footnotesize\raggedright 
+```
+*Notes : $X_g$ critères provenant de @ch15HBSA et $X_w$ critères provenant de @trilemmaWMR2019.*
+
+*$\rho_s$ et $\varphi_s$ représentent le gain et la fonction de déphasage du filtre symétrique d'Henderson.*
+
+*$h$ est la densité spectrale de la série en entrée, considérée comme étant celle d'un bruit blanc ($h_{WN}(x)=1$) ou d'une marche aléatoire ($h_{RW}(x)=\frac{1}{2(1-\cos(x))}$).*
+```{=latex}
+}
+```
+
+Critères de qualité d'une moyenne mobile $\boldsymbol\theta=(\theta_k)_{-p\leq k\leq f}$ définie par une fonction de gain $\rho_{\boldsymbol\theta}$ et une fonction de déphasage $\varphi_{\boldsymbol\theta}$.
+:::
+
+
+#### Formule générale de construction des moyennes mobiles {#sec-formulegen}
+
+Toutes les moyennes mobiles et tous les critères de qualité étudiés peuvent se voir comme des cas particuliers d'une formule générale de construction des filtres (symétriques et asymétriques).
+Celle-ci est décrite dans l'[annexe @sec-an-diag], qui montre également les liens entre les différentes méthodes.
+Tous les filtres utilisés dans les simulations sont résumés dans l'[annexe @sec-an-graphs].
+
+#### Illustration
+
+Les différentes méthodes de construction de moyennes mobiles asymétriques seront illustrées à partir de l'exemple du lissage du climat des affaires dans le secteur des matériels de transport (C4), publié par l'Insee^[
+<https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001786505>.
+], jusqu'en mai 2023.
+
+L'indicateur synthétique du climat des affaires résume l'opinion des chefs d'entreprise sur la conjoncture du secteur associé (ici les matériels de transport) : plus sa valeur est élevée, plus les industriels considèrent que la conjoncture est favorable.
+Il est calculé à partir de soldes d'opinion issus des enquêtes de conjoncture de l'Insee.
+Toutefois, du fait de la volatilité des soldes d'opinion utilisés, les climats des affaires peuvent être bruités, ce qui peut rendre difficile l'identification des périodes de retournement conjoncturel (voir @fig-graphs-ex-tcfin), c'est-à-dire les périodes où les industriels considèrent que la conjoncture passe d'un état favorable à un état moins favorable, ou l'inverse.
+Les méthodes présentées dans cette étude permettent de lisser les séries afin d'extraire la composante tendance-cycle pour faciliter l'analyse des retournements conjoncturels dans le cycle classique (également appelé cycle des affaires).
+On ne cherche donc pas à estimer séparément la tendance (qui représente les évolutions de long terme) et le cycle (qui représente les évolutions cycliques autour de la tendance) puisque ces composantes peuvent être difficiles à séparer (quelle définition prendre pour distinguer les cycles courts et des cycles longs ?).
+Par ailleurs, la décomposition entre tendance et cycle, associée à des méthodes de filtrage de type Hodrick-Prescott ou Baxter-King, sont plutôt utilisées pour analyser les points de retournement dans le cycle de croissance (voir @ferrara2009FR pour une description des différents cycles économiques).
+Ces méthodes de décomposition tendance et cycle nécessitent d'avoir des séries longues (afin de distinguer cycles courts et tendance de long terme) alors que les méthodes utilisées dans cet article utilisent peu d'observations (en général 13 pour des séries mensuelles).
+
+
+La @fig-graphs-ex-tcfin montre la série initiale et la série lissée avec le filtre symétrique d'Henderson (présenté dans la @sec-nonparamreg), qui sera utilisé pour les estimations finales de la tendance-cycle (c'est-à-dire lorsque suffisamment d'observations sont disponibles afin de permettre son utilisation).
+La série lissée permet, par construction, de localiser plus facilement les points de retournement et d'interpréter les évolutions mensuelles de l'indicateur.
+L'objectif de cette étude est de comparer différentes méthodes pour estimer les estimations intermédiaires des derniers points de la série lissée, avant que les points futurs ne soient disponibles.
+L'[annexe @sec-ann-ex-r] contient le code utilisé pour cet exemple illustratif.
+
+```{r, echo=FALSE, out.width="100%"}
+#| label: fig-graphs-ex-tcfin
+#| fig-cap: Série initiale et lissée, avec le filtre symétrique d'Henderson, du climat des affaires dans les matériels de transport.
+img <- sprintf("img/ex/tc_finale.%s", fig.ext)
+knitr::include_graphics(img)
+```

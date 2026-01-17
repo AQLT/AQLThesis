@@ -1,0 +1,597 @@
+---
+title: |
+ | Estimation en temps réel de la tendance-cycle à l'aide de moyennes mobiles : apports dans l'analyse conjoncturelle
+subtitle: "Soutenance doctorat"
+author: "Alain QUARTIER-LA-TENTE"
+departement: "9 décembre 2025"
+format:
+  beamer:
+    template: template.tex
+    toc: false
+    slide-level: 3
+    theme: TorinoTh
+    keep-tex: true
+    pdf-engine: pdflatex
+    include-in-header: preamble_beamer.tex
+    output-file: "soutenance_these_AQLT"
+classoption: 'usepdftitle=false,french' # handout
+#     output-file: "soutenance_these_AQLT_impr"
+# classoption: 'usepdftitle=false,french,handout'
+fontsize: 10pt
+themeoptions: "coding=utf8,language=french"
+logo: "img/logobeamer"
+freeze: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      cache = F,
+                      fig.align = 'center',
+                      fig.path = "img/slides-")
+library(knitr)
+library(kableExtra)
+library(rjd3filters)
+library(publishTC)
+library(ggplot2)
+library(patchwork)
+library(ggdemetra)
+y <- etip
+h13_tppre <- henderson_smoothing(y)
+clf_tppre <- clf_smoothing(y)
+fig.ext <- "pdf"
+options(is_french = TRUE)
+if (getOption("is_french")) {
+	current_local <- Sys.getlocale("LC_TIME")
+	Sys.setlocale("LC_TIME","fr_FR.UTF-8")
+	options(OutDec = ",")
+}
+palette_coef <- c("#13100d", "#3452ff", "#ffcc01", "#9c1ef1", "#929393", 
+				  "#f20066", "#D55E00", "#CC79A7", "#999999")
+col_y <- "#929393"
+col_sa <- "#ffcc01"
+col_tc <- "#3452ff"
+```
+
+# Introduction
+### Introduction
+
+Construire des séries CVS-CJO est une pratique courante :
+
+- Permet une analyse en glissement mensuel/trimestriel 
+
+- Améliore le diagnostic conjoncturel
+
+```{r}
+#| label: ffig-ipi-france
+#| fig-height: 4
+spec <- RJDemetra::x13_spec("RSA3", tradingdays.option = "WorkingDays")
+p_sa <- ggplot(data = ipi_c_eu_df, mapping = aes(x = date, y = FR)) +
+    geom_line(aes(color =  "IPI brut")) +
+    theme_classic() +
+    labs(title = "IPI CZ France",
+         x = NULL, y = NULL) +
+    geom_sa(component = "sa", aes(color = "CVS-CJO"), frequency = 12) + 
+    theme(
+        legend.title = element_blank(),
+        legend.position = "inside",
+        legend.position.inside = c(0.01, 0.01),
+        legend.justification = c(0, 0),
+        legend.background = element_rect(
+            fill = alpha("gray99", 0.4))
+    ) +
+		ggplot2::scale_color_manual(
+			values = c(col_y, col_sa),
+			breaks = c("IPI brut", "CVS-CJO")
+		)
+
+p_sa +
+    coord_cartesian(
+        xlim = c(2000, 2020),
+        ylim = range(ipi_c_eu_df[ipi_c_eu_df$date>=2000,"FR"])
+    )
+```
+
+
+### Hypothèse de travail de la désaisonnalisation 
+
+Une série brute se décompose en 3 composantes inobservables :
+
+- **effets saisonniers** (y.c. calendrier) : variations régulières le même mois chaque année
+
+. . .
+
+- **tendance-cycle** ou « tendance de court terme » : combinaison de la tendance (évolutions de long terme) et du cycle (évolutions de court terme autour de la tendance)
+
+. . .
+
+- **irrégulier** : fluctuations inattendues (chocs économiques non prévus, bruit...)
+
+. . .
+
+\faArrowCircleRight{} La série CVS-CJO contient donc l'effet de la tendance-cycle **ET** de l'irrégulier
+
+. . .
+
+Irrégulier pertinent pour l'analyse conjoncturel...
+Mais peut perturber l'analyse de la tendance sous-jacente et les points de retournement 
+
+### Et si l'irrégulier est important ?
+
+
+```{r}
+#| label: ffig-ipi-france-sa
+#| fig-height: 4
+p_sa2 <- ggplot(data = ipi_c_eu_df, mapping = aes(x = date, y = FR)) +
+    theme_classic() +
+    labs(title = "IPI CZ France CVS-CJO",
+         x = NULL, y = NULL) +
+    geom_sa(component = "sa", color = col_sa, frequency = 12) +
+    geom_sa(component = "t", color = col_tc, frequency = 12)+ 
+    theme(
+        legend.title = element_blank(),
+        legend.position = "inside",
+        legend.position.inside = c(0.01, 0.01),
+        legend.justification = c(0, 0),
+        legend.background = element_rect(
+            fill = alpha("gray99", 0.4))
+    )
+p_sa2 +
+    coord_cartesian(
+        xlim = c(2008, 2012),
+        ylim = c(90, NA)
+    )
+```
+
+
+\faArrowCircleRight{} Dans certains cas, pertinent d'étudier **directement** la tendance-cycle
+
+### Comment estimer la tendance-cycle ?
+
+Les deux principaux instituts publiant régulièrement la tendance-cycle (Statistique Canada et Australian Bureau of Statistics) appliquent une moyenne mobile (MM) symétrique de **13 termes** sur la série désaisonnalisée **mensuelle**
+$$
+TC_t= \sum_{i=-6}^{+6}\theta_i SA_{t+i}
+$$
+Cohérent avec X-13-ARIMA-SEATS utilisée pour la CVS-CJO
+
+. . .
+
+Les estimations en **temps réel** s'appuient nécessairement sur des MM asymétriques qui vont créer des révisions et un déphasage dans la détection des points de retournement
+
+. . .
+
+Objectifs de la thèse : 
+
+1. Étudier des méthodes d'estimation en temps réel de la tendance-cycle par des MM **asymétriques** : revue de l'existant (art. 1) et propositions d'extensions (art. 2 et 3)
+
+2. Décrire pourquoi publier la tendance-cycle et comment mettre en place une production (art. 4)
+
+
+# Estimation de la tendance-cycle et formule générale de construction des MM
+
+### Sommaire {.noframenumbering}
+
+```{=latex}
+\tableofcontents[currentsection, hideothersubsections]
+```
+
+## Introduction
+### Introduction
+
+Récemment, différentes approches générales de construction de MM ont émergé :
+
+- Filtres polynomiaux locaux ([Proietti et Luati 2008](https://doi.org/10.1214/08-AOAS195))
+
+- Filtres fondés sur les espaces de Hilbert à noyau reproduisant (RKHS, [Dagum et Bianconcini 2008](https://ideas.repec.org/a/bes/jnlbes/v26y2008p536-545.html)) 
+
+- Approche Fidelity-Smoothness-Timeliness (FST, [Grun-Rehomme, Guggemos, et Ladiray 2018](ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001))
+
+. . .
+
+- Approche Accuracy-Timeliness-Smoothness (ATS, [Wildi et McElroy 2019](https://EconPapers.repec.org/RePEc:eee:intfor:v:35:y:2019:i:3:p:1072-1084))\
+    \faArrowCircleRight{} approche paramétrique non étudiée empiriquement car ne correspond pas à la logique non-paramétrique de X-13-ARIMA-SEATS
+
+. . .
+
+Objectif de l'article 1 : décrire et comparer **théoriquement** et **empiriquement** ces différentes approches pour l'estimation en temps réel en utilisant une méthodologie commune
+
+## Résultats théoriques et empiriques
+### Comparaison théorique
+
+Développement d'une formulation générale pour la construction des filtres linéaires permettant :
+
+::: {.incremental}
+- De mettre en évidence les **équivalences** entre les méthodes et des filtres classiques (ex. Macaulay, Nadaraya-Watson)
+
+- De **clarifier** les **différences** entre les méthodes utilisant des **critères** du **même nom** (ex. smoothness)
+
+- De **clarifier** les **différences** entre les méthodes se basant sur les **mêmes fondements théoriques** (ex. : RKHS et polynômes locaux)
+:::
+
+### Comparaison empirique
+
+- Comparaison sur des séries **mensuelles** réelles et simulées avec une MM symétrique de **13 termes** sur des critères de révision et de détection des points de retournement (déphasage)
+
+. . .
+
+- **Fenêtre fixe** appliquée sur **plusieurs niveaux de variabilité** de l'irrégulier (I/C ratio)
+
+. . .
+
+Comparaison empirique montre l'importance de bien définir les critères de comparaison :
+
+- Déphasage : nombre de mois nécessaires pour détecter un point de retournement **sans révision future**\
+\faArrowCircleRight{} Il peut y avoir des révisions entre les estimations intermédiaires successives (ex. RKHS)
+   
+- Révisions : par rapport à la dernière estimation mais aussi entre **deux estimations successives**
+\faArrowCircleRight{} Met en évidence des sous-optimalités lorsque l'on se rapproche de l'estimation finale (ex. RKHS)
+
+
+## Contribution informatique
+### Contribution informatique
+
+Développement du package R `rjd3filters` permettant :
+
+- De facilement créer et combiner différentes moyennes mobiles (et notamment reproduire la méthode de décomposition X-11)
+
+- D'utiliser les 4 grandes approches mentionnées tout en étudiant des extensions possibles (ex. articles 2 et 3)
+
+
+# Extensions des MM de Henderson et Musgrave
+
+### Sommaire {.noframenumbering}
+
+```{=latex}
+\tableofcontents[currentsection, hideothersubsections]
+```
+
+## Moyennes mobiles de Henderson et de Musgrave
+
+### Henderson et Musgrave (1/2)
+
+Dans X-13-ARIMA-SEATS, MM de Henderson (symétrique) et Musgrave (asymétrique) sont utilisées pour estimer la tendance-cycle (comme le fait ABS)
+
+. . .
+
+MM de Henderson obtenue par analogie avec la régression polynomiale locale\ : $y_t = TC(t)+\varepsilon_t$ et $TC(t)=TC_t$ peut être **localement** approchée par un polynôme en $t$ \ :
+$$
+\forall j\in\left\llbracket -h,h\right\rrbracket : y_{t+j}=\underbrace{\sum_{i=0}^{3}\beta_{i,t}j^{i}}_{\simeq TC_{t+j}}+\varepsilon_{t+j}
+$$
+
+. . .
+
+Estimation en utilisant les WLS : $\hat{\beta_t}=(X'KX)^{1}X'Ky_t$ et
+$$
+\widehat{TC}_{t}=\hat\beta_{0,t}=w'y=\sum_{j=-h}^{h}w_{j}y_{t+j}
+$$
+Avec des poids biens choisis on retrouve la MM **symétrique** de Henderson
+
+### Henderson et Musgrave (2/2)
+
+MM de Musgrave obtenue par **compromis biais-variance**
+$$
+\forall j\in\left\llbracket -h,f\right\rrbracket : y_{t+j}=\beta_{0,f}+\delta t+\varepsilon_{t+j}\quad\varepsilon_t\sim \mathcal N(0,\sigma^2).
+$$
+Coefficients obtenus en minimisant l'EQM de révision sous contrainte de **préservation sans biais des constantes** ($\beta_{0,f}$) mais avec **biais** dans l'estimation de la **pente** ($\delta$)
+
+. . .
+
+MM dépend du rapport $|\delta/\sigma|$ défini par l'utilisateur.
+Si biais ($\delta$) constant dans le temps, tendance est linéaire, peut-être lié à l'I-C ratio ($R$)
+$$
+\left|\frac{\delta}{\sigma}\right|=\frac{2}{R\sqrt{\pi}}.
+$$
+
+C'est ce qui fait dans X-13-ARIMA-SEATS en utilisant $R=3,5$ lorsque H-13 termes est utilisée (ABS)
+
+. . .
+
+Objectifs articles 2 et 3 : étudier des extensions pour améliorer la performance en temps réel
+
+## Paramétrisation locale des filtres de régression polynomiale
+
+
+### Estimation locale de $|\delta/\sigma|$
+
+**Hypothèses** de biais constant et de tendance linéaire souvent **irréalistes**, notamment autour des points de retournement !
+
+. . .
+
+Solution : **estimer localement** $|\delta/\sigma|$ :
+
+- Pente $\delta$ estimée localement via une régression polynomiale locale (construction de MM pour estimer)\
+- Variance $\sigma^2$ estimée en utilisant l'ensemble des données
+
+```{r}
+#| label: ffig-local-icr
+#| fig-height: 2.5
+td1 <- ts(1:13, frequency = 12, start = 2020)
+td1_h <- henderson_smoothing(td1, length = 13)$tc
+td1_h_localicr <- henderson_smoothing(td1, length = 13, local_icr = TRUE)$tc
+data <- ts.union(td1, td1_h, td1_h_localicr) 
+colnames(data) <- c(
+    "Tendance simulée",
+    "I/C ratio fixe",
+    "I/C ratio local"
+)
+data |>
+    autoplot() +
+    labs(x = NULL, y = NULL) +
+    theme_classic() +
+    theme(
+        legend.title = element_blank(),
+        legend.position = "inside",
+        legend.position.inside = c(0.01, 1),
+        legend.justification = c(0, 1),
+        legend.background = element_rect(
+            fill = alpha("gray99", 0.4))
+    ) +
+    ggplot2::scale_color_manual(values = palette_coef) +
+    ggplot2::scale_x_continuous(breaks = NULL) +
+    ggplot2::scale_y_continuous(breaks = NULL)
+```
+
+. . .
+
+Résultats sur des séries mensuelles (simulées et réelles) : **réduit** les **révisions** et le **délai dans la détection des points de retournement**
+
+**Pas d'impact** significatif sur des séries **trimestrielles**
+
+## Construction de moyennes mobiles robustes aux points atypiques
+
+
+### Impact des points atypiques (1/3)
+
+::: {.incremental}
+- Par construction les MM sont **sensibles aux points atypiques**
+
+- Solution 1 : Correction a priori via un modèle RegARIMA (X-13-ARIMA-SEATS et ABS sauf COVID-19) ? Inconvénients : convergence peut être longue, estimation dépend de la spécification du modèle et de la période d'estimation
+:::
+
+```{r}
+#| label: ffig-ex-simulchoc
+#| fig-height: 4
+x <- publishTC::simulated_data[,"ls_td1"]
+tc_h <- henderson_smoothing(x, length = 13)$tc
+tc_clf <- clf_smoothing(x)$tc
+tc_h_2s <- segmented_smoothing(x, breaks = list(2022), break_method = "two-sides", length = 13)$tc
+tc_h_rob <- henderson_robust_smoothing(x, ls = 2022)$tc
+data_ls1 <- ts.union(x, tc_h, tc_clf, tc_h_rob, tc_h_2s) 
+colnames(data_ls1) <- c(
+    "y",
+    "Henderson",
+    "CLF",
+    "Henderson robuste (LS-janv 2022)",
+    "Segmented Henderson"
+)
+
+x <- publishTC::simulated_data[,"ao_td0"]
+tc_h <- henderson_smoothing(x, length = 13)$tc
+tc_clf <- clf_smoothing(x)$tc
+tc_h_rob <- henderson_robust_smoothing(x, ao = 2022)$tc
+tc_h_2s <- segmented_smoothing(x, breaks = list(2022), break_method = "two-sides", length = 13)$tc
+data_ao0 <- ts.union(x, tc_h, tc_clf, tc_h_rob, tc_h_2s) 
+colnames(data_ao0) <- c(
+    "y",
+    "Henderson",
+    "CLF",
+    "Henderson robuste (A0-janv 2022)",
+    "Segmented Henderson"
+)
+ipi <- window(publishTC::french_ipi[, "manufacturing"], start = 2015)
+tc_h_ipi <- henderson_smoothing(ipi, length = 13)$tc
+tc_clf_ipi <- clf_smoothing(ipi)$tc
+tc_h_rob_ipi <- henderson_robust_smoothing(ipi, ls = c(2020+ (3-1)/12, 2020+ (4-1)/12))$tc
+tc_h_2s_ipi <- segmented_smoothing(ipi, breaks = list(c(2020, 3)), break_method = "two-sides", length = 13)$tc
+data_ipi <- ts.union(ipi, tc_h_ipi, tc_clf_ipi, tc_h_rob_ipi, tc_h_2s_ipi) 
+colnames(data_ipi) <- c(
+    "IPI CZ",
+    "Henderson",
+    "CLF",
+    "Henderson robuste (LS-mars et avril 2020)",
+    "Segmented Henderson"
+)
+ylim_ls <- c(1.28, 1.48)
+pao <-  autoplot(data_ao0[,-c(3,4,5)])  + 
+    labs(title = "Choc ponctuel(AO)") + 
+    coord_cartesian(xlim = c(2021.5, 2022.5))
+pls <-  autoplot(data_ls1[,-c(3,4,5)])  + 
+    labs(title = "Choc en niveau (LS)") + 
+    coord_cartesian(xlim = c(2021.5, 2022.5),
+                    ylim = ylim_ls)
+pipi <- autoplot(data_ipi[,-c(3,4,5)]) +
+    labs(title = "IPI Manuf FR") + 
+    coord_cartesian(xlim = c(2019.5, 2021))
+
+(((pao / pls)  + 
+    plot_layout(axes = "collect") | pipi) &
+    labs(x = NULL, y = NULL) &
+    theme_classic() &
+    theme(
+        legend.position = "none",#"bottom",
+        legend.title=element_blank()
+    ) &
+    ggplot2::scale_color_manual(values = palette_coef) &
+     scale_x_continuous(breaks = scales::pretty_breaks(n = 3), 
+        labels = zoo::as.yearmon)) + 
+    plot_layout(guides = "collect") 
+```
+
+### Impact des points atypiques (2/3)
+
+- Solution 2 pour les ruptures en niveau (LS), possibilité d'une estimation segmentée (Statistique Canada)
+
+```{r}
+#| label: ffig-ex-simulchoc2
+#| fig-height: 5
+i <- c(1, 5)
+pls <-  autoplot(data_ls1[, i])  + 
+    labs(title = "Choc en niveau (LS)") + 
+    coord_cartesian(xlim = c(2021.5, 2022.5),
+                    ylim = ylim_ls)
+pipi <- autoplot(data_ipi[, i]) +
+    labs(title = "IPI Manuf FR (seg. mars 2020)") + 
+    coord_cartesian(xlim = c(2019.5, 2021))
+
+((pls / pipi) &
+    labs(x = NULL, y = NULL) &
+    theme_classic() &
+    theme(
+        legend.position = "none",#"bottom",
+        legend.title=element_blank()
+    ) &
+    ggplot2::scale_color_manual(values = palette_coef) &
+     scale_x_continuous(breaks = scales::pretty_breaks(n = 3), 
+        labels = zoo::as.yearmon)) + 
+    plot_layout(guides = "collect") 
+```
+
+### Impact des points atypiques (3/3)
+
+Objectif de l'article : étudier des approches alternatives :
+
+1. Étude de méthodes **non-linéaires robustes** (médianes mobiles, moindres carrés médians...)
+
+. . .
+
+2. Exploiter la modélisation polynomiale pour construire des **MM intégrant une information extérieure** (choc ponctuel ou en niveau) afin d'améliorer la décomposition tendance-cycle/irrégulier
+
+```{r}
+#| label: ffig-ex-simulchoc4
+#| fig-height: 4
+i <- c(1, 4)
+pao <-  autoplot(data_ao0[, i])  + 
+    labs(title = "Choc ponctuel (AO)") + 
+    coord_cartesian(xlim = c(2021.5, 2022.5))
+pls <-  autoplot(data_ls1[, i])  + 
+    labs(title = "Choc en niveau (LS)") + 
+    coord_cartesian(xlim = c(2021.5, 2022.5),
+                    ylim = ylim_ls)
+pipi <- autoplot(data_ipi[, i]) +
+    labs(title = "IPI Manuf FR (LS-mars et avril 2020)") + 
+    coord_cartesian(xlim = c(2019.5, 2021))
+
+(((pao / pls)  + 
+    plot_layout(axes = "collect") | pipi) &
+    labs(x = NULL, y = NULL) &
+    theme_classic() &
+    theme(
+        legend.position = "none",#"bottom",
+        legend.title=element_blank()
+    ) &
+    ggplot2::scale_color_manual(values = palette_coef) &
+     scale_x_continuous(breaks = scales::pretty_breaks(n = 3), 
+        labels = zoo::as.yearmon)) + 
+    plot_layout(guides = "collect") 
+```
+
+
+
+### Principaux résultats
+
+
+Méthodes non-linéaires robustes produisent de **fortes révisions en temps réel** et ne reproduisent pas les points de retournement associés aux chocs (ex COVID-19)
+
+. . .
+
+MM « robustes » : **réduisent les révisions** et **modélisent** bien les **points de retournements**
+
+
+. . .
+
+Problématique de la **validation** et de l'**identification** et des chocs à modéliser :
+
+- Validation par comparaison avec les estimations sans choc et en construisant des **intervalles de confiance**
+
+- **Pas d'impact** à modéliser un **choc inexistant**
+
+- Utilisation d'information *ad hoc* ou de modèles externes (ex. RegARIMA) pour l'identification des chocs
+
+- Révisions importantes si la nature du choc est mal modélisée (association du choc à l'irrégulier ou la tendance-cycle) : en cas d'incertitude il vaut mieux ne rien modéliser
+
+# Et si l'on publiait la tendance-cycle ?
+
+### Sommaire {.noframenumbering}
+
+```{=latex}
+\tableofcontents[currentsection, hideothersubsections]
+```
+
+### Pourquoi et comment publier la TC ? (1/2)
+
+[FMI (2017)](https://www.imf.org/external/pubs/ft/qna/pdf/2017/QNAManual2017FRE.pdf) et [Eurostat (2024)](https://ec.europa.eu/eurostat/documents/3859598/19355229/KS-GQ-24-012-EN-N.pdf/be954db6-64f5-c1a2-a0b8-0b4de2a5c707?version=1.0&t=1718182927069) recommandent de publier la TC en plus de la série CVS-CJO... Mais très peu d'instituts publient régulièrement la TC
+
+. . .
+
+Objectifs de l'article :
+
+1. Synthétiser les arguments en faveur de la publication de la TC et les recommandations pour le faire
+
+. . . 
+
+Trois principales raisons de publier la TC :
+
+   i. Réduire le risque que les utilisateurs tirent des **conclusions inappropriées** sur la base de mouvements liés à l'irrégulier  
+   ii. Permettre une **comparaison** appropriée **dans le temps** en réduisant l'impact des évènements ponctuels  
+   iii. Améliorer la **compréhension** et la détection des points de retournement
+
+Recommandations : présenter la TC avec la série CVS-CJO et refléter l'incertitude des premières estimations
+
+### Pourquoi et comment publier la TC ? (2/2)
+
+2. Décrire comment, en pratique, publier la TC grâce au package `publishTC` permettant :
+
+    - L'estimation simple de la TC avec les méthodes de Statistique Canada, ABS et les extensions proposées dans les articles 2 et 3 (ainsi que combinaison de ces extensions)
+    
+    - Différentes visualisations  (y.c. intervalles de confiance, prévisions implicites...)
+    
+    - Recommandations sur le choix de la méthode et critères de comparaison
+    
+    - Création d'un *template* simplifié de mise en production automatique appliqué à [10 publications de l'Insee](https://aqlt.github.io/publishTC.wp/) ($\simeq 80$ séries)
+
+
+# Conclusion
+
+### Conclusion
+
+Apports de la thèse :
+
+- **Unification des méthodes**  de construction des moyennes mobiles \
+\faArrowCircleRight{} développement d'une formulation générale et comparaison selon une méthodologie commune
+
+- **Deux améliorations** des méthodes existantes :
+
+    - Paramétrisation locale des moyennes mobiles asymétriques \faArrowCircleRight{} réduction des révisions et délais dans la détection des points de retournements
+
+    - Moyennes mobiles robustes aux chocs \faArrowCircleRight{} estimations de la TC plus proches de la réalité économique
+
+- **Outils open-source** : `rjd3filters` et `publishTC` \faArrowCircleRight{} facilitent la recherche et la mise en production
+
+. . .
+
+Exemples de prolongements : travaux sur la sélection de la fenêtre (fixe ou mobile), intégration des moyennes mobiles « robustes » dans X-11...
+
+
+### Merci pour votre attention {.noframenumbering}
+
+
+\footnotesize
+
+- Article 1 : Estimation en temps réel de la
+tendance-cycle : apport de l'utilisation des moyennes mobiles
+asymétriques, *Document de travail Insee*, M2024/01.
+[inseefrlab.github.io/DT-est-tr-tc](https://inseefrlab.github.io/DT-est-tr-tc/)
+
+- Article 2 : Improving Real-Time Trend Estimates Using Local Parametrization of Polynomial Regression Filters. *Journal of Official Statistics, 40*(4), 685-715. 
+[github.com/AQLT/joffstats2024](https://github.com/AQLT/joffstats2024)
+
+- Article 3 : Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques. 
+[aqlt.github.io/robustMA](https://aqlt.github.io/robustMA/)
+
+- Article 4 : Et si l'on publiait la tendance-cycle ?, 
+*XVèmes Journées de Méthodologie Statistique de l'Insee*. [github.com/AQLT/publishTC.wp](https://github.com/AQLT/publishTC.wp)
+
+Packages \faIcon{r-project} : `rjd3filters` ([github.com/rjdverse/rjd3filters](https://github.com/rjdverse/rjd3filters)) et `publishTC` ([github.com/AQLT/publishTC](https://github.com/AQLT/publishTC)) 
+
+
+

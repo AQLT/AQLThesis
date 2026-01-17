@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alain Quartier-la-Tente">
+
+<title>6&nbsp; Conclusion générale – Estimation en temps réel de la tendance-cycle à l'aide de moyennes mobiles&nbsp;: apports dans l'analyse conjoncturelle</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./Chapitre 4/ch4.html" rel="prev">
+<link href="./img/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-485d01fc63b59abcd3ee1bf1e8e2748d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
+  }
+}</script>
+<script type="application/json" class="js-hypothesis-config">
+{
+  "theme": "clean"
+}
+</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+
+
+<link rel="stylesheet" href="template/style.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./conclusion_generale.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Conclusion générale</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Estimation en temps réel de la tendance-cycle à l’aide de moyennes mobiles&nbsp;: apports dans l’analyse conjoncturelle</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/AQLT/AQLThesis.wp/" title="Code source" class="quarto-navigation-tool px-1" aria-label="Code source"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Recherche"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"> <span>Résumé</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro_generale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction générale</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapitre 1/index-ch1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Estimation de la tendance-cycle et formule générale de construction des moyennes mobiles</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapitre 2/index-ch2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Amélioration des estimations de tendance-cycle grâce à la paramétrisation locale des filtres de régression polynomiale</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapitre 3/index-ch3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapitre 4/ch4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Et si l’on publiait la tendance-cycle&nbsp;?</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conclusion_generale.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Conclusion générale</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliographie</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+    
+    <div style="display:none" aria-hidden="true">
+    \(
+
+        \newcommand\llb{[\![}
+        \newcommand\rrb{]\!]}
+        \newcommand\1{{\mathbb 1}}
+        \newcommand\ud{\,\mathrm{d}}
+        \newcommand{\transp}[1]{{}^t\!#1}
+        \newcommand{\bf}[1]{{\boldsymbol #1}}
+        \newcommand{\cov}[2]{\Cov\left(#1,#2\right)}
+        \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+        \newcommand\N{\mathbb{N}}
+        \newcommand\Norm{\mathcal{N}}
+        \newcommand\R{\mathbb{R}}
+        \newcommand\Z{\mathbb{Z}}
+        \newcommand{\ps}[2]{\left\langle #1 \,,\, #2 \right\rangle}
+        \newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+        \DeclareMathOperator*{\argmax}{argmax}
+        \DeclareMathOperator*{\argmin}{argmin}
+        \DeclareMathOperator*{\med}{med}
+        \DeclareMathOperator{\tr}{tr}
+        \DeclareMathOperator{\Cov}{Cov}
+        \DeclareMathOperator{\e}{e}
+    \)
+    </div>
+    
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Conclusion générale</span></h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Auteur</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Alain Quartier-la-Tente <a href="https://orcid.org/0000-0001-7890-3857" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            LEMNA
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>En somme, afin d’éclairer le débat public et de réduire le risque que les utilisateurs tirent des conclusions inappropriées, il est intéressant de publier conjointement la composante tendance-cycle et la série désaisonnalisée, notamment lorsque cette dernière est bruitée. En effet, en n’enlevant que la composante saisonnière et les jours ouvrables, la désaisonnalisation laisse, par construction, l’influence de la tendance-cycle et de l’irrégulier. Lorsque l’irrégulier est important (i.e., lorsque la série est bruitée), lisser les séries pour analyser directement la tendance de court terme (i.e., la composante tendance-cycle) apporte une information supplémentaire pour le diagnostic conjoncturel&nbsp;: en améliorant la compréhension et la détection des points de retournement et en réduisant l’impact des évènements ponctuels, ce qui peut contribuer à une prise de décision opportune et éclairée.</p>
+<p>Les seuls instituts publiant régulièrement la composante tendance-cycle, Australian Bureau of Statistics (ABS) et Statistique Canada, utilisent des moyennes mobiles appliquées sur les séries désaisonnalisées. Cette approche est cohérente avec la méthode de désaisonnalisation utilisée par ces instituts (méthode de décomposition X-11 utilisée dans le logiciel X-13ARIMA-SEATS), qui s’appuie sur des moyennes mobiles. Pour l’estimation finale de la tendance-cycle, une moyenne mobile symétrique est utilisée (en utilisant autant de point dans le passé que dans le futur)&nbsp;: les estimations intermédiaires doivent donc être basées sur des moyennes mobiles asymétriques, ce qui conduira à des révisions au fur et à mesure que de nouvelles observations sont disponibles. Cette thèse étudie plusieurs façons d’améliorer ces moyennes mobiles, pour réduire les révisions, le délai dans la détection des points de retournement et mieux rendre compte de la réalité économique autour de chocs.</p>
+<p>Le premier apport de cette thèse est d’unifier la théorie autour des méthodes de construction des moyennes mobiles symétriques et asymétriques pour l’estimation en temps réel de la tendance-cycle. Ceci est fait par le développement d’une formulation générale permettant notamment de regrouper les approches récemment développées, basées sur l’approche polynomiale locale, la théorie des espaces de Hilbert à noyau reproduisant (RKHS) ou une optimisation d’une somme pondérée de critères de qualité des moyennes mobiles. La comparaison de toutes ces approches selon une méthodologie commune permet de souligner l’importance de bien construire les critères de qualité de moyennes mobiles. Ainsi, pour analyser le délai de détection des points de retournement, il est important de prendre en compte les révisions qu’il peut y avoir dans les points de retournement détectés. Cela permet par exemple de montrer des sous-optimalités de certaines moyennes mobiles asymétriques lorsque l’on se rapproche de l’estimation finale, comme dans le cas des filtres RKHS. Pour l’analyse des révisions, il est également important de tenir en compte des révisions entre les différentes estimations successives puisque certaines approches peuvent avoir des faibles révisions par rapport à la dernière estimation mais des révisions plus importantes entre les estimations intermédiaires. C’est par exemple le cas pour l’approche basée l’application d’une moyenne mobile symétrique sur la série prolongée par prévision.</p>
+<p>En étudiant les révisions et le délai de détection des points de retournement, nous soulignons aussi l’importance d’adapter la méthode et la longueur de la moyenne mobile à la variabilité de la série&nbsp;: lorsque la variabilité de la série est «&nbsp;faible&nbsp;» (i.e., lorsque l’irrégulier est petit comparativement à la tendance-cycle et que la longueur de la moyenne mobile utilisée est trop longue), les méthodes modélisant des tendances de degré un produisent de moins bons résultats. Dans ce cas, il est possible d’utiliser des moyennes mobiles plus courtes (afin d’avoir une estimation plus précise de la tendance-cycle) ou de modéliser des tendances plus complexes (le bruit étant faible, les nouveaux paramètres pourront être estimés avec précision).<br>
+Il est également important d’adapter les critères utilisés pour la construction des moyennes mobiles au nombre de points connus dans le futur&nbsp;: lorsque peu de points sont connus, on peut préférer minimiser le déphasage alors que lorsqu’on se rapproche du cas d’utilisation du filtre symétrique (c’est-à-dire lorsqu’on se rapproche des estimations finales), le critère le plus important pourrait être la réduction des révisions (le déphasage étant alors quasi nul). C’est ce que qui peut expliquer les sous-optimalités des moyennes mobiles basées sur les RKHS.<br>
+</p>
+<p>En exploitant l’approche polynomiale locale, cette thèse propose deux extensions aux moyennes mobiles utilisées dans X-11 pour l’estimation de la tendance-cycle&nbsp;: la moyenne mobile symétrique de Henderson et les moyennes mobiles asymétriques de Musgrave.</p>
+<p>La première consiste à effectuer une paramétrisation locale des moyennes mobiles asymétriques de Musgrave. En effet, ces dernières dépendent d’un paramètre qui doit être fixé par l’utilisateur et est généralement fixé globalement. Par exemple, dans X-11, ce paramètre ne dépend que de la longueur de la moyenne mobile de Henderson et est donc fixe pour toutes les moyennes mobiles et pour toutes les estimations. Même si l’hypothèse sous-jacente à cette façon de définir le paramètre peut être plausible dans le cadre où la tendance est linéaire et fixe, elle est sous-optimale pour les périodes de retournement conjoncturel. L’extension proposée permet de réduire les délais dans la détection des points de retournement ainsi que les révisions.</p>
+<p>La seconde extension montre comment construire des moyennes mobiles, associées aux moyennes mobiles de Henderson et de Musgrave, qui intègrent une information extérieure afin d’avoir une meilleure décomposition tendance-cycle et irrégulier. Cela permet notamment de modéliser des chocs ponctuels (dont l’effet est généralement associé à l’irrégulier) et des chocs permanents (dont l’effet est associé à la tendance-cycle) à certaines dates définies par l’utilisateur&nbsp;: nous parlerons alors de moyennes mobiles «&nbsp;robustes&nbsp;».<br>
+Les moyennes mobiles étant des opérateurs linéaires, elles sont en effet sensibles à la présence de chocs. Par exemple, lors d’un choc permanent positif (affectant la tendance-cycle), la rupture va être lissée par la moyenne mobile et la tendance-cycle va être sur-estimée avant le choc et sous-estimée après le choc&nbsp;; lors d’un choc ponctuel (affectant l’irrégulier), la tendance-cycle va être sur ou sous-estimée autour du choc (en fonction du signe du choc). Cela va également mener à de fortes révisions des estimations autour des chocs. Lorsqu’un choc est associé à un point de retournement de l’économie (par exemple lors de la crise financière de 2008 ou lors de la pandémie du COVID-19), l’estimation directe de la tendance-cycle va conduire à un décalage dans la détection des points de retournement (contraction détectée en avance et reprise en retard), ce qui peut perturber l’utilisateur lors de l’analyse de ces séries. C’est notamment ce qui a conduit Statistique Canada et l’Australian Bureau of Statistics à suspendre leurs publications de tendance-cycle pendant la période du COVID-19.<br>
+À l’inverse, la construction de moyennes mobiles «&nbsp;robustes&nbsp;» permet de minimiser les révisions autour des chocs et de bien détecter les points de retournement associés à ces chocs. Par rapport à l’utilisation de modèles ad-hoc (comme l’utilisation d’un modèle RegARIMA), cette approche a l’avantage de modéliser directement les points atypiques dans la méthodologie associée aux moyennes mobiles et va ainsi réduire les révisions et les limiter au nombre de points utilisés par les moyennes mobiles. Cela évite également les sous-optimalités associées aux approches consistant à couper la série autour du choc et à estimer la tendance-cycle sur chaque partie, du fait de l’utilisation de moyennes mobiles asymétriques autour du choc, comme ce qui est par exemple fait par Statistique Canada pour la période du COVID-19. Par ailleurs, lorsqu’aucun choc n’est observé, les résultats ne sont pas dégradés par l’utilisation des moyennes mobiles «&nbsp;robustes&nbsp;» et les estimations sont proches de celles des moyennes mobiles classiques.<br>
+Pour éviter la modélisation de chocs, l’application de méthodes non linéaires (qui ne sont donc pas basées sur des moyennes mobiles) robustes peut être envisagée. Toutefois, ces méthodes conduisent à des estimations intermédiaires non cohérentes (i.e., très éloignées de ce que l’on pourrait économiquement s’attendre)&nbsp;: elles fournissent donc de moins bons résultats que les moyennes mobiles «&nbsp;robustes&nbsp;» pour l’estimation de la tendance-cycle.</p>
+<p>Ces deux extensions peuvent également être combinées afin de minimiser les révisions sur les estimations intermédiaires lorsque l’on modélise des chocs sur les derniers points.<br>
+</p>
+<p>Cette thèse s’inscrit dans une démarche de science ouverte par la publication de l’ensemble des codes utilisés, mais aussi par le développement de deux <em>packages</em> R, <a href="https://github.com/rjdverse/rjd3filters"><code>rjd3filters</code></a> et <a href="https://github.com/AQLT/publishTC"><code>publishTC</code></a>.</p>
+<p>Le premier <em>package</em>, <code>rjd3filters</code>, implémente toutes les méthodes décrites dans cette thèse avec des paramètres supplémentaires non étudiés ici, comme par exemple l’ajout d’un critère associé au déphasage dans les méthodes polynomiales locales. Il permet également de facilement créer et combiner des moyennes mobiles et étudier leurs propriétés théoriques (fonctions de gain, déphasage, critères de qualité, statistiques de validation croisée, etc.). Il est ainsi facile de reproduire l’algorithme de décomposition X-11 et d’étudier l’effet du changement d’une moyenne mobile dans cet algorithme. Ce <em>package</em> a donc davantage vocation à être utilisé par des chercheurs.</p>
+<p>Le second <em>package</em>, <code>publishTC</code>, a été développé pour faciliter la production de la composante tendance-cycle. Il permet de reproduire les méthodes utilisées par ABS et Statistique Canada, ainsi que les extensions proposées dans cette thèse. Il facilite également la production de graphiques illustrant notamment la qualité des dernières estimations grâces à des outils décrits dans cette thèse, comme les prévisions implicites ou les intervalles de confiance. Ce <em>package</em> a donc davantage vocation à être utilisé par des producteurs de statistiques officielles. Il a conduit au développement d’une chaîne de production simplifiée de la composante tendance-cycle, qui a été appliquée sur dix publications de l’Insee (environ 80 séries, <a href="https://aqlt.github.io/publishTC.wp/" class="uri">https://aqlt.github.io/publishTC.wp/</a>) démontrant l’intérêt de la composante tendance-cycle dans différents cas d’usage, comparant plusieurs méthodes d’estimation et analysant les révisions.<br>
+</p>
+<p>Les travaux de cette thèse pourraient être étendus de différentes façons.</p>
+<p>Tout d’abord, dans l’algorithme X-11 et dans cette thèse, la longueur de la moyenne mobile utilisée est supposée fixe dans le temps (pour l’estimation finale, sur des séries mensuelles nous utilisons toujours 13 termes). Toutefois, dans cette thèse nous montrons qu’il est important d’adapter la longueur de la moyenne mobile (la fenêtre) à la variabilité de la série&nbsp;: lorsque l’irrégulier est faible, une moyenne mobile plus courte est à préférer, afin de mieux estimer la tendance-cycle, et inversement lorsque l’irrégulier est fort, afin de le supprimer davantage. Cette variabilité peut également dépendre de la période étudiée&nbsp;: on peut par exemple s’attendre à une variabilité plus forte des séries autour d’une crise. Le passage par la modélisation polynomiale locale, comme ce qui est fait pour la prise en compte de chocs, permettrait d’avoir une estimation locale de la variance et d’utiliser des méthodes avancées de sélection de la fenêtre<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, qu’elle soit supposée fixe <span class="citation" data-cites="Ruppert01121995">(comme par exemple dans <a href="references.html#ref-Ruppert01121995" role="doc-biblioref">Ruppert, Sheather, et Wand 1995</a>)</span> ou variable <span class="citation" data-cites="fangijbels">(voir par exemple <a href="references.html#ref-fangijbels" role="doc-biblioref">Fan et Gijbels 1992</a>)</span>. L’implémentation de ces méthodes de sélection aiderait à appliquer les estimations moyennes mobiles à des séries haute fréquence (hebdomadaires, journalières, etc.) et ainsi étendre l’algorithme X-11. En effet, pour ces séries, la principale difficulté réside dans le choix de la longueur des moyennes mobiles qui doit être fixée par l’utilisateur, comme par exemple dans les méthodes basées sur STL, et qu’il n’existe pas de méthode automatique permettant de le faire. Cela fait que le choix est souvent arbitraire et correspond à celui par défaut dans le logiciel utilisé.</p>
+<p>Ensuite, la construction de moyennes mobiles «&nbsp;robustes&nbsp;» pourrait être approfondie. L’algorithme de décomposition X-11 est basé sur un processus itératif estimant une à une chaque composante (saisonnalité, tendance-cycle et irrégulier) via des moyennes mobiles spécifiques. Il possède également un module de correction des chocs ponctuels qui implique que le processus itératif précédent soit répété plusieurs fois, afin d’éviter qu’un point trop important ne biaise les estimations. La construction de moyennes mobiles «&nbsp;robustes&nbsp;» pourrait simplifier ce processus en ne reproduisant qu’une fois la procédure d’estimation. La détection des chocs pourrait s’appuyer sur la méthode déjà utilisée dans X-11 (basée sur le calcul de l’écart de l’irrégulier à une estimation locale de sa variance) ou sur la construction d’intervalles de confiance comme proposée dans cette thèse. En limitant le nombre de moyennes mobiles utilisées pour la décomposition, cela faciliterait également la construction d’intervalles de confiance pour les différentes composantes.</p>
+<p>Enfin, il est, de manière générale, difficile de juger en temps réel de la présence de chocs dans une série. Il est en effet souvent nécessaire d’avoir plusieurs points après le choc pour en être sûr, ou bien de s’appuyer sur des informations extérieurs. Cela qui contribue à augmenter les révisions lors des estimations en temps-réel. Pour cela, l’idée derrière le programme TERROR de <span class="citation" data-cites="caporello2003terror">Caporello et Maravall (<a href="references.html#ref-caporello2003terror" role="doc-biblioref">2003</a>)</span> est d’estimer un modèle RegARIMA sans utiliser le dernier point, de faire une prévision et de la comparer à la valeur observée&nbsp;: si l’erreur de prévision est grande (en valeur absolue) alors cette dernière observation peut être considérée comme atypique. Cette idée peut être étendue pour étudier la probabilité qu’un point soit atypique en étudiant la distribution des prévisions grâce, par exemple, aux prévisions quantiles.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-caporello2003terror" class="csl-entry" role="listitem">
+Caporello, Gianluca, et Agustı́n Maravall. 2003. <span>«&nbsp;A Tool for Quality Control of Time Series Data. Program TERROR&nbsp;»</span>. Occasional Paper 0301. Banco de España, Research Department.
+</div>
+<div id="ref-fangijbels" class="csl-entry" role="listitem">
+Fan, Jianqing, et Irène Gijbels. 1992. <span>«&nbsp;Variable Bandwidth and Local Linear Regression Smoothers&nbsp;»</span>. <em>The Annals of Statistics</em> 20 (4): 2008‑36. <a href="https://doi.org/10.1214/aos/1176348900">https://doi.org/10.1214/aos/1176348900</a>.
+</div>
+<div id="ref-Ruppert01121995" class="csl-entry" role="listitem">
+Ruppert, D., S. J. Sheather, et M. P. Wand. 1995. <span>«&nbsp;An Effective Bandwidth Selector for Local Least Squares Regression&nbsp;»</span>. <em>Journal of the American Statistical Association</em> 90 (432): 1257‑70. <a href="https://doi.org/10.1080/01621459.1995.10476630">https://doi.org/10.1080/01621459.1995.10476630</a>.
+</div>
+</div>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p> Une sélection de la fenêtre basée sur des critères statistiques facilement calculables (AIC, validation croisée, Cp de Mallow, etc.) ne sera pas assez discriminante (il y a peu de différences entre les fenêtres proches).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copié");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copié");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/aqlt\.github\.io\/AQLThesis\.wp\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Chapitre 4/ch4.html" class="pagination-link" aria-label="Et si l'on publiait la tendance-cycle&nbsp;?[\footnote{Références de l'article~: Quartier-la-Tente, A. (2025). Et si l'on publiait la tendance-cycle ? \emph{XVèmes Journées de Méthodologie Statistique de l'Insee}. \url{https://github.com/AQLT/publishTC.wp}}]{.content-visible when-format=&quot;pdf&quot;}">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Et si l’on publiait la tendance-cycle&nbsp;?</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="Bibliographie">
+        <span class="nav-page-text">Bibliographie</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Thèse Alain Quartier-la-Tente, 2025</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AQLT">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://aqlt.github.io/">
+      <i class="bi bi-globe" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/alainqlt/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

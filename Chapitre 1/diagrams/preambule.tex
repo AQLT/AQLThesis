@@ -1,0 +1,94 @@
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+  10pt,
+  a4paper, fleqn]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage[]{microtype}
+\usepackage[]{nccmath}
+\usepackage{enumitem}
+
+\usepackage[landscape, margin=0in]{geometry}
+
+\usepackage{stmaryrd}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{animate, dsfont, here, xspace}
+%\usepackage{tikz}       
+\usepackage{tikz,pgfplots}
+ \pgfplotsset{compat=1.17}
+ \usepackage{lscape}%paysage
+%\includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
+
+
+\DeclareMathOperator{\e}{e}
+\renewcommand{\P}{\mathds{P}} %Apparement \P existe déjà ?
+\newcommand\N{\mathds{N}}
+\newcommand\R{\mathds{R}}
+%\newcommand\C{\mathds{C}}
+%\newcommand\Z{\mathds{Z}}
+
+
+\newcommand\1{\mathds{1}}
+\newcommand{\E}[2][]{{\mathds{E}}_{#1}
+  \def\temp{#2}\ifx\temp\empty
+  \else
+    \left[#2\right]
+  \fi
+}
+\newcommand{\V}[2][]{{\mathds{V}}_{#1}
+  \def\temp{#2}\ifx\temp\empty
+  \else
+    \left[#2\right]
+  \fi
+}
+\newcommand\ud{\,\mathrm{d}}
+
+% blocks
+
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+%                           Styles tikz                              %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tikzstyle{global}=[very thick, shape = rectangle, rounded corners, inner sep=10pt, inner ysep=10pt]
+\tikzstyle{generalbox} = [global, draw=red!50, fill=orange!10]
+\tikzstyle{submodelbox} = [very thick, shape = rectangle, rounded corners, draw=blue!60!green, fill=blue!5,scale = 0.9]
+
+\tikzstyle{generaltitle} = [above=-0.3cm,rounded corners, rectangle, draw=black,fill=red!20]
+
+\tikzstyle{box} = [global, draw=blue!60!green, fill=blue!5]
+\tikzstyle{boxtitle} = [above=-0.3cm,rounded corners, rectangle, draw=black,fill=blue!20]
+\tikzstyle{boxtitle2} = [rounded corners, rectangle, draw=black,fill=blue!20]
+\tikzstyle{multimodelbox} = [global, draw=blue!60!green, fill=blue!2, dashed]
+
+
+\tikzstyle{edge} = [black!90, ->, rounded corners, line width = 1pt, >=latex]
+\tikzstyle{edgesubmod} = [blue!60!green, -, rounded corners, >=latex,double distance = 1pt, text = black]
+\tikzstyle{edgeequiv} = [black!90, <->, rounded corners, max width = 3cm,double distance = 1pt, >=latex]
+\tikzstyle{edgegeneral} = [red!90, ->, rounded corners, max width = 6cm, line width = 1.5pt, >=latex]
+
+
+
+\usepackage{varwidth}
+\tikzset{
+    max width/.style args={#1}{
+        execute at begin node={\begin{varwidth}{#1}},
+        execute at end node={\end{varwidth}}
+    }
+}
+
+
+\setlength{\mathindent}{0pt}

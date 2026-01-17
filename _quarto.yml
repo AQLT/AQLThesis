@@ -1,0 +1,104 @@
+project:
+  type: book
+
+book:
+  title: "Estimation en temps réel de la tendance-cycle à l'aide de moyennes mobiles : apports dans l'analyse conjoncturelle"
+  author: "Alain Quartier-la-Tente"
+  date: "12/09/2025"
+  output-file: these_AQLT
+  chapters:
+    - index.qmd
+    - intro_generale.qmd
+    - Chapitre 1/index-ch1.qmd
+    - Chapitre 2/index-ch2.qmd
+    - Chapitre 3/index-ch3.qmd
+    - Chapitre 4/ch4.qmd
+    - conclusion_generale.qmd
+    - references.qmd
+  page-footer: 
+    left: "Thèse Alain Quartier-la-Tente, 2025" 
+    right: 
+      - icon: github
+        href: https://github.com/AQLT
+      - icon: globe
+        href: https://aqlt.github.io/
+      - icon: linkedin 
+        href: https://www.linkedin.com/in/alainqlt/
+        
+        
+  # cover-image: cover.jpg
+  favicon: img/favicon.ico
+  site-url: https://aqlt.github.io/AQLThesis.wp/
+  repo-url: https://github.com/AQLT/AQLThesis.wp/
+
+format:
+  html:
+    theme: cosmo
+    crossref: 
+      title-delim: "&nbsp;-"
+    include-before-body: template/preambule.html
+    css: [template/style.css]
+  pdf:
+    # documentclass: memoir
+    documentclass: scrreprt
+    fontsize: 12pt
+    classoption: french
+    cite-method: biblatex
+    biblatexoptions: "style=chicago-authordate16,backend=biber,maxcitenames=2"
+    pdf-engine: pdflatex
+    papersize: A4
+    # fig-width: 7.5
+    # fig-height: 3.5
+    # toc: false # to include abstract first
+    fig-pos: 'H'
+    include-in-header: template/preambule.tex
+    include-after-body:
+      text: |
+        \clearpage
+        \phantomsection
+        \addcontentsline{toc}{chapter}{Résumé}
+        \includepdf[pages=2]{3 EDGE-PL-NU-2025.pdf}
+    keep-tex: true
+    # geometry:
+    #   - top=2.5cm
+    #   - bottom=2.5cm
+    #   - left = 2.5cm
+    #   - right = 2.5cm
+  # docx:
+  #   number-sections: true
+  #   prefer-html: true
+  #   fig-width: 6.3 # 16cm
+  #   crossref:
+  #     title-delim: "-"
+  # epub:
+  #   number-sections: true
+  #   prefer-html: true
+  #   fig-width: 6.3 # 16cm
+  #   crossref:
+  #     title-delim: "-"
+
+crossref:
+  tbl-prefix: table
+  fig-prefix: figure
+  sec-prefix: section
+  eq-prefix: équation
+lang: fr
+language:
+ title-block-author-single: Auteur
+ title-block-published: Date de soutenance
+echo: false
+toc: true
+number-sections: true
+tbl-cap-location: top
+fig-cap-location: top
+bibliography: biblio.bib
+csl: template/chicago-author-date.csl
+author:
+  - name: Alain Quartier-la-Tente 
+    affiliation: LEMNA
+    orcid: 0000-0001-7890-3857
+comments: 
+    hypothesis:
+      theme: clean
+
+

@@ -1,0 +1,224 @@
+\begin{tikzpicture}
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% formule gen %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+\node at (3,0) [generalbox, max width=8cm] (formulegen){
+\[
+\begin{cases}
+I(\boldsymbol\theta,q,y_t,u_t)=\E{(\Delta^{q}(M_{\boldsymbol\theta} y_t-u_t))^{2}} \\
+J(\boldsymbol\theta, f, \omega_1,\omega_2)=\int_{\omega_1}^{\omega_2} f\left[\phi_{\boldsymbol\theta}(\omega), \varphi_{\boldsymbol\theta} (\omega)\right] \ud \omega
+\end{cases}
+\]
+\begin{align*}
+\hat{\boldsymbol\theta}\in\argmin &\sum\alpha_i I(\boldsymbol\theta,q_i,y_t,u_t^{(i)})+\beta_iJ(\boldsymbol\theta, f_i,\omega_{1}^{(i)}, \omega_{2}^{(i)})\\
+&sc.\quad \boldsymbol C\boldsymbol \theta=\boldsymbol a&
+\end{align*}%
+};
+\node[generaltitle] at (formulegen.north) (formulegentitle) {Formule générale};
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Gray Thompson%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+\node at (0,7.2) [box, max width=8cm] (graythompson){
+\begin{gather*}
+y_t=\underbrace{\sum_{j=0}^d\beta_jt^j+\xi_t}_{=\mu_t}+\varepsilon_t,
+\quad 
+\begin{cases}
+	\varepsilon_t &\text{bruit blanc,  }\V{\varepsilon_t}=\sigma^2 \\
+	\xi_t &\text{non corrélé à }\varepsilon_t 
+\end{cases}\\
+\text{Critères :}\begin{cases}
+    F_{GT}(\boldsymbol\theta)=\E{(\hat{\mu}_t-\mu_t)^2} \\
+    S_{GT}(\boldsymbol\theta)=\E{ (\Delta^{d+1}\hat{\mu}_{t})^{2}}
+\end{cases}, \,\hat{\mu}_{t} = M_{\boldsymbol\theta} y_t
+\end{gather*}
+\begin{align*}
+\hat\theta\in&\argmin \alpha F_{GT}(\boldsymbol\theta) + (1-\alpha)S_{GT}(\boldsymbol\theta)\\
+&s.c.\quad \boldsymbol X'_d\boldsymbol \theta=\boldsymbol e_1
+\end{align*}
+};
+\node[boxtitle] at (graythompson.north) (graythompsontitle) {Gray, Thompson (1996)};
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Guggemos et al %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\node at (0,-8) [box, max width=5.5cm] (guggemos){
+\[
+\text{Critères :}\begin{cases}
+F_g(\boldsymbol\theta)=\sum_{j=-h}^h\theta_j^2 \\
+S_g(\boldsymbol\theta)=\sum_{j=-h}^h(\Delta^q\theta_j)^2
+\end{cases}
+\]
+\begin{align*}
+\hat\theta\in&\argmin \alpha F_g(\boldsymbol\theta) + (1-\alpha)S_g(\boldsymbol\theta)\\
+&s.c.\quad \boldsymbol X'_d\boldsymbol \theta=\boldsymbol e_1
+\end{align*}
+};
+\node[boxtitle] at (guggemos.north) (guggemostitle) {Guggemos \emph{et al} (2018)};
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Proietti et Luati %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\node at (20,-8) [box, max width=8cm] (proiettiluati){
+\[y_t=\sum_{j=0}^d\beta_jt^j+\varepsilon_t,
+\quad \varepsilon_t \text{ bruit blanc}
+\]
+$\boldsymbol \kappa = (\kappa_{-h},\dots, \kappa_h)$ noyaux, $\boldsymbol K=diag(\kappa_{-h},\dots,\kappa_{h})$
+\begin{gather*}
+(\hat \beta_0,\dots, \hat \beta_d)\in\argmin
+(\boldsymbol y-\boldsymbol X_p\hat{\boldsymbol \beta})'\boldsymbol K(\boldsymbol y-\boldsymbol X_d\hat{\boldsymbol \beta}) \\
+\implies \hat{\boldsymbol \theta}\boldsymbol y=\hat \beta_0 =\boldsymbol  K\boldsymbol X_d(\boldsymbol X'_d\boldsymbol K\boldsymbol X_d)^{-1}\boldsymbol e_{1}\boldsymbol y
+\end{gather*}
+};
+
+\node[boxtitle] at (proiettiluati.north) (proiettiluatititle) {Proietti et Luati (2008)};
+
+
+%%%%%%%%%%%%%%%%
+%%%%% RKHS %%%%%
+%%%%%%%%%%%%%%%%
+
+\node at (20,8) [box, max width=8cm] (rkhs){
+$f_0(t)$ noyau continu, $P_i$ polynômes orthonormaux de $\mathbb L^2(f_0)$ et $K_p(t)=\sum_{i=0}^{d-1}P_i(t)P_i(0)f_0(t)$.
+
+\begin{ceqn}
+\[
+\hat\theta_i = \frac{K_d(i/b)}{\sum_{j=-h}^h K_d(j/b)}
+\]
+\end{ceqn}
+};
+\node[boxtitle] at (rkhs.north) (rkhstitle) {Dagum et Bianconcini (2008) --- RKHS};
+
+
+%%%%%%%%%%%%%%%%%%
+%%%%% Noyaux %%%%%
+%%%%%%%%%%%%%%%%%%
+
+\node[boxtitle] at (10, -8.7) (henderson) {Henderson};
+\node[boxtitle] at (10, -7) (macaulay) {Filtre Macaulay};
+\node[boxtitle] at (10, -6) (epanechnikoff) {Filtre Epanechnikoff};
+\node[boxtitle, max width=3cm] at (10, -5) (nadarayawatson) {Nadaraya-Watson ou estimateur par noyaux
+};
+\node[boxtitle] at (10, -3) (loess) {LOESS%
+};
+
+
+%%%%%%%%%%%%%%%%%%
+%%%%% Liens %%%%%%
+%%%%%%%%%%%%%%%%%%
+
+%% Gray Thompson - Guggemos
+\draw[edgeequiv] (graythompson.220)  -- (guggemos.152) node[pos = 0.7, right]{
+$\xi_t =0$
+
+$q=d+1$};
+
+% Luati - RKHS
+\draw[edgeequiv] (proiettiluatititle.north)--(rkhs.south) node[pos = 0.7, left]{
+$f_0=$ version continue de $\kappa_i$
+
+$b=h+1$};
+
+%% Gray Thompson -Luati
+\draw[edge] (graythompson.280) --++(0,-.5) -|  (proiettiluati.30)  node[pos = 0.15, above, max width = 8cm]{
+$\alpha=1\;;\;\V{(\xi_{t-h},\dots,\xi_{t+h})}=\boldsymbol K^{-1}\;;\;\sigma^2=0$};
+
+%% Gray Thompson - Guggemos
+\draw[edgeequiv,  max width = 8cm] (guggemos.south)  -- ++(0,-.5) -| (proiettiluati.south) node[pos = 0.2, below]{
+Théorème d'Henderson (1916)%
+};
+
+%%%%%%%%%%%%%%%%%%%
+%%%%%% formule gen
+
+%% gray thomson
+\draw[edgegeneral] (graythompson.south |- 52, 52 |- formulegen.north)--(graythompson.south) node[midway, right]{
+$F_{GT}(\boldsymbol\theta)=I(\boldsymbol\theta,0,y_t,\mu_t)$
+
+$S_{GT}(\boldsymbol\theta)=I(\boldsymbol\theta,d+1,y_t,0)$
+};
+
+%% guggemos
+\draw[edgegeneral] (guggemostitle.north |- 52,  52|-  formulegen.south)--(guggemostitle.north) node[near start, right]{
+$F_g(\boldsymbol\theta)=I(\boldsymbol\theta,0,y_t,\E{M_{\boldsymbol\theta} y_t})$
+
+$S_g(\boldsymbol\theta)=I(\boldsymbol\theta,q,y_t,\E{M_{\boldsymbol\theta} y_t})$
+
+$y_t=\sum_{j=0}^p\beta_jt^j+\varepsilon_t, \quad \varepsilon_{t}\overset{i.i.d}{\sim}\mathcal{N}(0,\sigma^{2})$
+};
+
+%% proietti
+\draw[edgegeneral] (formulegen.east)-|(proiettiluatititle.150) node[near end, left]{
+$y_t=\underbrace{\sum_{j=0}^d\beta_jt^j}_{g_t}+\varepsilon_t$,
+
+$\boldsymbol \varepsilon=
+\begin{pmatrix}
+    \varepsilon_{t-h} \\ \vdots \\ \varepsilon_{t+h}
+\end{pmatrix}\sim \mathcal N (0,\boldsymbol K)$
+
+Critère minimisation : 
+
+$I(\boldsymbol\theta, 0, y_t, g_t)$
+};
+%%%%%%%%%%%%
+%%%%%% Noyaux
+
+%%% From Guggemos
+%% Henderson
+\draw[edge] (guggemos.east)--++(0.2,0)|-(henderson.west) node[near end, below]{
+$q=3,\alpha = 0$
+};
+
+%% Macaulay
+\draw[edge] (guggemos.east)--++(0.2,0)|-(macaulay.west) node[near end, below]{
+$\alpha=1$
+};
+
+%% Macaulay
+\draw[edge] (guggemos.east)--++(0.2,0)|-(epanechnikoff.west) node[near end, below]{
+$q=2,\,\alpha=0$
+};
+
+%%% From Proietti
+%% Henderson
+\draw[edge, max width = 6cm] (proiettiluati.west)--++(-0.2,0)|-(henderson.east) node[pos=0.8, below = -0.75cm]{
+\begin{align*}
+    \textstyle
+    \kappa_{j}^H = & \textstyle 
+      \left[1-\frac{j^2}{(h+1)^2}\right]
+      \left[1-\frac{j^2}{(h+2)^2}\right]\times\\
+     &  \textstyle
+      \;\;\left[1-\frac{j^2}{(h+3)^2}\right]
+\end{align*}
+};
+
+%% Macaulay
+\draw[edge] (proiettiluati.west)--++(-0.2,0)|-(macaulay.east) node[near end, below]{
+$\kappa_j^U=1$
+};
+
+%% epanechnikoff
+\draw[edge] (proiettiluati.west)--++(-0.2,0)|-(epanechnikoff.east) node[near end, below]{
+$\kappa_j^E=1-\left\lvert\frac{j}{h+1}\right\rvert^2$
+};
+
+%% Nadaraya-Watson
+\draw[edge] (proiettiluati.west)--++(-0.2,0)|-(nadarayawatson.east) node[near end, below]{
+$d=0$
+};
+%% LOESS
+\draw[edge] (proiettiluati.west)--++(-0.2,0)|-(loess.east) node[near end, below]{
+$\kappa_j^{TC}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^3
+\right)^3$
+};
+\end{tikzpicture}

@@ -1,0 +1,811 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[10pt,xcolor=table,color={dvipsnames,usenames},ignorenonframetext,usepdftitle=false,french]{beamer}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+\usepackage{caption}
+\captionsetup{skip=0pt,belowskip=0pt}
+%\setlength\abovecaptionskip{-15pt}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath,mathtools,multirow}
+\usepackage{float,hhline}
+\usepackage{tikz}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+\usetheme[coding=utf8,language=french,
+,titlepagelogo=img/logobeamer
+]{TorinoTh}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdfauthor={Alain QUARTIER-LA-TENTE},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\newif\ifbibliography
+\usepackage{longtable,booktabs}
+\usepackage{caption}
+% These lines are needed to make table captions work with longtable:
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\usepackage{graphicx,grffile}
+\makeatletter
+
+\newsavebox\pandoc@box
+
+
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+
+
+  \sbox\pandoc@box{#1}%
+
+
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+
+
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+
+
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+
+
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+
+
+  \else\usebox{\pandoc@box}%
+
+
+  \fi%
+
+
+}
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+\AtBeginPart{
+  \let\insertpartnumber\relax
+  \let\partname\relax
+  \frame{\partpage}
+}
+% \AtBeginSection{
+%   \ifbibliography
+%   \else
+%     \begin{frame}{Sommaire}
+%     \tableofcontents[currentsection, hideothersubsections]
+%     \end{frame}
+%   \fi
+% }
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  %\setlength{\itemsep}{0pt}
+  \setlength{\parskip}{0pt}
+  }
+\setcounter{secnumdepth}{0}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{dsfont}
+\usepackage{stmaryrd}
+\usepackage[normalem]{ulem}
+\usepackage{fontawesome5}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat=1.17}
+\pgfplotsset{samples=100}
+\usepackage{animate}
+ \usepackage{booktabs}
+
+\usepackage{colortbl}
+
+\DeclareMathOperator{\argmin}{argmin}
+\DeclareMathOperator{\med}{med}
+
+
+% blocks
+\usepackage{environ}
+\usepackage[tikz]{bclogo}
+
+\tikzstyle{titlestyle} =[draw=black!80,fill=black!20, text=black,
+ right=10pt, rounded corners]
+\mdfdefinestyle{symmaryboxstyle}{
+	linecolor=black!80, backgroundcolor = black!5,
+	skipabove=\baselineskip, innertopmargin=\baselineskip,
+	innerbottommargin=\baselineskip,
+	userdefinedwidth=\textwidth,
+	middlelinewidth=1.2pt, roundcorner=5pt,
+	skipabove={\dimexpr0.5\baselineskip+\topskip\relax},
+	frametitleaboveskip=\dimexpr-\ht\strutbox\relax,
+	innerlinewidth=0pt,
+}
+\NewEnviron{summary}{%
+\begin{mdframed}[style=symmaryboxstyle]
+\vspace{-0.5em}
+\BODY
+\end{mdframed}
+}
+\makeatletter
+% Open `\noalign` and check for overlay specification:
+\def\rowcolor{\noalign{\ifnum0=`}\fi\bmr@rowcolor}
+\newcommand<>{\bmr@rowcolor}{%
+    \alt#1%
+        {\global\let\CT@do@color\CT@@do@color\@ifnextchar[\CT@rowa\CT@rowb}% Rest of original `\rowcolor`
+        {\ifnum0=`{\fi}\@gooble@rowcolor}% End `\noalign` and gobble all arguments of `\rowcolor`.
+}
+% Gobble all normal arguments of `\rowcolor`:
+\newcommand{\@gooble@rowcolor}[2][]{\@gooble@rowcolor@}
+\newcommand{\@gooble@rowcolor@}[1][]{\@gooble@rowcolor@@}
+\newcommand{\@gooble@rowcolor@@}[1][]{\ignorespaces}
+
+\newcommand{\rowc}[1]{\only<#1>{\\\rowcolor{processblue!40}}}
+%\newcommand{\rowc}[1]{{\rowcolor<#1>{processblue!30}}
+\newcommand{\cellc}[1]{\only<#1>{\cellcolor{processblue!40}}}
+\newcommand{\supsp}[1]{\visible<#1>{\\}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+
+\title{Estimation en temps réel de la tendance-cycle à l'aide de
+moyennes mobiles : apports dans l'analyse conjoncturelle}
+\ateneo{Soutenance doctorat}
+\author{Alain QUARTIER-LA-TENTE}
+\date{}
+
+
+\setrellabel{}
+
+\setcandidatelabel{}
+
+\rel{}
+\division{}
+
+\departement{9 décembre 2025}
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+\DeclareMathOperator{\Cov}{Cov}
+\newcommand{\E}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\V}[1]{\mathbb{V}\left[ #1 \right]}
+\newcommand{\cov}[2]{\Cov\left( #1\,,\,#2 \right)}
+
+\begin{document}
+\frame[plain,noframenumbering]{\titlepage}
+
+\section{Introduction}\label{introduction}
+
+\begin{frame}{Introduction}
+\phantomsection\label{introduction-1}
+Construire des séries CVS-CJO est une pratique courante :
+
+\begin{itemize}
+\item
+  Permet une analyse en glissement mensuel/trimestriel
+\item
+  Améliore le diagnostic conjoncturel
+\end{itemize}
+
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{img/slides-ffig-ipi-france-1.pdf}}
+\end{center}
+\end{frame}
+
+\begin{frame}{Hypothèse de travail de la désaisonnalisation}
+\phantomsection\label{hypothuxe8se-de-travail-de-la-duxe9saisonnalisation}
+Une série brute se décompose en 3 composantes inobservables :
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{effets saisonniers} (y.c. calendrier) : variations régulières
+  le même mois chaque année
+\end{itemize}
+
+\pause
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{tendance-cycle} ou « tendance de court terme » : combinaison
+  de la tendance (évolutions de long terme) et du cycle (évolutions de
+  court terme autour de la tendance)
+\end{itemize}
+
+\pause
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{irrégulier} : fluctuations inattendues (chocs économiques non
+  prévus, bruit\ldots)
+\end{itemize}
+
+\pause
+
+\faArrowCircleRight{} La série CVS-CJO contient donc l'effet de la
+tendance-cycle \textbf{ET} de l'irrégulier
+
+\pause
+
+Irrégulier pertinent pour l'analyse conjoncturel\ldots{} Mais peut
+perturber l'analyse de la tendance sous-jacente et les points de
+retournement
+\end{frame}
+
+\begin{frame}{Et si l'irrégulier est important ?}
+\phantomsection\label{et-si-lirruxe9gulier-est-important}
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{img/slides-ffig-ipi-france-sa-1.pdf}}
+\end{center}
+
+\faArrowCircleRight{} Dans certains cas, pertinent d'étudier
+\textbf{directement} la tendance-cycle
+\end{frame}
+
+\begin{frame}{Comment estimer la tendance-cycle ?}
+\phantomsection\label{comment-estimer-la-tendance-cycle}
+Les deux principaux instituts publiant régulièrement la tendance-cycle
+(Statistique Canada et Australian Bureau of Statistics) appliquent une
+moyenne mobile (MM) symétrique de \textbf{13 termes} sur la série
+désaisonnalisée \textbf{mensuelle} \[
+TC_t= \sum_{i=-6}^{+6}\theta_i SA_{t+i}
+\] Cohérent avec X-13-ARIMA-SEATS utilisée pour la CVS-CJO
+
+\pause
+
+Les estimations en \textbf{temps réel} s'appuient nécessairement sur des
+MM asymétriques qui vont créer des révisions et un déphasage dans la
+détection des points de retournement
+
+\pause
+
+Objectifs de la thèse :
+
+\begin{enumerate}
+\item
+  Étudier des méthodes d'estimation en temps réel de la tendance-cycle
+  par des MM \textbf{asymétriques} : revue de l'existant (art. 1) et
+  propositions d'extensions (art. 2 et 3)
+\item
+  Décrire pourquoi publier la tendance-cycle et comment mettre en place
+  une production (art. 4)
+\end{enumerate}
+\end{frame}
+
+\section{Estimation de la tendance-cycle et formule générale de
+construction des
+MM}\label{estimation-de-la-tendance-cycle-et-formule-guxe9nuxe9rale-de-construction-des-mm}
+
+\begin{frame}[noframenumbering]{Sommaire}
+\phantomsection\label{sommaire}
+\tableofcontents[currentsection, hideothersubsections]
+\end{frame}
+
+\subsection{Introduction}\label{introduction-2}
+
+\begin{frame}{Introduction}
+\phantomsection\label{introduction-3}
+Récemment, différentes approches générales de construction de MM ont
+émergé :
+
+\begin{itemize}
+\item
+  Filtres polynomiaux locaux
+  (\href{https://doi.org/10.1214/08-AOAS195}{Proietti et Luati 2008})
+\item
+  Filtres fondés sur les espaces de Hilbert à noyau reproduisant (RKHS,
+  \href{https://ideas.repec.org/a/bes/jnlbes/v26y2008p536-545.html}{Dagum
+  et Bianconcini 2008})
+\item
+  Approche Fidelity-Smoothness-Timeliness (FST,
+  \href{ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001}{Grun-Rehomme,
+  Guggemos, et Ladiray 2018})
+\end{itemize}
+
+\pause
+
+\begin{itemize}
+\tightlist
+\item
+  Approche Accuracy-Timeliness-Smoothness (ATS,
+  \href{https://EconPapers.repec.org/RePEc:eee:intfor:v:35:y:2019:i:3:p:1072-1084}{Wildi
+  et McElroy 2019})\\
+  \faArrowCircleRight{} approche paramétrique non étudiée empiriquement
+  car ne correspond pas à la logique non-paramétrique de
+  X-13-ARIMA-SEATS
+\end{itemize}
+
+\pause
+
+Objectif de l'article 1 : décrire et comparer \textbf{théoriquement} et
+\textbf{empiriquement} ces différentes approches pour l'estimation en
+temps réel en utilisant une méthodologie commune
+\end{frame}
+
+\subsection{Résultats théoriques et
+empiriques}\label{ruxe9sultats-thuxe9oriques-et-empiriques}
+
+\begin{frame}{Comparaison théorique}
+\phantomsection\label{comparaison-thuxe9orique}
+Développement d'une formulation générale pour la construction des
+filtres linéaires permettant :
+
+\begin{itemize}[<+->]
+\item
+  De mettre en évidence les \textbf{équivalences} entre les méthodes et
+  des filtres classiques (ex. Macaulay, Nadaraya-Watson)
+\item
+  De \textbf{clarifier} les \textbf{différences} entre les méthodes
+  utilisant des \textbf{critères} du \textbf{même nom} (ex. smoothness)
+\item
+  De \textbf{clarifier} les \textbf{différences} entre les méthodes se
+  basant sur les \textbf{mêmes fondements théoriques} (ex. : RKHS et
+  polynômes locaux)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Comparaison empirique}
+\phantomsection\label{comparaison-empirique}
+\begin{itemize}
+\tightlist
+\item
+  Comparaison sur des séries \textbf{mensuelles} réelles et simulées
+  avec une MM symétrique de \textbf{13 termes} sur des critères de
+  révision et de détection des points de retournement (déphasage)
+\end{itemize}
+
+\pause
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Fenêtre fixe} appliquée sur \textbf{plusieurs niveaux de
+  variabilité} de l'irrégulier (I/C ratio)
+\end{itemize}
+
+\pause
+
+Comparaison empirique montre l'importance de bien définir les critères
+de comparaison :
+
+\begin{itemize}
+\item
+  Déphasage : nombre de mois nécessaires pour détecter un point de
+  retournement \textbf{sans révision future}\\
+  \faArrowCircleRight{} Il peut y avoir des révisions entre les
+  estimations intermédiaires successives (ex. RKHS)
+\item
+  Révisions : par rapport à la dernière estimation mais aussi entre
+  \textbf{deux estimations successives} \faArrowCircleRight{} Met en
+  évidence des sous-optimalités lorsque l'on se rapproche de
+  l'estimation finale (ex. RKHS)
+\end{itemize}
+\end{frame}
+
+\subsection{Contribution informatique}\label{contribution-informatique}
+
+\begin{frame}[fragile]{Contribution informatique}
+\phantomsection\label{contribution-informatique-1}
+Développement du package R \texttt{rjd3filters} permettant :
+
+\begin{itemize}
+\item
+  De facilement créer et combiner différentes moyennes mobiles (et
+  notamment reproduire la méthode de décomposition X-11)
+\item
+  D'utiliser les 4 grandes approches mentionnées tout en étudiant des
+  extensions possibles (ex. articles 2 et 3)
+\end{itemize}
+\end{frame}
+
+\section{Extensions des MM de Henderson et
+Musgrave}\label{extensions-des-mm-de-henderson-et-musgrave}
+
+\begin{frame}[noframenumbering]{Sommaire}
+\phantomsection\label{sommaire-1}
+\tableofcontents[currentsection, hideothersubsections]
+\end{frame}
+
+\subsection{Moyennes mobiles de Henderson et de
+Musgrave}\label{moyennes-mobiles-de-henderson-et-de-musgrave}
+
+\begin{frame}{Henderson et Musgrave (1/2)}
+\phantomsection\label{henderson-et-musgrave-12}
+Dans X-13-ARIMA-SEATS, MM de Henderson (symétrique) et Musgrave
+(asymétrique) sont utilisées pour estimer la tendance-cycle (comme le
+fait ABS)
+
+\pause
+
+MM de Henderson obtenue par analogie avec la régression polynomiale
+locale~: \(y_t = TC(t)+\varepsilon_t\) et \(TC(t)=TC_t\) peut être
+\textbf{localement} approchée par un polynôme en \(t\) ~: \[
+\forall j\in\left\llbracket -h,h\right\rrbracket : y_{t+j}=\underbrace{\sum_{i=0}^{3}\beta_{i,t}j^{i}}_{\simeq TC_{t+j}}+\varepsilon_{t+j}
+\]
+
+\pause
+
+Estimation en utilisant les WLS : \(\hat{\beta_t}=(X'KX)^{1}X'Ky_t\) et
+\[
+\widehat{TC}_{t}=\hat\beta_{0,t}=w'y=\sum_{j=-h}^{h}w_{j}y_{t+j}
+\] Avec des poids biens choisis on retrouve la MM \textbf{symétrique} de
+Henderson
+\end{frame}
+
+\begin{frame}{Henderson et Musgrave (2/2)}
+\phantomsection\label{henderson-et-musgrave-22}
+MM de Musgrave obtenue par \textbf{compromis biais-variance} \[
+\forall j\in\left\llbracket -h,f\right\rrbracket : y_{t+j}=\beta_{0,f}+\delta t+\varepsilon_{t+j}\quad\varepsilon_t\sim \mathcal N(0,\sigma^2).
+\] Coefficients obtenus en minimisant l'EQM de révision sous contrainte
+de \textbf{préservation sans biais des constantes} (\(\beta_{0,f}\))
+mais avec \textbf{biais} dans l'estimation de la \textbf{pente}
+(\(\delta\))
+
+\pause
+
+MM dépend du rapport \(|\delta/\sigma|\) défini par l'utilisateur. Si
+biais (\(\delta\)) constant dans le temps, tendance est linéaire,
+peut-être lié à l'I-C ratio (\(R\)) \[
+\left|\frac{\delta}{\sigma}\right|=\frac{2}{R\sqrt{\pi}}.
+\]
+
+C'est ce qui fait dans X-13-ARIMA-SEATS en utilisant \(R=3,5\) lorsque
+H-13 termes est utilisée (ABS)
+
+\pause
+
+Objectifs articles 2 et 3 : étudier des extensions pour améliorer la
+performance en temps réel
+\end{frame}
+
+\subsection{Paramétrisation locale des filtres de régression
+polynomiale}\label{paramuxe9trisation-locale-des-filtres-de-ruxe9gression-polynomiale}
+
+\begin{frame}{Estimation locale de \(|\delta/\sigma|\)}
+\phantomsection\label{estimation-locale-de-deltasigma}
+\textbf{Hypothèses} de biais constant et de tendance linéaire souvent
+\textbf{irréalistes}, notamment autour des points de retournement !
+
+\pause
+
+Solution : \textbf{estimer localement} \(|\delta/\sigma|\) :
+
+\begin{itemize}
+\tightlist
+\item
+  Pente \(\delta\) estimée localement via une régression polynomiale
+  locale (construction de MM pour estimer)\\
+\item
+  Variance \(\sigma^2\) estimée en utilisant l'ensemble des données
+\end{itemize}
+
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{img/slides-ffig-local-icr-1.pdf}}
+\end{center}
+
+\pause
+
+Résultats sur des séries mensuelles (simulées et réelles) :
+\textbf{réduit} les \textbf{révisions} et le \textbf{délai dans la
+détection des points de retournement}
+
+\textbf{Pas d'impact} significatif sur des séries
+\textbf{trimestrielles}
+\end{frame}
+
+\subsection{Construction de moyennes mobiles robustes aux points
+atypiques}\label{construction-de-moyennes-mobiles-robustes-aux-points-atypiques}
+
+\begin{frame}{Impact des points atypiques (1/3)}
+\phantomsection\label{impact-des-points-atypiques-13}
+\begin{itemize}[<+->]
+\item
+  Par construction les MM sont \textbf{sensibles aux points atypiques}
+\item
+  Solution 1 : Correction a priori via un modèle RegARIMA
+  (X-13-ARIMA-SEATS et ABS sauf COVID-19) ? Inconvénients : convergence
+  peut être longue, estimation dépend de la spécification du modèle et
+  de la période d'estimation
+\end{itemize}
+
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{img/slides-ffig-ex-simulchoc-1.pdf}}
+\end{center}
+\end{frame}
+
+\begin{frame}{Impact des points atypiques (2/3)}
+\phantomsection\label{impact-des-points-atypiques-23}
+\begin{itemize}
+\tightlist
+\item
+  Solution 2 pour les ruptures en niveau (LS), possibilité d'une
+  estimation segmentée (Statistique Canada)
+\end{itemize}
+
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{img/slides-ffig-ex-simulchoc2-1.pdf}}
+\end{center}
+\end{frame}
+
+\begin{frame}{Impact des points atypiques (3/3)}
+\phantomsection\label{impact-des-points-atypiques-33}
+Objectif de l'article : étudier des approches alternatives :
+
+\begin{enumerate}
+\tightlist
+\item
+  Étude de méthodes \textbf{non-linéaires robustes} (médianes mobiles,
+  moindres carrés médians\ldots)
+\end{enumerate}
+
+\pause
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Exploiter la modélisation polynomiale pour construire des \textbf{MM
+  intégrant une information extérieure} (choc ponctuel ou en niveau)
+  afin d'améliorer la décomposition tendance-cycle/irrégulier
+\end{enumerate}
+
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{img/slides-ffig-ex-simulchoc4-1.pdf}}
+\end{center}
+\end{frame}
+
+\begin{frame}{Principaux résultats}
+\phantomsection\label{principaux-ruxe9sultats}
+Méthodes non-linéaires robustes produisent de \textbf{fortes révisions
+en temps réel} et ne reproduisent pas les points de retournement
+associés aux chocs (ex COVID-19)
+
+\pause
+
+MM «~robustes~» : \textbf{réduisent les révisions} et
+\textbf{modélisent} bien les \textbf{points de retournements}
+
+\pause
+
+Problématique de la \textbf{validation} et de l'\textbf{identification}
+et des chocs à modéliser :
+
+\begin{itemize}
+\item
+  Validation par comparaison avec les estimations sans choc et en
+  construisant des \textbf{intervalles de confiance}
+\item
+  \textbf{Pas d'impact} à modéliser un \textbf{choc inexistant}
+\item
+  Utilisation d'information \emph{ad hoc} ou de modèles externes (ex.
+  RegARIMA) pour l'identification des chocs
+\item
+  Révisions importantes si la nature du choc est mal modélisée
+  (association du choc à l'irrégulier ou la tendance-cycle) : en cas
+  d'incertitude il vaut mieux ne rien modéliser
+\end{itemize}
+\end{frame}
+
+\section{Et si l'on publiait la
+tendance-cycle~?}\label{et-si-lon-publiait-la-tendance-cycle}
+
+\begin{frame}[noframenumbering]{Sommaire}
+\phantomsection\label{sommaire-2}
+\tableofcontents[currentsection, hideothersubsections]
+\end{frame}
+
+\begin{frame}{Pourquoi et comment publier la TC ? (1/2)}
+\phantomsection\label{pourquoi-et-comment-publier-la-tc-12}
+\href{https://www.imf.org/external/pubs/ft/qna/pdf/2017/QNAManual2017FRE.pdf}{FMI
+(2017)} et
+\href{https://ec.europa.eu/eurostat/documents/3859598/19355229/KS-GQ-24-012-EN-N.pdf/be954db6-64f5-c1a2-a0b8-0b4de2a5c707?version=1.0&t=1718182927069}{Eurostat
+(2024)} recommandent de publier la TC en plus de la série
+CVS-CJO\ldots{} Mais très peu d'instituts publient régulièrement la TC
+
+\pause
+
+Objectifs de l'article :
+
+\begin{enumerate}
+\tightlist
+\item
+  Synthétiser les arguments en faveur de la publication de la TC et les
+  recommandations pour le faire
+\end{enumerate}
+
+\pause
+
+Trois principales raisons de publier la TC :
+
+\begin{enumerate}
+[i.]
+\tightlist
+\item
+  Réduire le risque que les utilisateurs tirent des \textbf{conclusions
+  inappropriées} sur la base de mouvements liés à l'irrégulier\\
+\item
+  Permettre une \textbf{comparaison} appropriée \textbf{dans le temps}
+  en réduisant l'impact des évènements ponctuels\\
+\item
+  Améliorer la \textbf{compréhension} et la détection des points de
+  retournement
+\end{enumerate}
+
+Recommandations : présenter la TC avec la série CVS-CJO et refléter
+l'incertitude des premières estimations
+\end{frame}
+
+\begin{frame}[fragile]{Pourquoi et comment publier la TC ? (2/2)}
+\phantomsection\label{pourquoi-et-comment-publier-la-tc-22}
+\begin{enumerate}
+\setcounter{enumi}{1}
+\item
+  Décrire comment, en pratique, publier la TC grâce au package
+  \texttt{publishTC} permettant :
+
+  \begin{itemize}
+  \item
+    L'estimation simple de la TC avec les méthodes de Statistique
+    Canada, ABS et les extensions proposées dans les articles 2 et 3
+    (ainsi que combinaison de ces extensions)
+  \item
+    Différentes visualisations (y.c. intervalles de confiance,
+    prévisions implicites\ldots)
+  \item
+    Recommandations sur le choix de la méthode et critères de
+    comparaison
+  \item
+    Création d'un \emph{template} simplifié de mise en production
+    automatique appliqué à
+    \href{https://aqlt.github.io/publishTC.wp/}{10 publications de
+    l'Insee} (\(\simeq 80\) séries)
+  \end{itemize}
+\end{enumerate}
+\end{frame}
+
+\section{Conclusion}\label{conclusion}
+
+\begin{frame}[fragile]{Conclusion}
+\phantomsection\label{conclusion-1}
+Apports de la thèse :
+
+\begin{itemize}
+\item
+  \textbf{Unification des méthodes} de construction des moyennes
+  mobiles\\
+  \faArrowCircleRight{} développement d'une formulation générale et
+  comparaison selon une méthodologie commune
+\item
+  \textbf{Deux améliorations} des méthodes existantes :
+
+  \begin{itemize}
+  \item
+    Paramétrisation locale des moyennes mobiles asymétriques
+    \faArrowCircleRight{} réduction des révisions et délais dans la
+    détection des points de retournements
+  \item
+    Moyennes mobiles robustes aux chocs \faArrowCircleRight{}
+    estimations de la TC plus proches de la réalité économique
+  \end{itemize}
+\item
+  \textbf{Outils open-source} : \texttt{rjd3filters} et
+  \texttt{publishTC} \faArrowCircleRight{} facilitent la recherche et la
+  mise en production
+\end{itemize}
+
+\pause
+
+Exemples de prolongements : travaux sur la sélection de la fenêtre (fixe
+ou mobile), intégration des moyennes mobiles «~robustes~» dans
+X-11\ldots{}
+\end{frame}
+
+\begin{frame}[fragile,noframenumbering]{Merci pour votre attention}
+\phantomsection\label{merci-pour-votre-attention}
+\footnotesize
+
+\begin{itemize}
+\item
+  Article 1 : Estimation en temps réel de la tendance-cycle : apport de
+  l'utilisation des moyennes mobiles asymétriques, \emph{Document de
+  travail Insee}, M2024/01.
+  \href{https://inseefrlab.github.io/DT-est-tr-tc/}{inseefrlab.github.io/DT-est-tr-tc}
+\item
+  Article 2 : Improving Real-Time Trend Estimates Using Local
+  Parametrization of Polynomial Regression Filters. \emph{Journal of
+  Official Statistics, 40}(4), 685-715.
+  \href{https://github.com/AQLT/joffstats2024}{github.com/AQLT/joffstats2024}
+\item
+  Article 3 : Estimation de la tendance-cycle avec des méthodes robustes
+  aux points atypiques.
+  \href{https://aqlt.github.io/robustMA/}{aqlt.github.io/robustMA}
+\item
+  Article 4 : Et si l'on publiait la tendance-cycle~?, \emph{XVèmes
+  Journées de Méthodologie Statistique de l'Insee}.
+  \href{https://github.com/AQLT/publishTC.wp}{github.com/AQLT/publishTC.wp}
+\end{itemize}
+
+Packages \faIcon{r-project} : \texttt{rjd3filters}
+(\href{https://github.com/rjdverse/rjd3filters}{github.com/rjdverse/rjd3filters})
+et \texttt{publishTC}
+(\href{https://github.com/AQLT/publishTC}{github.com/AQLT/publishTC})
+\end{frame}
+
+\end{document}

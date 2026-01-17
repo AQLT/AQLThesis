@@ -1,0 +1,208 @@
+### Coefficients, gain and phase shift functions {#sec-an-cof}
+
+```{r, out.width="100%"}
+#| label: fig-graphs-coef-lc
+#| fig-cap: Coefficients, gain and phase shift functions for the Linear-Constant (LC) filter with $I/C=3.5$.
+img <- sprintf("img/filters_used/%s.%s", tolower("LC"), fig_ext)
+knitr::include_graphics(img)
+```
+
+```{r, out.width="100%"}
+#| label: fig-graphs-coef-ql
+#| fig-cap: Coefficients, gain and phase shift functions for the Quadratic-Linear (QL) filter with $I/C=3.5$.
+img <- sprintf("img/filters_used/%s.%s", tolower("QL"), fig_ext)
+knitr::include_graphics(img)
+```
+
+
+```{r, out.width="100%"}
+#| label: fig-graphs-coef-cq
+#| fig-cap: Coefficients, gain and phase shift functions for the Cubic-Quadratic (CQ) filter with $I/C=3.5$.
+img <- sprintf("img/filters_used/%s.%s", tolower("CQ"), fig_ext)
+knitr::include_graphics(img)
+```
+
+```{r, out.width="100%"}
+#| label: fig-graphs-coef-daf
+#| fig-cap: Coefficients, gain and phase shift functions for the direct asymmetric filter (DAF).
+img <- sprintf("img/filters_used/%s.%s", tolower("DAF"), fig_ext)
+knitr::include_graphics(img)
+```
+
+
+\newpage
+
+### Different specifications for the estimation of the slope and concavity
+
+::: {#fig-graphs-lc-deg-final}
+```{r, echo=FALSE, out.width="100%"}
+img <- sprintf("img/simulations/%s.%s", tolower("phase_shift_simul_local_final_lc"), fig_ext)
+knitr::include_graphics(img)
+```
+
+Distribution of phase shift associated to the local parametrisation of the linear-constant (LC) filter using the final estimates of $\delta/\sigma$, by the bandwidth $h$ of the henderson filter used to estimate $\sigma$ and the degree $d$ of the trend to estimate $\delta$.
+:::
+
+::: {#fig-graphs-lc-deg}
+```{r, echo=FALSE, out.width="100%"}
+img <- sprintf("img/simulations/%s.%s", tolower("phase_shift_simul_local_lc"), fig_ext)
+knitr::include_graphics(img)
+```
+
+Distribution of phase shift associated to the local parametrisation of the linear-constant (LC) filter using the final estimates of $\delta/\sigma$, by the bandwidth $h$ of the henderson filter used to estimate $\sigma$ and the degree $d$ of the trend to estimate $\delta$.
+:::
+
+::: {#fig-graphs-ql-deg-final}
+```{r, echo=FALSE, out.width="100%"}
+img <- sprintf("img/simulations/%s.%s", tolower("phase_shift_simul_local_final_ql"), fig_ext)
+knitr::include_graphics(img)
+```
+
+Distribution of phase shift associated to the local parametrisation of the quadratic-linear (QL) filter using real-time estimates of $\delta/\sigma$, by the bandwidth $h$ of the henderson filter used to estimate $\sigma$ and the degree $d$ of the trend to estimate $\delta$.
+:::
+
+::: {#fig-graphs-ql-deg}
+```{r, echo=FALSE, out.width="100%"}
+img <- sprintf("img/simulations/%s.%s", tolower("phase_shift_simul_local_ql"), fig_ext)
+knitr::include_graphics(img)
+```
+
+Distribution of phase shift associated to the local parametrisation of the quadratic-linear (QL) filter using real-time estimates of $\delta/\sigma$, by the bandwidth $h$ of the henderson filter used to estimate $\sigma$ and the degree $d$ of the trend to estimate $\delta$.
+:::
+
+
+\newpage
+
+### Impact of the span used to detect the ARIMA model
+
+::: {#fig-graphs-impact-span}
+```{r, echo=FALSE, out.width="100%"}
+img <- sprintf("img/simulations/%s.%s", tolower("phase_shift_simul_arima_length"), fig_ext)
+knitr::include_graphics(img)
+```
+
+Distribution of phase shift on simulated series by number of years used to identify and estimate the ARIMA model.
+:::
+
+\newpage
+### Nearest neighbour bandwidth
+
+
+```{r, out.width="100%"}
+#| label: fig-graphs-coef-lc-nn
+#| fig-cap: Coefficients, gain and phase shift functions for the Linear-Constant (LC) filter with $I/C=3.5$ and a nearest neighbour bandwidth.
+img <- sprintf("img/filters_used/%s_nn.%s", tolower("LC"), fig_ext)
+knitr::include_graphics(img)
+```
+
+```{r, out.width="100%"}
+#| label: fig-graphs-coef-ql-nn
+#| fig-cap: Coefficients, gain and phase shift functions for the Quadratic-Linear (QL) filter with $I/C=3.5$ and a nearest neighbour bandwidth.
+img <- sprintf("img/filters_used/%s_nn.%s", tolower("QL"), fig_ext)
+knitr::include_graphics(img)
+```
+
+
+```{r, out.width="100%"}
+#| label: fig-graphs-coef-cq-nn
+#| fig-cap: Coefficients, gain and phase shift functions for the Cubic-Quadratic (CQ) filter with $I/C=3.5$ and a nearest neighbour bandwidth.
+img <- sprintf("img/filters_used/%s_nn.%s", tolower("CQ"), fig_ext)
+knitr::include_graphics(img)
+```
+
+```{r, out.width="100%"}
+#| label: fig-graphs-coef-daf-nn
+#| fig-cap: Coefficients, gain and phase shift functions for the direct asymmetric filter (DAF) with a nearest neighbour bandwidth.
+img <- sprintf("img/filters_used/%s_nn.%s", tolower("DAF"), fig_ext)
+knitr::include_graphics(img)
+```
+
+
+::: {#fig-nn-lp}
+```{r, echo=FALSE, out.width="100%"}
+img <- sprintf("img/simulations/%s.%s", tolower("phase_shift_simul_nn_lp"), fig_ext)
+knitr::include_graphics(img)
+```
+
+Distribution of phase shift using nearest neighbour bandwidth.
+:::
+
+::: {#fig-nn-localparam}
+```{r, echo=FALSE, out.width="100%"}
+img <- sprintf("img/simulations/%s.%s", tolower("phase_shift_simul_nn_lp_localparam"), fig_ext)
+knitr::include_graphics(img)
+```
+
+```{=latex}
+{\footnotesize\raggedright 
+```
+*Note: nearest bandwidth moving average are used to estimate slope and concavity.*
+*We thus do not distinguish local parametrisation and final local parametrisation which assumptions might not be plausible.*
+*Indeed, using the same framework as for fixed bandwidth, the final local parametrisation for real-time estimates would imply modelling a polynomial of degree 2 or 3 other 25 months (which doesn't seem plausible).*
+```{=latex}
+}
+```
+
+Distribution of phase shift using nearest neighbour bandwidth for polynomial filters with local parametrisation.
+:::
+
+
+
+\newpage
+
+### Quarterly data
+
+::: {#fig-graphs-quarterly}
+```{r, echo=FALSE, out.width="100%"}
+img <- sprintf("img/simulations/%s.%s", tolower("phase_shift_simul_q"), fig_ext)
+knitr::include_graphics(img)
+```
+
+Distribution of phase shift on quarterly data.
+:::
+
+
+::: {#tbl-simulrev-q}
+```{r}
+#| echo: false
+rev_table <- readRDS("data/simulations_revisions_q.RDS")
+pack_row_index = c("$MAE_{fe}(q) = \\mathbb E\\\\left[\\\\left|(TC_{t|t+q} -  TC_{t|last})/TC_{t|last}\\\\right|\\\\right]$" = nrow(rev_table) / 2,
+                   "$MAE_{ce}(q)=\\mathbb E\\\\left[
+\\\\left|(TC_{t|t+q} - TC_{t|t+q+1})/TC_{t|t+q+1}\\\\right|
+\\\\right]$" = nrow(rev_table) / 2)
+tbl <- rev_table  |>
+  knitr::kable(format.args = list(digits = 2,
+                           decimal.mark = "."),
+        align = "c", booktabs = T, row.names = FALSE, 
+        escape = FALSE,
+        format = ifelse(knitr::is_latex_output(), "latex", ifelse(knitr::is_html_output(exclude = "epub"), "html", "pipe"))
+        ) 
+if (knitr::is_latex_output()) {
+    tbl <- tbl |>  
+  kableExtra::pack_rows(index = pack_row_index, escape = FALSE) 
+} else if (knitr::is_html_output(exclude = "epub")) {
+    names(pack_row_index) <- gsub("\\\\","\\",names(pack_row_index), fixed = TRUE)
+    group_names <- rep(names(pack_row_index), pack_row_index)
+    tbl <- cbind(rev_table, group = group_names) |>
+        gt::gt(groupname_col = "group",process_md = TRUE) |>
+        gt::fmt_markdown()  |>
+        gt::tab_style(
+            style = gt::cell_text(align = "center"),
+            locations = gt::cells_body()
+        ) |>
+        gt::tab_options(
+            heading.align = "center"
+        ) |> 
+        gt::cols_label(
+            .list = setNames(lapply(colnames(rev_table), gt::md), colnames(rev_table))
+        )|> 
+        gt::fmt_number(
+            decimals = 2,
+            use_seps = TRUE
+        ) 
+}
+tbl
+```
+
+Average of the relative deviations of the revisions for the different filters on simulated quarterly series with medium variability.
+:::

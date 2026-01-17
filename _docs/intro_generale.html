@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alain Quartier-la-Tente">
+
+<title>1&nbsp; Introduction générale – Estimation en temps réel de la tendance-cycle à l'aide de moyennes mobiles&nbsp;: apports dans l'analyse conjoncturelle</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./Chapitre 1/index-ch1.html" rel="next">
+<link href="./index.html" rel="prev">
+<link href="./img/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-485d01fc63b59abcd3ee1bf1e8e2748d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
+  }
+}</script>
+<script type="application/json" class="js-hypothesis-config">
+{
+  "theme": "clean"
+}
+</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="template/style.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro_generale.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction générale</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Estimation en temps réel de la tendance-cycle à l’aide de moyennes mobiles&nbsp;: apports dans l’analyse conjoncturelle</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/AQLT/AQLThesis.wp/" title="Code source" class="quarto-navigation-tool px-1" aria-label="Code source"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Recherche"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"> <span>Résumé</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro_generale.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction générale</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapitre 1/index-ch1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Estimation de la tendance-cycle et formule générale de construction des moyennes mobiles</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapitre 2/index-ch2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Amélioration des estimations de tendance-cycle grâce à la paramétrisation locale des filtres de régression polynomiale</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapitre 3/index-ch3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapitre 4/ch4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Et si l’on publiait la tendance-cycle&nbsp;?</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conclusion_generale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Conclusion générale</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliographie</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+    
+    <div style="display:none" aria-hidden="true">
+    \(
+
+        \newcommand\llb{[\![}
+        \newcommand\rrb{]\!]}
+        \newcommand\1{{\mathbb 1}}
+        \newcommand\ud{\,\mathrm{d}}
+        \newcommand{\transp}[1]{{}^t\!#1}
+        \newcommand{\bf}[1]{{\boldsymbol #1}}
+        \newcommand{\cov}[2]{\Cov\left(#1,#2\right)}
+        \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+        \newcommand\N{\mathbb{N}}
+        \newcommand\Norm{\mathcal{N}}
+        \newcommand\R{\mathbb{R}}
+        \newcommand\Z{\mathbb{Z}}
+        \newcommand{\ps}[2]{\left\langle #1 \,,\, #2 \right\rangle}
+        \newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+        \DeclareMathOperator*{\argmax}{argmax}
+        \DeclareMathOperator*{\argmin}{argmin}
+        \DeclareMathOperator*{\med}{med}
+        \DeclareMathOperator{\tr}{tr}
+        \DeclareMathOperator{\Cov}{Cov}
+        \DeclareMathOperator{\e}{e}
+    \)
+    </div>
+    
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction générale</span></h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Auteur</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Alain Quartier-la-Tente <a href="https://orcid.org/0000-0001-7890-3857" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            LEMNA
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Une <em>série chronologique</em> ou <em>série temporelle</em> est une suite de valeurs numériques ordonnées dans le temps qui permet d’analyser l’évolution d’une variable au fil du temps. Les séries chronologiques sont utilisées dans de nombreux domaines&nbsp;: économie, finance, météorologie, astronomie, musique… Par exemple, le plus ancien diagramme temporel connu du monde occidental <span class="citation" data-cites="kendall1973timeseries">(selon <a href="references.html#ref-kendall1973timeseries" role="doc-biblioref">Kendall 1973</a>)</span>, reproduit par <span class="citation" data-cites="Funkhouser">Funkhouser (<a href="references.html#ref-Funkhouser" role="doc-biblioref">1936</a>)</span>, daterait du X<sup>e</sup> siècle et serait une représentation de l’inclinaison des orbites des planètes en fonction du temps qui proviendrait du <em>Commentaire au Songe de Scipion</em> de Macrobe (<a href="#fig-macrobius" class="quarto-xref">figure&nbsp;<span>1.1</span></a>). Ce diagramme montre des schémas qui semblent se répéter (variations à la hausse et à la baisse à intervalles réguliers), mais ce n’est que bien plus tard, aux XVIII<sup>e</sup> et XIX<sup>e</sup> siècles, que les techniques mathématiques permettront l’analyse des séries chronologiques, notamment grâce à l’approche fréquentielle.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-macrobius" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-macrobius-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.1&nbsp;- Inclinaison des orbites des planètes en fonction du temps, diagramme du X<sup>e</sup> siècle reproduit par <span class="citation" data-cites="Funkhouser">Funkhouser (<a href="references.html#ref-Funkhouser" role="doc-biblioref">1936</a>)</span>
+</figcaption>
+<div aria-describedby="fig-macrobius-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/macrobius.png" style="height:8cm" width="489" class="figure-img">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p>L’<em>analyse fréquentielle</em> (ou <em>analyse harmonique</em>) naît grâce à la contribution de <span class="citation" data-cites="fourier1822theorie">Fourier (<a href="references.html#ref-fourier1822theorie" role="doc-biblioref">1822</a>)</span> qui établit que toute fonction du temps peut être décomposée en une somme de termes périodiques exprimés par des fonctions sinusoïdales et cosinusoïdales. Avec le développement du périodogramme, <span class="citation" data-cites="schuster1898hidden">Schuster (<a href="references.html#ref-schuster1898hidden" role="doc-biblioref">1898</a>)</span> montre comment, à partir de la décomposition précédente, on peut mettre en évidence des phénomènes qui se répètent à intervalles réguliers&nbsp;: il montre alors qu’il y a un phénomène cyclique dans les taches solaires. Vingt ans plus tard, <span class="citation" data-cites="persons1919indices">Persons (<a href="references.html#ref-persons1919indices" role="doc-biblioref">1919</a>)</span> propose une approche globale de décomposition des séries temporelles en quatre composantes inobservables&nbsp;: tendancielle, cyclique, saisonnière et résiduelle (ou irrégulière). Ces quatre composantes sont décrites de la façon suivante&nbsp;:</p>
+<ol type="1">
+<li><p>Une <em>tendance de long terme</em> ou <em>tendance séculaire</em> qui correspond à l’augmentation ou diminution régulière de la série. Elle peut également être appelée l’<em>élément de croissance</em>.</p></li>
+<li><p>Un <em>mouvement ondulatoire</em> ou <em>cyclique</em> qui se superpose à la tendance de long terme, dont les pics sont atteints durant les périodes de prospérité industrielle et les creux pendant les périodes de dépression, constituant ainsi le cycle des affaires.</p></li>
+<li><p>Un <em>mouvement saisonnier</em> infra-annuel qui doit être systématique d’une année à l’autre.</p></li>
+<li><p>Des <em>variations résiduelles</em> ou <em>irrégulières</em> affectant des séries particulières ou des évènements majeurs, tels que des guerres ou des catastrophes nationales, affectant plusieurs séries simultanément. Ces variations peuvent aussi provenir d’une grève, de tempêtes ou d’inondations inhabituelles, d’une décision de justice affectant les transactions boursières, etc.</p></li>
+</ol>
+<p>Du fait de la difficulté de séparer la tendance de long terme et le cycle de court terme, la solution utilisée dans les méthodes de désaisonnalisation (dont l’objectif est d’estimer la composante saisonnière afin de la supprimer) est d’estimer ces deux composantes conjointement&nbsp;: on parle alors de composante tendance-cycle. En effet, ces composantes étant inobservables, il n’existe pas de définition unique puisque le concept de «&nbsp;long terme&nbsp;» est relatif (comment différencier un cycle long de la tendance de long terme&nbsp;?). De façon similaire, comme souligné par <span class="citation" data-cites="persons1919indices">Persons (<a href="references.html#ref-persons1919indices" role="doc-biblioref">1919</a>)</span>, il est également difficile de séparer un cycle court de l’irrégulier. Par ailleurs, les méthodes de construction des séries chronologiques sont périodiquement révisées pour tenir compte des évolutions économiques et sociales&nbsp;: le concept de tendance de long terme peut ainsi perdre de son importance. Par exemple, dans le cadre des enquêtes de conjoncture de l’Insee, la formulation des questions a pu évoluer au cours du temps pour une harmonisation européenne (c’est par exemple le cas de la question sur le taux d’utilisation des capacités de production en 2004 dans l’enquête de conjoncture dans l’industrie), l’enquête de conjoncture dans les services n’est mensuelle que depuis 2000 et il n’y avait pas d’enquête de conjoncture en août avant 2008. Les différentes classifications des produits et des entreprises ont également pu évoluer avec les révisions des différentes nomenclatures. Enfin, séparer la tendance de long terme et le cycle de court terme nécessite d’avoir des séries longues alors que les méthodes de désaisonnalisation peuvent également s’appliquer sur des séries courtes (le logiciel X-13-ARIMA-SEATS peut s’utiliser dès que l’on a 3 ans de données). La tendance-cycle peut donc également être qualifiée de «&nbsp;tendance de court terme&nbsp;».</p>
+<p>Pour l’estimation des différentes composantes, l’utilisation de moyennes mobiles (ou filtres linéaires) a rapidement été répandue<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, avec notamment <span class="citation" data-cites="poynting1884wheatcottonsilk">Poynting (<a href="references.html#ref-poynting1884wheatcottonsilk" role="doc-biblioref">1884</a>)</span> qui suggère l’utilisation de moyennes mobiles arithmétiques pour réduire les variations résiduelles et <span class="citation" data-cites="spencer1904graduation">Spencer (<a href="references.html#ref-spencer1904graduation" role="doc-biblioref">1904</a>)</span> qui propose l’utilisation de moyennes mobiles spécifiques pour lisser les taux de mortalité. Quelques années plus tard, <span class="citation" data-cites="henderson1916note">Henderson (<a href="references.html#ref-henderson1916note" role="doc-biblioref">1916</a>)</span> propose des moyennes mobiles, encore utilisées aujourd’hui, maximisant un critère «&nbsp;lissage&nbsp;» (<em>smoothness</em>) de la série, sous contrainte de préservation de polynômes de degré 2. Il montre également que le lissage par polynômes locaux est équivalent à l’application de moyennes mobiles et donne les conditions pour que la réciproque soit vérifiée. Tous ces travaux ont conduit au développement d’un premier programme de désaisonnalisation basé sur les moyennes mobiles <span class="citation" data-cites="shiskin1957computers">(voir notamment <a href="references.html#ref-shiskin1957computers" role="doc-biblioref">Shiskin 1957</a>)</span>, appelé «&nbsp;Census Method I&nbsp;». Cette méthode a fait l’objet de nombreuses variantes jusqu’à aboutir à la méthode de désaisonnalisation X-11 <span class="citation" data-cites="ladiray2011seasonal">(pour une description complète de cette méthode voir notamment <a href="references.html#ref-ladiray2011seasonal" role="doc-biblioref">Ladiray et Quenneville 2011</a>)</span>. Cette dernière est encore utilisée aujourd’hui puisqu’elle constitue le cœur de la méthode de décomposition de l’algorithme X-13-ARIMA-SEATS<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <span class="citation" data-cites="x13">(<a href="references.html#ref-x13" role="doc-biblioref">Monsell 2007</a>)</span>, qui est <a href="https://wayback.archive-it.org/12090/20240102173448/https://cros-legacy.ec.europa.eu/system/files/Jdemetra_%20release.pdf">officiellement recommandée</a>, avec la méthode paramétrique TRAMO-SEATS, par Eurostat et la Banque Centrale Européenne pour la désaisonnalisation des séries temporelles économiques.</p>
+<p>De manière générale, pour les estimations finales, des moyennes mobiles symétriques sont utilisées&nbsp;: c’est-à-dire que pour estimer une composante à la date <span class="math inline">\(t\)</span>, on utilise autant de point dans le passé (avant <span class="math inline">\(t\)</span>) et dans le futur (après <span class="math inline">\(t\)</span>) et que le même poids est donné aux observations passées et futures. Ces moyennes mobiles symétriques ont notamment l’avantage de ne pas créer de déphasage&nbsp;: il n’y a pas de décalage dans la détection des points de retournements<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Toutefois, pour l’estimation en temps réel, les points futurs n’étant pas encore connus, il n’est pas possible de s’appuyer sur des moyennes mobiles symétriques. Une première solution consiste à étendre la série pour ensuite appliquer une moyenne mobile symétrique. Cette solution semble remonter à <span class="citation" data-cites="deforest1877adjustment">De Forest (<a href="references.html#ref-deforest1877adjustment" role="doc-biblioref">1877</a>)</span> qui suggère également de modéliser, en fin de période, une tendance polynomiale de degré au plus trois<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Une seconde solution consiste à utiliser des moyennes mobiles asymétriques (c’est-à-dire que pour l’estimation d’une composante à la date <span class="math inline">\(t\)</span>, on n’utilise pas autant de points avant <span class="math inline">\(t\)</span> et après <span class="math inline">\(t\)</span>) pour prendre en compte le manque de données disponibles. Les prévisions étant des combinaisons linéaires de valeurs passées, ces deux méthodes sont <em>in fine</em> équivalentes. La première solution revient donc à appliquer des moyennes mobiles asymétriques dont les coefficients sont obtenus par minimisation de l’erreur quadratique moyenne de révision entre la première et dernière estimation puisque c’est le critère généralement utilisé dans les modèles de prévision. En fonction du cas d’usage, il peut donc être préférable d’utiliser des moyennes mobiles asymétriques spécifiques construites pour minimiser d’autres critères (comme le délai dans la détection de points de retournements). Dans certains cas, une approche hybride peut être utilisée&nbsp;: pour la désaisonnalisation de séries mensuelles, le filtre final de X-13-ARIMA-SEATS permettant d’extraire la composante saisonnière utilise, dans la majorité des cas, 7 ans de données dans le passé et dans le futur. Pour un horizon aussi grand, les prévisions ne sont généralement pas fiables. C’est pourquoi la méthode de désaisonnalisation X-13ARIMA-SEATS ne prolonge la série que de 1 an et utilise, en fin de période, des moyennes mobiles asymétriques spécifiques. En particulier, pour l’estimation de la tendance-cycle, les moyennes mobiles asymétriques associées aux moyennes mobiles de Henderson sont celles définies par <span class="citation" data-cites="musgrave1964set">Musgrave (<a href="references.html#ref-musgrave1964set" role="doc-biblioref">1964</a>)</span>.</p>
+<p>Pour analyser les variations de court terme et les cycles économiques, une pratique courante était d’étudier les séries brutes en glissement annuel. Cette méthode est à proscrire car cela n’élimine pas tous les effets saisonniers. Par exemple, certains jours fériés, comme par Pâques, ne tombent pas le même jour, voire le même mois chaque année&nbsp;: si la date de ce jour influence la série étudiée, l’analyse en glissement annuel peut être trompeuse.<br>
+De façon similaire, l’analyse en glissement annuel ne tient pas compte des effets de jours ouvrables. Par exemple, la production de nombreuses entreprises est plus faible le samedi et le dimanche qu’en semaine. En 2023, le mois de mars contenait 8 samedis et dimanche alors qu’en 2024 il en contenait 10&nbsp;: la simple analyse en glissement annuel ne tient pas compte de ces différences et pourrait donc conduire à une analyse erronée des variations.<br>
+Enfin, même lorsque les séries ne présentent aucun effet de calendrier, l’analyse en glissement annuel peut poser problème. D’une part, elle peut induire en erreur lorsque la composante irrégulière est importante (une valeur particulière est observée à une période donnée, par exemple pendant le COVID-19). D’autre part, les points de retournements (point à partir duquel une série croissante commence à décroître ou une série décroissante commence à croître) sont détectés avec retard en utilisant les glissements annuels (le risque est de ne pas voir les points de retournement sur l’année en cours). Par exemple, si la série brute est plus élevée en mars 2024 qu’en mars 2023, l’analyse en glissement annuel pourrait amener à conclure que l’activité a augmenté au cours de l’année alors qu’elle pourrait avoir augmenté jusqu’en septembre 2023 puis commencé à diminuer progressivement.<br>
+Toutes ces raisons font que la majorité des instituts statistiques publient des séries désaisonnalisées&nbsp;: on parle alors de séries corrigées des variations saisonnières et corrigées des jours ouvrables (CVS-CJO).</p>
+<p>Par construction, la désaisonnalisation laisse l’effet conjoint de la tendance-cycle et de l’irrégulier. Lorsque la variabilité de la série est importante (i.e., lorsque l’irrégulier est important), il peut être difficile, à partir de la série CVS-CJO, de déterminer la direction de la tendance de court terme et d’évaluer la présence de points de retournement. Dans ce cas, il peut être utile de lisser la série CVS-CJO afin de retirer l’irrégulier et d’estimer la composante tendance-cycle. Estimer et publier la tendance-cycle, en plus de la série désaisonnalisée, présente de nombreux avantages&nbsp;:</p>
+<ol type="1">
+<li><p>Réduire le risque que les utilisateurs tirent des conclusions inappropriées sur la base de mouvements liés à l’irrégulier.</p></li>
+<li><p>Permettre une comparaison appropriée dans le temps en réduisant l’impact des évènements ponctuels.</p></li>
+<li><p>Améliorer la compréhension et la détection des points de retournement.</p></li>
+</ol>
+<p>Même si les méthodes de désaisonnalisation fournissent directement des estimations de la tendance-cycle, les rares instituts publiant régulièrement cette composante, Statistique Canada et Australian Bureau of Statistics, appliquent plutôt des moyennes mobiles à la série CVS-CJO <span class="citation" data-cites="picard_matthews_2016 abs_interpreting_ts_2003">(<a href="references.html#ref-picard_matthews_2016" role="doc-biblioref">Picard et Matthews 2016</a>, &nbsp;; <a href="references.html#ref-abs_interpreting_ts_2003" role="doc-biblioref">Australian Bureau of Statistics 2003</a>)</span>. Cela a notamment l’avantage de simplifier le processus d’estimation de cette composante puisqu’il suffit de communiquer les coefficients des moyennes mobiles utilisées pour reproduire les résultats. <!-- Par ailleurs, si la série CVS-CJO n'est pas affectée par des chocs importants, appliquer directement  --></p>
+<p>L’objectif de cette thèse, composée de quatre articles, est d’étudier et de comparer différentes méthodes de construction de moyennes mobiles asymétriques permettant l’estimation en temps réel de la tendance-cycle. L’intérêt est donc porté sur les estimations intermédiaires (i.e., lorsque des moyennes mobiles asymétriques doivent être utilisées, faute d’observations futures connues) plutôt que sur les estimations finales (i.e., lorsque des moyennes mobiles symétriques peuvent être utilisées). Tout d’abord, différentes méthodes récemment développées pour la construction de moyennes mobiles pour l’estimation de la tendance-cycle sont étudiées et comparées. Puis, nous montrons notamment comment la moyenne asymétrique de Musgrave (utilisée dans X-13-ARIMA-SEATS) peut être paramétrée localement afin de réduire les révisions et le délai de détection des points de retournement. Ensuite, nous étudions l’impact des points atypiques sur l’estimation de la tendance-cycle et montrons comment les moyennes mobiles de Henderson et de Musgrave peuvent être étendues afin de modéliser ces chocs et ainsi réduire les révisions et mieux modéliser les points de retournement. Enfin, nous discutons des recommandations pour la mise en production de la composante tendance-cycle et de la façon de mettre en place une chaîne de production, en l’appliquant à une dizaine de publications de l’Insee.</p>
+<section id="estimation-de-la-tendance-cycle-et-formule-générale-de-construction-des-moyennes-mobiles" class="level3 unlisted unnumbered">
+<h3 class="unlisted unnumbered anchored" data-anchor-id="estimation-de-la-tendance-cycle-et-formule-générale-de-construction-des-moyennes-mobiles">Estimation de la tendance-cycle et formule générale de construction des moyennes mobiles</h3>
+<p>Ce premier article décrit et compare différentes approches récemment développées pour la construction de moyennes mobiles pour l’estimation de la tendance-cycle. Trois approches sont étudiées et comparées&nbsp;:</p>
+<ol type="1">
+<li><p>Moyennes mobiles obtenues grâce à l’approximation polynomiale locale <span class="citation" data-cites="proietti2008 GrayThomson1996">(<a href="references.html#ref-proietti2008" role="doc-biblioref">Proietti et Luati 2008</a>, &nbsp;; <a href="references.html#ref-GrayThomson1996" role="doc-biblioref">Gray et Thomson 1996</a>)</span>.</p></li>
+<li><p>Moyennes mobiles obtenues en utilisant la théorie des espaces de Hilbert à noyau reproduisant <span class="citation" data-cites="dagumbianconcini2008">(RKHS, <a href="references.html#ref-dagumbianconcini2008" role="doc-biblioref">Dagum et Bianconcini 2008</a>)</span>.</p></li>
+<li><p>L’approche <em>Fidelity-Smoothness-Timeliness</em> <span class="citation" data-cites="ch15HBSA">(FST, <a href="references.html#ref-ch15HBSA" role="doc-biblioref">Grun-Rehomme, Guggemos, et Ladiray 2018</a>)</span> sur une optimisation d’une somme pondérée de critères de qualités des moyennes mobiles.</p></li>
+</ol>
+<p>Une quatrième approche, l’approche <em>Accuracy, Timeliness, Smoothness</em> <span class="citation" data-cites="trilemmaWMR2019">(ATS, <a href="references.html#ref-trilemmaWMR2019" role="doc-biblioref">Wildi et McElroy 2019</a>)</span>, est également décrite mais n’est pas comparées aux autres. En effet, celle-ci dépendant totalement des données, elle peut donc, contrairement aux autres méthodes, plus difficilement s’intégrer dans la logique des algorithmes non-paramétriques tels que X-11 qui s’appuient sur des moyennes mobiles.</p>
+<p>Bien que toutes ces méthodes aient été présentées avec des approches générales de construction des moyennes mobiles (elles permettent par exemple toutes de reproduire la moyenne mobile de Henderson), leurs propriétés théoriques et leurs performances empiriques n’ont jamais été comparées.</p>
+<p>La comparaison théorique des méthodes est réalisée en développant une formulation générale de construction des moyennes mobiles, permettant de mettre en évidence les équivalences entre les différentes méthodes.<br>
+Les méthodes polynomiales ont l’avantage d’être simples et facilement compréhensibles. Elles peuvent également prendre en compte des problèmes complexes (comme l’autocorrélation induite par l’utilisation d’un plan de sondage rotatif avec une période de recouvrement). En revanche, l’inconvénient est que le déphasage ne peut pas être contrôlé (ce qui peut introduire des délais plus importants dans la détection des points de retournement). Cette étude propose également deux extensions de ces méthodes polynomiales qui seront davantage mises en avant dans le deuxième article de cette thèse.<br>
+Concernant les autres approches étudiées, les RKHS permettent de construire facilement des filtres adaptés à toutes les fréquences (y compris des fréquences irrégulières) mais ont notamment l’inconvénient d’être numériquement instables (des problèmes d’optimisation peuvent apparaître).<br>
+La méthode FST a l’avantage d’être analytiquement soluble mais a l’inconvénient d’être plus difficilement paramétrisable car les différents critères utilisés ne sont pas normalisés&nbsp;: les poids associés aux différents critères n’ont donc pas de sens.</p>
+<p>Les estimations de tendance-cycle issues de ces méthodes sont également comparées empiriquement sur des séries mensuelles, simulées et réelles, selon deux critères&nbsp;:</p>
+<ol type="1">
+<li><p>Le déphasage. Celui-ci est habituellement défini comme le nombre de mois nécessaires pour détecter un point de retournement. Cette définition a l’inconvénient de ne pas prendre en compte les cas où il y aurait des révisions dans la détection du point de retournement lors des estimations intermédiaires successives (ce qui peut être notamment le cas avec filtres issus des RKHS) ou lorsque le point de retournement est détecté lors des estimations intermédiaires mais pas avec l’estimation finale (avec une moyenne mobile symétrique). Le déphasage est donc défini dans cet article comme le nombre de mois nécessaires pour détecter un point de retournement sans révision future.<br>
+En minimisant le déphasage sur des séries simulées, ce critère est également utilisé pour obtenir des poids associés aux différents critères de la méthode FST.</p></li>
+<li><p>Les révisions. Celles-ci sont mesurées par rapport à la dernière estimation finale mais également entre deux estimations intermédiaires successives. Cela permet de mettre en évidence des sous-optimalités dans certaines méthodes lorsque l’on se rapproche de l’estimation finale (par exemple avec filtres issus des RKHS ou lorsque l’on applique une moyenne mobile symétrique sur une série prolongée).</p></li>
+</ol>
+<p>Cet article s’accompagne d’un <em>package</em> R, <a href="https://github.com/rjdverse/rjd3filters"><code>rjd3filters</code></a>, permettant de facilement mettre en œuvre les différentes méthodes et reproduire les résultats.</p>
+</section>
+<section id="amélioration-des-estimations-de-tendance-cycle-grâce-à-la-paramétrisation-locale-des-filtres-de-régression-polynomiale" class="level3 unlisted unnumbered">
+<h3 class="unlisted unnumbered anchored" data-anchor-id="amélioration-des-estimations-de-tendance-cycle-grâce-à-la-paramétrisation-locale-des-filtres-de-régression-polynomiale">Amélioration des estimations de tendance-cycle grâce à la paramétrisation locale des filtres de régression polynomiale</h3>
+<p>La régression polynomiale locale permet de reproduire la moyenne mobile symétrique de Henderson et les moyennes mobiles asymétriques de Musgrave, utilisées dans l’algorithme de désaisonnalisation X-13ARIMA-SEATS. Ce deuxième article se concentre deux extensions de ces méthodes&nbsp;:</p>
+<ol type="1">
+<li><p>En ajoutant un critère permettant de contrôler le déphasage, grâce au critère de <em>Timeliness</em> de la méthode FST. Le poids associé à ce critère devant être défini par l’utilisateur et étant difficilement paramétrisable (car le critère utilisé n’est pas normalisé), cette extension n’est pas étudiée empiriquement dans cet article mais uniquement de manière théorique.</p></li>
+<li><p>En proposant une procédure permettant de paramétrer localement les moyennes mobiles asymétriques. Les moyennes mobiles asymétriques sont en effet construites en utilisant un compromis biais-variance et dépendent d’un paramètre, associé au biais, devant être défini par l’utilisateur. Par exemple, les moyennes mobiles de Musgrave modélisent une tendance locale de degré 1 et reproduisent sans biais les constantes&nbsp;: le paramètre à définir correspond au rapport entre le coefficient associé à la pente et l’écart-type du résidu de la régression locale. Ce paramètre est généralement défini globalement (i.e., le paramètre est constant pour toutes les moyennes mobiles). Par exemple, dans X-13ARIMA-SEATS, ce paramètre ne dépend que de la longueur de la moyenne mobile de Henderson. Cette hypothèse n’est cependant pas plausible pour les estimations en temps réel et notamment autour des points de retournement (lors desquels la pente tend vers 0).</p></li>
+</ol>
+<p>La comparaison des estimations en temps réel de la tendance-cycle sur des séries mensuelles simulées et réelles montre que cette seconde extension permet de réduire le délai de la détection des points de retournement et que, même lorsque les délais ne sont pas réduits, elle permet de réduire les révisions. Sur des séries trimestrielles, la fenêtre des moyennes mobiles étant réduite (i.e., moins de points sont utilisés pour l’estimation), les différentes méthodes de construction de moyennes mobiles asymétriques donnent des résultats similaires.</p>
+<p>Toutefois, l’analyse des résultats sur des périodes à fortes turbulences, comme durant le COVID-19, montre que les estimations de la tendance-cycle peuvent être fortement biaisées par la présence de points atypiques importants, pouvant conduire à une détection erronée des points de retournement (dans le cadre du COVID-19, pic détecté trop tôt). Cela suggère donc de prendre en compte les points atypiques lorsque l’irrégulier est important.</p>
+<!-- Les extensions décrites sont facilement reproductibles grâce au *package* R [`rjd3filters`](https://github.com/rjdverse/rjd3filters). -->
+</section>
+<section id="estimation-de-la-tendance-cycle-avec-des-méthodes-robustes-aux-points-atypiques" class="level3 unlisted unnumbered">
+<h3 class="unlisted unnumbered anchored" data-anchor-id="estimation-de-la-tendance-cycle-avec-des-méthodes-robustes-aux-points-atypiques">Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques</h3>
+<p>Comme tout opérateur linéaire, les moyennes mobiles sont fortement sensibles à la présence de points atypiques. C’est pourquoi la méthode de désaisonnalisation X-13ARIMA-SEATS possède deux modules de correction des points atypiques&nbsp;:</p>
+<ol type="1">
+<li><p>Un module de pré-ajustement où la série initiale est notamment corrigée des ruptures en niveau (affectant la tendance-cycle) et des chocs ponctuels (affectant l’irrégulier) mais aussi d’autres formes de ruptures (changements transitoires, ruptures de saisonnalité, etc.).</p></li>
+<li><p>Cette série pré-ajustée est ensuite décomposée avec la méthode X-11, qui aussi possède un algorithme de correction des chocs ponctuels.</p></li>
+</ol>
+<p>Lorsque la série est affectée par des chocs importants l’application directe de moyennes mobiles pour l’estimation de la tendance-cycle peut donc conduire à des estimations biaisées et à un diagnostic conjoncturel faussé (par exemple points de retournement détectés à la mauvaise date). C’est notamment pourquoi Statistique Canada et l’Australian Bureau of Statistics ont arrêté la publication de la composante tendance-cycle durant la crise du COVID-19.</p>
+<p>L’objectif de cette étude est d’étudier et de comparer différentes approches permettant l’extraction de tendance-cycle en temps-réel. Nous décrivons également construction des moyennes mobiles linéaires, associées aux moyennes mobiles de Henderson et de Musgrave, qui prennent en compte des informations extérieures, permettant notamment de modéliser des chocs et donc de les rendre robustes à ces derniers. Cela permet notamment de correctement modéliser les points de retournements autour des chocs (par exemple durant le COVID-19) et de réduire les révisions. Cette étude montre comment construire des intervalles de confiance pour les estimations basées sur des moyennes mobiles et ainsi valider l’hypothèse retenue sur la modélisation de chocs. Ces moyennes mobiles sont également comparées à des méthodes non-linéaires robustes.</p>
+</section>
+<section id="et-si-lon-publiait-la-tendance-cycle" class="level3 unlisted unnumbered">
+<h3 class="unlisted unnumbered anchored" data-anchor-id="et-si-lon-publiait-la-tendance-cycle">Et si l’on publiait la tendance-cycle&nbsp;?</h3>
+<p>Qu’est-ce que la composante tendance-cycle&nbsp;? Quel est l’intérêt de publier cette composante&nbsp;? Comment l’estimer&nbsp;? Quels sont les instituts qui publient cette composante et quelles méthodes utilisent-ils&nbsp;? Y a-t-il des recommandations pour la publication de cette composante&nbsp;? Comment concrètement mettre en place une chaîne de production de cette composante&nbsp;? C’est à toutes ces questions que répond ce quatrième article.</p>
+<p>Seuls deux instituts statistiques publient régulièrement la composante tendance-cycle&nbsp;: Statistique Canada et l’Australian Bureau of Statistics. Pour cela, ces deux instituts appliquent des moyennes mobiles à la série désaisonnalisée et corrigée des jours ouvrables (CVS-CJO)&nbsp;: les <em>cascade linear filter</em> (CLF) pour Statistique Canada (en utilisant la méthode «&nbsp;couper-et-normaliser&nbsp;» pour les estimations en temps réel) et la moyenne mobile de Henderson pour l’Australian Bureau of Statistics (en utilisant les moyennes mobiles de Musgrave pour les estimations en temps réel). Cette publication se fait conjointement aux séries CVS-CJO (et non en remplacement) et a de nombreux avantages, en particulier&nbsp;:</p>
+<ul>
+<li><p>Réduire le risque que les utilisateurs tirent des conclusions inappropriées en période de forte volatilité en leur permettant de distinguer les évolutions expliquées par l’irrégulier de celles de la tendance-cycle.</p></li>
+<li><p>Améliorer la compréhension et la détection des points de retournement.</p></li>
+</ul>
+<p>Cet article décrit plusieurs recommandations de représentation de la tendance-cycle permettant de mettre en évidence l’incertitude autour des dernières estimations (intervalles de confiance, prévisions implicites) ou de mettre en évidence les points de retournement. Il montre comment mettre en place ces recommandations grâce au <em>package</em> R <a href="https://github.com/AQLT/publishTC"><code>publishTC</code></a> accompagnant cette étude. Celui-ci permet également de facilement reproduire les méthodes d’estimation de la tendance-cycle utilisées par Statistique Canada et l’Australian Bureau of Statistics, ainsi que les extensions des moyennes mobiles de Henderson/Musgrave proposées dans cette thèse&nbsp;:</p>
+<ol type="1">
+<li><p>Paramétrisation locale des moyennes mobiles asymétriques de Musgrave&nbsp;;</p></li>
+<li><p>Prise en compte des ruptures de niveau et des chocs ponctuels&nbsp;;</p></li>
+<li><p>Combinaison des deux extensions précédentes.</p></li>
+</ol>
+<p>L’étude explique également comment mettre en place une production automatique de la composante tendance-cycle, grâce à la création de rapports automatisés. La maquette de production mise en place dans étude est appliquée à une dizaine de publications de l’Insee (environ 80 séries).</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-abs_interpreting_ts_2003" class="csl-entry" role="listitem">
+Australian Bureau of Statistics. 2003. <em>A Guide to Interpreting Time Series – Monitoring Trends</em>. Canberra, Australia: Australian Bureau of Statistics. <a href="https://www.abs.gov.au/ausstats/abs@.nsf/mf/1349.0">https://www.abs.gov.au/ausstats/abs@.nsf/mf/1349.0</a>.
+</div>
+<div id="ref-dagumbianconcini2008" class="csl-entry" role="listitem">
+Dagum, Estela Bee, et Silvia Bianconcini. 2008. <span>«&nbsp;<span>The Henderson Smoother in Reproducing Kernel Hilbert Space</span>&nbsp;»</span>. <em>Journal of Business &amp; Economic Statistics</em> 26: 536‑45. <a href="https://doi.org/10.1198/073500107000000322">https://doi.org/10.1198/073500107000000322</a>.
+</div>
+<div id="ref-deforest1877adjustment" class="csl-entry" role="listitem">
+De Forest, Erastus L. 1877. <span>«&nbsp;On adjustment formulas&nbsp;»</span>. <em>The Analyst</em> 4 (3): 79‑86. <a href="https://doi.org/10.2307/2636257">https://doi.org/10.2307/2636257</a>.
+</div>
+<div id="ref-ferrara2009FR" class="csl-entry" role="listitem">
+Ferrara, Laurent. 2009. <span>«&nbsp;Caract<span>é</span>risation et datation des cycles <span>é</span>conomiques en zone euro&nbsp;»</span>. <em>Revue <span>é</span>conomique</em> 60 (3): 703‑12. <a href="https://doi.org/10.3917/reco.603.0703">https://doi.org/10.3917/reco.603.0703</a>.
+</div>
+<div id="ref-fourier1822theorie" class="csl-entry" role="listitem">
+Fourier, Joseph. 1822. <em>Théorie analytique de la chaleur</em>. Paris: Firmin Didot.
+</div>
+<div id="ref-Funkhouser" class="csl-entry" role="listitem">
+Funkhouser, H. Gray. 1936. <span>«&nbsp;A Note on a Tenth Century Graph&nbsp;»</span>. <em>Osiris</em> 1: 260‑62. <a href="https://doi.org/10.1086/368425">https://doi.org/10.1086/368425</a>.
+</div>
+<div id="ref-GrayThomson1996" class="csl-entry" role="listitem">
+Gray, Alistair G, et Peter J Thomson. 1996. <span>«&nbsp;Design of Moving-Average Trend Filters using Fidelity and Smoothness Criteria&nbsp;»</span>. In <em>Athens Conference on Applied Probability and Time Series Analysis</em>, édité par P. M. Robinson et Murray Rosenblatt, 205‑19. New York, NY: Springer New York. <a href="https://www.census.gov/library/working-papers/1996/adrm/rr96-01.html">https://www.census.gov/library/working-papers/1996/adrm/rr96-01.html</a>.
+</div>
+<div id="ref-ch15HBSA" class="csl-entry" role="listitem">
+Grun-Rehomme, Michel, Fabien Guggemos, et Dominique Ladiray. 2018. <span>«&nbsp;Asymmetric Moving Averages Minimizing Phase Shift&nbsp;»</span>. <em>Handbook on Seasonal Adjustment</em>. <a href="https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001">https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001</a>.
+</div>
+<div id="ref-henderson1916note" class="csl-entry" role="listitem">
+Henderson, Robert. 1916. <span>«&nbsp;Note on graduation by adjusted average&nbsp;»</span>. <em>Transactions of the actuarial society of America</em> 17: 43‑48.
+</div>
+<div id="ref-kendall1973timeseries" class="csl-entry" role="listitem">
+Kendall, Maurice G. 1973. <em>Time-series</em>. London: Charles Griffin.
+</div>
+<div id="ref-ladiray2011seasonal" class="csl-entry" role="listitem">
+Ladiray, Dominique, et Benoît Quenneville. 2011. <em>Seasonal Adjustment with the X-11 Method</em>. Springer. <a href="https://doi.org/10.1007/978-1-4613-0175-2">https://doi.org/10.1007/978-1-4613-0175-2</a>.
+</div>
+<div id="ref-x13" class="csl-entry" role="listitem">
+Monsell, Brian C. 2007. <span>«&nbsp;The X-13A-S seasonal adjustment program&nbsp;»</span>. In <em>Proceedings of the Federal Committee On Statistical Methodology Research Conference, November 5–7, 2007</em>, 515. Arlington, Virginia. <a href="https://nces.ed.gov/FCSM/pdf/2007FCSM_Monsell-II-B.pdf">https://nces.ed.gov/FCSM/pdf/2007FCSM_Monsell-II-B.pdf</a>.
+</div>
+<div id="ref-musgrave1964set" class="csl-entry" role="listitem">
+Musgrave, John C. 1964. <span>«&nbsp;A set of end weights to end all end weights&nbsp;»</span>. <em>US Census Bureau [custodian]</em>. <a href="https://www.census.gov/library/working-papers/1964/adrm/musgrave-01.html">https://www.census.gov/library/working-papers/1964/adrm/musgrave-01.html</a>.
+</div>
+<div id="ref-persons1919indices" class="csl-entry" role="listitem">
+Persons, Warren M. 1919. <span>«&nbsp;Indices of general business conditions&nbsp;»</span> 1 (1): 5‑107.
+</div>
+<div id="ref-picard_matthews_2016" class="csl-entry" role="listitem">
+Picard, Frédéric, et Steve Matthews. 2016. <span>«&nbsp;The Addition of Trend-Cycle Estimates to Selected Publications at Statistics Canada&nbsp;»</span>. Proceedings of the Survey Methods Section, Statistical Society of Canada (SSC) Annual Meeting. <a href="https://ssc.ca/sites/default/files/imce/pdf/picard_ssc2016.pdf">https://ssc.ca/sites/default/files/imce/pdf/picard_ssc2016.pdf</a>.
+</div>
+<div id="ref-poynting1884wheatcottonsilk" class="csl-entry" role="listitem">
+Poynting, John Henry. 1884. <span>«&nbsp;A Comparison of the Fluctuations in the Price of Wheat and in the Cotton and Silk Imports into Great Britain&nbsp;»</span>. <em>Journal of the Royal Statistical Society</em>, A, 47: 34‑64. <a href="https://doi.org/10.2307/2979211">https://doi.org/10.2307/2979211</a>.
+</div>
+<div id="ref-proietti2008" class="csl-entry" role="listitem">
+Proietti, Tommaso, et Alessandra Luati. 2008. <span>«&nbsp;Real time estimation in local polynomial regression, with application to trend-cycle analysis&nbsp;»</span>. <em>Ann. Appl. Stat.</em> 2 (4): 1523‑53. <a href="https://doi.org/10.1214/08-AOAS195">https://doi.org/10.1214/08-AOAS195</a>.
+</div>
+<div id="ref-schuster1898hidden" class="csl-entry" role="listitem">
+Schuster, Arthur. 1898. <span>«&nbsp;On the Investigation of Hidden Periodicities with Application to a Supposed 26 Day Period of Meteorological Phenomena&nbsp;»</span>. <em>Terrestrial Magnetism</em> 3 (1): 13‑41. <a href="https://doi.org/10.1029/TM003I001P00013">https://doi.org/10.1029/TM003I001P00013</a>.
+</div>
+<div id="ref-shiskin1957computers" class="csl-entry" role="listitem">
+Shiskin, Julius. 1957. <span>«&nbsp;Electronic Computers and Business Indicators&nbsp;»</span>. Occasional Paper No. 57. National Bureau of Economic Research. <a href="https://www.nber.org/books-and-chapters/electronic-computers-and-business-indicators">https://www.nber.org/books-and-chapters/electronic-computers-and-business-indicators</a>.
+</div>
+<div id="ref-spencer1904graduation" class="csl-entry" role="listitem">
+Spencer, John. 1904. <span>«&nbsp;On the Graduation of the Rates of Sickness and Mortality&nbsp;»</span>. <em>Journal of the Institute of Actuaries</em> 38: 334‑43. <a href="https://doi.org/10.1017/S0020268100008076">https://doi.org/10.1017/S0020268100008076</a>.
+</div>
+<div id="ref-trilemmaWMR2019" class="csl-entry" role="listitem">
+Wildi, Marc, et Tucker McElroy. 2019. <span>«&nbsp;The trilemma between accuracy, timeliness and smoothness in real-time signal extraction&nbsp;»</span>. <em>International Journal of Forecasting</em> 35 (3): 1072‑84. <a href="https://doi.org/10.1016/j.ijforecast.2019.03.008">https://doi.org/10.1016/j.ijforecast.2019.03.008</a>.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p> Mais il ne s’agissait pas de l’unique méthode utilisée&nbsp;: on peut également citer des méthodes basées sur les médianes ou des régressions, comme notamment décrit par Persons.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p> Cet algorithme fonctionne en deux temps. Dans un premier temps, la série est pré-ajustée de plusieurs non-linéarités grâce à un modèle Reg-ARIMA (correction de points atypiques, de ruptures, des effets jours ouvrables non saisonniers, des effets fêtes mobiles, etc.). Dans un second temps, cette série linéarisée est décomposée grâce à la méthode X-11.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p> On parle de point de retournement lorsque l’on passe d’une phase de récession (diminutions successives) à une phase d’expansion de l’économie (augmentations successives)&nbsp;: on parle alors de redressement ou, dans le cas contraire, de ralentissement. Dans le cadre de l’analyse de la tendance-cycle, ces points de retournement sont associés au cycle classique (également appelé cycle des affaires)&nbsp;: voir <span class="citation" data-cites="ferrara2009FR">Ferrara (<a href="references.html#ref-ferrara2009FR" role="doc-biblioref">2009</a>)</span> pour une description des différents cycles économiques.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p> «&nbsp;<em>As the first <span class="math inline">\(m\)</span> and last <span class="math inline">\(m\)</span> terms of the series cannot be reached directly by the formula, the series should be graphically extended by m terms at both ends, first plotting the observations on paper as ordinates, and then extending the curve along what seems to be its probable course, and measuring the ordinates of the extended portions.</em> <em>It is not necessary that this extension should coincide with what would be the true course of the curve in those parts. </em> <em>The important point is that the <span class="math inline">\(m\)</span> terms thus added, taken together with the <span class="math inline">\(m+1\)</span> adjacent given terms, should follow a curve whose form is approximately algebraic and of a degree not higher than the third.</em>&nbsp;»<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copié");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copié");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/aqlt\.github\.io\/AQLThesis\.wp\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="[Remerciements]{.content-visible when-format=&quot;pdf&quot;} [Résumé]{.content-visible unless-format=&quot;pdf&quot;}">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"> <span>Résumé</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./Chapitre 1/index-ch1.html" class="pagination-link" aria-label="Estimation de la tendance-cycle et formule générale de construction des moyennes mobiles[\footnote{Références de l'article&nbsp;:  Quartier-la-Tente A (2024), \emph{Estimation en temps réel de la tendance-cycle&nbsp;: apport de l'utilisation des moyennes mobiles asymétriques}, Document de travail Insee, M2024/01. \url{https://github.com/InseeFrLab/DT-est-tr-tc}.}]{.content-visible when-format=&quot;pdf&quot;}">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Estimation de la tendance-cycle et formule générale de construction des moyennes mobiles</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Thèse Alain Quartier-la-Tente, 2025</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AQLT">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://aqlt.github.io/">
+      <i class="bi bi-globe" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/alainqlt/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

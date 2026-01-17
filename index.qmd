@@ -1,0 +1,104 @@
+# [Remerciements]{.content-visible when-format="pdf"} [Résumé]{.content-visible unless-format="pdf"} {.unnumbered}
+
+```{r}
+#| output: asis
+if (!(knitr::is_latex_output() | knitr::is_html_output(exclude = "epub"))) { 
+  
+  cat(sep = "\n",
+      knitr::knit_child(quiet = TRUE,
+                        text = readr::read_file("template/Preambule_docx.qmd")
+      )
+  )
+  
+}
+```
+
+::: {.content-visible when-format="pdf"}
+
+La réalisation de cette thèse a été le fruit d'un long travail, rendu possible grâce à la rencontre et au soutien de nombreuses personnes que je souhaite ici remercier.
+
+Avant tout, je souhaiterais remercier Dominique, sans qui le projet de cette thèse n'aurait jamais eu lieu.
+En effet, l'idée de commencer une thèse est arrivée par un concours de circonstances : après deux ans à travailler sur la désaisonnalisation (notamment avec Dominique), j'étais de retour en 2019 sur les bancs de l'école en 2^e^ année à l'Ensae.
+Début 2020, mes plans de stage à l'étranger ayant été annulés du fait du COVID-19, je contactais Dominique pour savoir s'il n'avait pas des idées de travaux qui pourraient faire l'objet d'une thèse et s'il n'aurait pas connaissance d'un potentiel directeur pour celle-ci : c'est ainsi que j'ai réalisé un premier stage pour construire le projet qui a abouti à une inscription en thèse en 2021.
+Dominique, je te remercie pour tout ton soutien au cours de cette aventure, pour tout ce que tu m'as apporté et de m'avoir aidé à me poser de plus en plus de questions.
+
+Ensuite, je souhaiterais remercier Olivier, mon directeur de thèse, sans qui cette thèse serait restée à l'étape de projet.
+Merci beaucoup d'avoir accepté de m'encadrer.
+Tu as toujours fait preuve de gentillesse, de bienveillance et de compréhension (notamment face aux différentes contraintes personnelles et professionnelles qui ralentissaient parfois l'avancement de la thèse).
+Merci d'avoir été présent et de m'avoir guidé dans ce périple théorique, empirique et administratif, de m'avoir soutenu soutenu dans toutes les pistes explorées.
+
+Merci également à Jean, sans qui cette thèse n'aurait jamais eu cette dimension informatique.
+Merci de m'avoir introduit dans le monde informatique autour de JDemetra+ et d'avoir fait confiance pour le développement du premier package R associé.
+Merci également de m'avoir ensuite accueilli en stage pour construire ce sujet de thèse et d'avoir été discutant de mon premier article associé.
+Tous tes conseils m'ont permis de progresser et d'avoir de nombreuses idées pour la suite de ces travaux.
+
+Une thèse ne pourrait avoir lieu sans un comité de suivi individuel (CSI), merci beaucoup à Marie et Laurent d'avoir accepté ce rôle, sans savoir que cela impliquerait de me suivre tant d'années.
+Nos échanges ont toujours été très utiles, m'ont permis de mettre en avant des points intéressants de mes travaux, de me recadrer lorsque je me perdais dans les pistes à explorer et de réfléchir à des extensions de mes travaux.
+
+Cette thèse n'aurait jamais été soutenue sans un jury de soutenance.
+Merci beaucoup à Catherine et Valérie d'avoir accepté le rôle de rapporteur et pour toute l'attention que vous avez porté à mes travaux.
+Merci à Hamza, Jean et Laurent de compléter ce jury.
+
+Enfin, réaliser cette thèse n'aurait pas eu de sens sans le soutien d'amis et de la famille.
+Pour ne citer que quelques personnes, merci à Romain d'essayer de me motiver avec la perspective d'un bon repas.
+Merci à Odile pour tes interrogations sur mes travaux, même si la discussion virait assez rapidement très loin du sujet initial.
+Merci à mon Papa d'avoir été fier que je me lance dans cette aventure, je sais que tu aurais tant souhaité être présent pour ma soutenance.
+Merci à ma maman de m'avoir donné l'envie d'apprendre.
+Merci à Lucie, dont l'arrivée m'a poussé à me dépêcher de finaliser cette thèse, merci de te coucher suffisamment tôt pour que je puisse finaliser la rédaction.
+Et bien sûr merci à Kim pour ce rayon de soleil quotidien et tes encouragements, me permettant de progresser et d'avoir le courage de terminer tous ces projets.
+Il y a dix ans, je te remerciais déjà en indiquant que tes cycles d'humeur m'avaient aidé à comprendre les cycles de la conjoncture : la base de données étant aujourd'hui plus grande, j'ai pu me rendre compte des aléas important autour des cycles (de l'irrégulier), nécessitant donc un lissage de la série pour mieux analyser la tendance et la position dans le cycle.
+
+Deux citations résument le cheminement parcouru lors de ce doctorat :
+
+- « La science, mon garçon, est faite d'erreurs, mais d'erreurs qu'il est bon de commettre, car elles mènent peu à peu à la vérité. » prononcée par le professeur Lidenbrock son *Voyage au centre de la Terre*.
+
+- « Croire ou ne pas croire, cela n'a aucune importance. Ce qui est intéressant c'est de se poser de plus en plus de questions. » de l'Encyclopédie du Savoir Relatif et Absolu d'Edmond Wells.
+
+Encore merci à tous ceux qui m'ont aidé à me poser de plus en plus de questions, lors de séminaires, discussions professionnelles ou amicales, de m'avoir permis de faire des erreurs et, directement ou indirectement, de m'avoir encouragé à avancer.
+::: 
+
+::: {.content-visible unless-format="pdf"}
+
+Les séries désaisonnalisées sont couramment utilisées pour l'analyse conjoncturelle et l'identification des points de retournement. 
+Toutefois, lorsqu'elles sont trop bruitées, un lissage supplémentaire est nécessaire pour extraire la tendance de court terme, appelée tendance-cycle, qui combine la tendance de long terme et les fluctuations cycliques de court terme. 
+Cette extraction repose généralement sur des moyennes mobiles symétriques. 
+Pour l'estimation en temps réel, en l'absence d'observations futures, il est toutefois nécessaire de s'appuyer sur des filtres asymétriques. 
+Cela entraîne retards dans la détection des points de retournement et  révisions au fur et à mesures que de nouvelles observations sont disponibles. 
+Cette thèse vise à préciser pourquoi et comment publier la tendance-cycle et les recommandations pour le faire.
+
+Différentes approches récentes de construction de moyennes mobiles asymétriques sont comparées, tant sur le plan théorique qu'empirique. 
+Deux extensions des filtres de Henderson et de Musgrave, classiquement utilisées pour l'estimation de la tendance-cycle, sont proposées :  1) réduction des révisions et délais dans la détection des points de retournement via une paramétrisation locale ; 2) intégration de régresseurs externes pour construire des filtres robustes à certains chocs. 
+
+Ces travaux s'accompagnent de deux paquets R, `rjd3filters` et `publishTC`, qui facilitent l'application des méthodes proposées, l'étude des propriétés des filtres, l'estimation de la tendance-cycle et leur mise en production.
+
+**Mots clés** :  Séries chronologiques ; Cycles économiques ; Moyennes mobiles ; 
+Désaisonnalisation ; points de retournement
+
+
+```{r}
+#| echo: false
+#| output: asis
+#| eval: !expr "!knitr::is_latex_output()"
+cat(
+    "",
+    "# Abstract {.unnumbered}",
+    sep = "\n"
+)
+```
+
+Seasonally adjusted series are commonly used for business cycle analysis and turning point identification.
+However, when they are too noisy, additional smoothing is required to extract the short-term trend, known as the trend-cycle, which combines the long-term trend and short-term cyclical fluctuations. 
+This extraction typically relies on symmetric moving averages. 
+For real-time estimation, in the absence of future observations, it is necessary to use asymmetric filters. 
+This leads to  delays in turning point detection and revisions as new observations become available.
+This thesis aims to clarify why and how to publish the trend-cycle and provide recommendations for doing so.
+
+Different recent approaches to building asymmetric moving averages are compared, both theoretically and empirically. 
+Two extensions of the Henderson and Musgrave filters, traditionally used for trend-cycle estimation, are proposed: 1) reduction of revisions and delays in turning point detection through local parameterization; 2) integration of external regressors to build filters robust to certain shocks.
+
+This work is accompanied by two R packages, `rjd3filters` and `publishTC`, which facilitate the application of the proposed methods, the study of filter properties, trend-cycle estimation, and their implementation in production. 
+
+**Keywords**: Time series; Business cycle; Moving averages; Seasonal adjustment; Turning points
+:::
+
+

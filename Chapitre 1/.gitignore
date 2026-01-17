@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+*_cache
+*.aux
+*.log
+*.synctex.gz
+img/bookdown
+_book
+_bookdown_files
+DT_*
+data/.*

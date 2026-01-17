@@ -1,0 +1,95 @@
+## Approche *Fidelity-Smoothness-Timeliness* (FST) {#sec-GuggemosEtAl}
+
+:::: {.callout-note icon=false}
+## Filtres FST --- Grun-Rehomme, Guggemos, et Ladiray (2018)
+Approche fondée sur l'optimisation d'une somme pondérée de critères :
+
+- Le filtre asymétrique est indépendant du filtre symétrique, des données et de la date d'estimation. 
+
+- Le problème d'optimisation admet une solution unique (numériquement solvable).
+
+- Les différents critères ne sont pas normalisés : les poids accordés aux différents critères ne peuvent être comparés.
+
+**Fonction R** : `rjd3filters::fst_filter()`.
+::::
+
+
+Pour construire les moyennes mobiles symétriques, @GrunRehommeLadiray1994 et @GrayThomson1996 proposent un programme de minimisation sous contrainte qui fait un compromis entre réduction de la variance et « lissage » de la tendance (les deux articles utilisent en revanche des notations différentes). 
+@ch15HBSA étendent ces approches en les appliquant à la construction des filtres asymétriques et en ajoutant un critère permettant de contrôler le déphasage. 
+Il s'agit de l'approche *Fidelity-Smoothness-Timeliness* --- Fidélité-Lissage-Rapidité --- (FST).
+Pour la construction des filtres asymétriques, un quatrième critère pourrait également être rajouté qui prendrait en compte les révisions par rapport à l'utilisation d'un filtre symétrique de référence (cette méthode pourrait alors être appelée la méthode FRST --- *Fidelity-Revisions-Smoothness-Timeliness*).
+Cependant, le *package* `rjd3filters` n'ayant implémenté que l'approche FST, nous nous restreignons dans cette étude à la description de l'approche sans critère de révision.
+
+Les trois critères utilisés sont les suivants :
+
+- *Fidelity* (fidélité), $F_g$ : c'est le rapport de réduction de la variance.
+Plus il est petit et plus la tendance-cycle estimée est un bon estimateur de la vraie tendance-cycle.
+$$
+F_g(\boldsymbol \theta) = \sum_{k=-p}^{+f}\theta_{k}^{2}.
+$$
+$F_g$ peut également être écrite comme une forme quadratique positive : $F_g(\boldsymbol \theta)=\boldsymbol \theta'\boldsymbol F\boldsymbol \theta$ avec $\boldsymbol F$ la matrice identité d'ordre $p+f+1$.
+
+- *Smoothness* (lissage), $S_g$ : 
+$$
+S_g(\boldsymbol\theta) = \sum_{j}(\nabla^{d}\theta_{j})^{2}.
+$$
+Ce critère mesure la proximité de la série lissée à une tendance polynomiale de degré $d-1$. 
+Henderson utilise par exemple ce critère avec $d=3$ pour construire des moyennes mobiles conservant des polynômes de degré 2.
+$S_g$ peut également s'écrire sous une forme quadratique positive $S_g(\boldsymbol \theta)=\boldsymbol \theta'\boldsymbol S\boldsymbol \theta$ avec $S$ une matrice symétrique d'ordre $p+f+1$ (voir [annexe @sec-an-diag]).
+
+
+- *Timeliness* (rapidité), $T_g$ : il mesure le déphasage entre la série initiale et la série lissée à des fréquences spécifiques.
+Lorsqu'un filtre linéaire est appliqué, le niveau de la série initiale est également modifié par la fonction de gain : il est donc intuitif de considérer que plus le gain est élevé, plus l'impact du déphasage le sera.  
+C'est pourquoi le critère de déphasage dépend des fonctions de gain et de déphasage ($\rho_{\boldsymbol\theta}$ et $\varphi_{\boldsymbol\theta}$), le lien entre les deux fonctions étant fait à partir d'une fonction de pénalité $f$^[
+@ch15HBSA suggèrent 6 conditions de régularité à la fonction de pénalité afin qu'elle soit adaptée au problème de déphasage.
+Dans leur article, la fonction $f$ ne dépend que du gain et du déphasage de $\theta$ et les 6 conditions sont : $f \geq 0$, $f\left(\rho,0\right)=0$, $f\left(0,\varphi\right)=0$, $f\left(\rho,\varphi\right)=f\left(\rho,-\varphi\right)$, $\frac{\partial f}{\partial \rho} \geq 0$ et
+$\varphi \cdot \frac{\partial f}{\partial \varphi} \geq 0$.
+] :
+$$
+\int_{\omega_{1}}^{\omega_{2}}f(\rho_{\boldsymbol\theta}(\omega),\varphi_{\boldsymbol\theta}(\omega))\ud\omega.
+$$
+Comme fonction de pénalité, les auteurs suggèrent de prendre $f\colon(\rho,\varphi)\mapsto\rho^2\sin(\varphi)^2$. 
+Cela permet notamment d'avoir une *timeliness* qui peut s'écrire comme une forme quadratique positive ($T_g(\boldsymbol \theta)=\boldsymbol \theta'\boldsymbol T\boldsymbol \theta$ avec $\boldsymbol T$ une matrice carré symétrique d'ordre $p+f+1$, voir @ch15HBSA pour la démonstration).
+Dans cet article nous utilisons $\omega_1=0$ et $\omega_2=2\pi/12$ : on ne s'intéresse qu'à des séries mensuelles et au déphasage associé aux cycles d'au minimum 12 mois.
+
+En somme, l'approche FST consiste à minimiser une somme pondérée de ces trois critères sous certaines contraintes (généralement préservation polynomiale).
+
+$$
+\begin{cases}
+\underset{\boldsymbol\theta}{\min} &
+\alpha F_g(\boldsymbol \theta)+\beta S_g(\boldsymbol \theta)+\gamma T_g(\boldsymbol \theta) = 
+\boldsymbol \theta'(\alpha\boldsymbol F+\beta \boldsymbol S+ \gamma \boldsymbol T)\boldsymbol \theta\\
+s.t. & \boldsymbol C\boldsymbol \theta=\boldsymbol a
+\end{cases}.
+$$ {#eq-gugemmos}
+
+Les conditions $0\leq\alpha,\beta,\gamma\leq 1$ et $\alpha+\beta\ne0$ garantissent que $\alpha F_g(\boldsymbol \theta)+\beta S_g(\boldsymbol \theta)+\gamma T_g(\boldsymbol \theta)$ soit strictement convexe et donc l'unicité de la solution. 
+Dans ce cas, la solution s'écrit $\hat {\boldsymbol \theta} = [\alpha \boldsymbol F+\beta \boldsymbol S+ \gamma \boldsymbol T]^{-1}\boldsymbol C'\left(\boldsymbol C[\alpha \boldsymbol F+\beta \boldsymbol S+ \gamma \boldsymbol T]^{-1}\boldsymbol C'\right)^{-1}\boldsymbol a$.
+
+Dans cette approche, les filtres asymétriques construits sont totalement indépendants des données, de la date d'estimation et du filtre symétrique choisis.
+
+On obtient par exemple le filtre d'Henderson avec les paramètres suivants :
+$$\boldsymbol C=\begin{pmatrix}
+1 & \cdots&1\\
+-h & \cdots&h \\
+(-h)^2 & \cdots&h^2
+\end{pmatrix},\quad
+\boldsymbol a=\begin{pmatrix}
+1 \\0\\0
+\end{pmatrix},\quad
+\alpha=\gamma=0,\quad
+\beta=1,\quad d=3.$$
+
+Un des inconvénients de cette approche est que les différents critères ne sont pas normalisés : leurs valeurs ne peuvent pas être comparées et n'ont donc pas de sens.
+Il n'y a, par exemple, pas d'interprétation à donner à un poids deux fois plus important à la *timeliness* qu'à la *fidelity*. 
+
+
+La @fig-graphs-ex-fst montre les estimations successives de la série lissée du climat des affaires dans les matériels de transport ainsi que les prévisions implicites pour un ensemble particulier de poids $\alpha,\beta,\gamma$ (voir @sec-comparison pour la méthode utilisée pour les sélectionner).
+Ici les dernières estimations (lorsqu'aucun point dans le futur n'est connu) sont fortement révisées, ce qui s'observe notamment par la valeur de la dernière prévision implicite qui est éloignée des valeurs que l'on pourrait attendre pour l'évolution de l'indicateur.
+
+```{r, echo=FALSE, out.width="100%"}
+#| label: fig-graphs-ex-fst
+#| fig-cap: Estimations successives et prévisions implicites de la série lissée du climat des affaires dans les matériels de transport avec la méthode FST en préservant les polynômes de degré 2 et avec $\alpha=0,00$, $\beta=0,05$ et $\gamma=0,95$.
+img <- sprintf("img/ex/fst.%s", fig.ext)
+knitr::include_graphics(img)
+```

@@ -1,0 +1,51 @@
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\med}{med}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\tr}{tr}
+
+
+\newcommand\llb{\left\llbracket} % Pour html
+\newcommand\rrb{\right\rrbracket} % Pour html
+
+
+\newcommand{\1}{\mathds{1}}
+\newcommand\ud{\,\mathrm{d}}
+\newcommand{\transp}[1]{{}^t\!#1}
+\newcommand{\bf}[1]{{\boldsymbol #1}}
+\newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+\newcommand{\cov}[2]{\Cov\left(#1,#2\right)}
+\newcommand{\ps}[2]{\left\langle #1 \,,\, #2 \right\rangle}
+
+
+\DeclareMathOperator{\e}{e}
+\DeclareMathOperator{\Determinant}{det}
+\renewcommand{\P}{\mathds{P}} %Apparement \P existe déjà ?
+\newcommand\N{\mathds{N}}
+\newcommand\Norm{\mathcal{N}}
+\newcommand\R{\mathds{R}}
+\newcommand\Z{\mathds{Z}}
+
+
+\usepackage{stmaryrd} %\llbracket et \rrbracket
+\usepackage[htt]{hyphenat} %passage à la ligne des codes
+\usepackage{pdfpages}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{ragged2e}
+%\usepackage{animate}
+\usepackage{here}
+\usepackage{xspace}
+
+\usepackage{mathrsfs, dsfont}
+\usepackage[stable]{footmisc} %footnote dans \section
+
+\usepackage[authordate16,backend=biber,maxcitenames=2]{biblatex-chicago}
+\DefineBibliographyStrings{french}{andothers={et\addabbrvspace alii}}
+
+
+\renewcommand{\maketitle}{%
+  \includepdf[pages=1]{3 EDGE-PL-NU-2025.pdf}%
+  \clearpage
+}

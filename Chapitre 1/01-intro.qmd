@@ -1,0 +1,45 @@
+## Introduction
+
+L'analyse du cycle économique, et en particulier la détection rapide des points de retournement d'une série, est un sujet de première importance dans l'analyse de la conjoncture économique. 
+Pour cela, les indicateurs économiques sont généralement corrigés des variations saisonnières.
+Toutefois, afin d'améliorer leur lisibilité, il peut être nécessaire d'effectuer un lissage supplémentaire afin de réduire le bruit, et ainsi analyser la composante tendance-cycle.
+Par construction, les méthodes d'extraction de tendance-cycle sont étroitement liées aux méthodes de désaisonnalisation.
+En effet, afin d'estimer la composante saisonnière, les algorithmes de désaisonnalisation estiment préalablement une composante tendance-cycle.
+Ainsi, même si les méthodes d'extraction de tendance-cycle sont généralement appliquées sur des séries corrigées des variations saisonnières, l'estimation de ces séries dépend également des méthodes d'estimation de la tendance-cycle.
+
+Les moyennes mobiles, ou les filtres linéaires, sont omniprésents dans les méthodes d'extraction du cycle économique et d'ajustement saisonnier^[
+Une moyenne mobile est une méthode statistique qui consiste à appliquer une moyenne pondérée glissante à une série temporelle : à chaque date $t$ on calcule une moyenne pondérée de $p$ points passés et $q$ points futurs où $p,q\geq0$ dépend de la moyenne mobile.
+]. 
+Ainsi, la méthode de désaisonnalisation X-13ARIMA-SEATS utilise des moyennes mobiles de Henderson et des moyennes mobiles composites pour estimer les principales composantes d'une série chronologique. 
+Au centre de la série, des filtres symétriques sont appliqués. 
+Pour l'extraction de la tendance-cycle, le filtre symétrique le plus connu est celui de @henderson1916note, notamment utilisé dans l'algorithme de désaisonnalisation X-13ARIMA. 
+ 
+En revanche, pour les estimations en temps réel, en raison de l'absence d'observations futures, toutes ces méthodes doivent s'appuyer sur des filtres asymétriques pour estimer les points les plus récents. 
+Par exemple, même si X-13ARIMA-SEATS applique des moyennes symétriques aux prévisions obtenues à partir d'un modèle ARIMA, cela revient à appliquer des filtres asymétriques en fin de série, car les valeurs prédites sont des combinaisons linéaires de valeurs passées. 
+
+Si ces moyennes mobiles asymétriques ont de bonnes propriétés concernant la taille des révisions futures induites par le processus de lissage^[Voir par exemple @pierce1980SA.], elles induisent également, par construction, des déphasages qui retardent en général la détection en temps réel des points de retournement.
+
+
+L'objectif de cette étude est de décrire et de comparer les approches récentes permettant l'extraction de tendance-cycle en temps-réel. 
+Après une description des propriétés générales d'un filtre linéaire (@sec-propMM), différentes méthodes seront présentées :
+filtres polynomiaux locaux, filtres fondés sur les espaces de Hilbert à noyau reproduisant (RKHS, @sec-nonparamreg) et méthodes fondées sur une optimisation des propriétés des filtres --- *Fidelity-Smoothness-Timeliness* (FST, @sec-GuggemosEtAl) et *Accuracy, Timeliness, Smoothness* (ATS, @sec-WildiMcLeroy).  
+Bien que ces méthodes aient été présentées avec des approches générales de construction des filtres linéaires, leurs propriétés théoriques et leurs performances empiriques n'ont pas été comparées.
+Cette étude décrit l'ensemble de ces méthodes en développant une formulation générale pour la construction des filtres, permettant de mettre en exergue les spécificités de chacune.\
+Ainsi, les méthodes polynomiales ont l'avantage d'être simples et facilement compréhensibles. 
+Elles peuvent également prendre en compte des problèmes complexes (comme l'autocorrélation induite par l'utilisation d'un plan de sondage rotatif avec une période de recouvrement). 
+En revanche, l'inconvénient est que le déphasage ne peut pas être contrôlé (ce qui peut introduire des délais plus importants dans la détection des points de retournement).
+Cette analyse montre aussi comment les filtres polynomiaux peuvent être étendus en ajoutant un critère permettant de contrôler le déphasage ou en les paramétrisant localement.\
+Les RKHS permettent de construire facilement des filtres adaptés à toutes les fréquences (y compris des fréquences irrégulières) mais ont notamment l'inconvénient d'être numériquement instables (des problèmes d'optimisation peuvent apparaître, comme dans la méthode FST).\
+La méthode FST a l'avantage d'être analytiquement soluble mais a l'inconvénient d'être plus difficilement paramétrisable car les différents critères utilisés ne sont pas normalisés : les poids associés aux différents critères n'ont donc pas de sens.
+
+Enfin, dans une dernière partie (@sec-comparison), toutes ces méthodes sont comparées empiriquement sur des séries simulées et sur des séries réelles désaisonnalisées.
+En raison du lien entre désaisonnalisation et extraction de la tendance-cycle, les applications pratiques se concentreront sur les méthodes non-paramétriques qui pourraient être incluses dans X-13ARIMA-SEATS (la méthode ATS, paramétrique, est donc exclue).
+Cette analyse permet tout d'abord de montrer comment les problèmes d'optimisation des filtres issus des RKHS peuvent conduire à des filtres sous-optimaux (augmentation des révisions et du délai dans la détection des points de retournement).
+Ensuite, la méthode proposée pour paramétrer localement les filtres polynomiaux permet à la fois de détecter plus rapidement les points de retournement et de réduire les révisions dans les estimations successives de la tendance-cycle.
+Enfin, les résultats montrent que les futures études sur les méthodes d'estimations de la tendance-cycle peuvent probablement se restreindre à celles qui modélisent des tendances locales de degré au plus 2 : modéliser des tendances plus complexes aboutit à plus de révisions sans gain en termes de détection des points de retournement.
+
+Cette étude est reproductible.
+Tous les codes utilisés sont disponibles sous <https://github.com/InseeFrLab/DT-est-tr-tc>.
+Par ailleurs, toutes les méthodes décrites sont implémentées dans le *package* R `rjd3filters`^[<https://github.com/rjdverse/rjd3filters>.] qui accompagne cette étude.
+Celui-ci propose également plusieurs outils pour manipuler les moyennes mobiles et évaluer la qualité des estimations.
+

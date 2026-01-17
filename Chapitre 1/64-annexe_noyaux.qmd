@@ -1,0 +1,124 @@
+### Noyaux et régression locale {#sec-an-noyaux}
+#### Les différents noyaux {#sec-kernels}
+
+Dans les problèmes d'extraction du signal, les observations sont généralement pondérées par rapport à leur distance à la date $t$ : pour estimer la tendance-cycle à la date $t$, on accorde généralement plus d'importance aux observations qui sont proches de $t$.
+
+Dans le cas continu, un noyau $\kappa$ est une fonction positive, paire et intégrable telle que $\int_{-\infty}^{+\infty}\kappa(u) \ud u=1$ et $\kappa(u)=\kappa(-u)$. 
+Dans le cas discret, un noyau est un ensemble de poids $\kappa_j$, $j=0,\pm1,\dots,\pm h$ avec $\kappa_j \geq0$ et $\kappa_j=\kappa_{-j}$.
+
+Une classe importante de noyaux est celle des noyaux Beta. 
+Dans le cas discret, à un facteur multiplicatif près (de sorte que $\sum_{j=-h}^h\kappa_j=1$) :
+$$
+\kappa_j = \left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^r
+\right)^s,\quad\text{avec }r>0,s\geq 0.
+$$
+Cette classe englobe la majorité des noyaux présentés dans cette étude, à l'exception des noyaux d'Henderson, trapézoïdal et gaussien. 
+Les principaux noyaux (qui sont également implémentés dans `rjd3filters`) sont :
+
+
+::::{.multicols data-latex="{2}"}
+- $r=1,s=0$ noyau uniforme : 
+$$\kappa_j^U=1$$
+
+- $r=s=1$ noyau triangulaire :
+$$\kappa_j^T=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert
+\right)$$
+
+- $r=2,s=1$  noyau d'Epanechnikov (ou parabolique) :
+$$\kappa_j^E=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)$$
+
+- $r=s=2$ noyau quadratique (*biweight*) :
+$$\kappa_j^{BW}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)^2$$
+
+- $r = 2, s = 3$ noyau cubique (*triweight*) :
+$$\kappa_j^{TW}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)^3$$
+
+- $r = s = 3$ noyau tricube :
+$$\kappa_j^{TC}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^3
+\right)^3$$
+
+- noyau d'Henderson (voir @sec-sympolyfilter pour plus de détails) :
+$$
+\kappa_{j}=\left[1-\frac{j^2}{(h+1)^2}\right]
+\left[1-\frac{j^2}{(h+2)^2}\right]
+\left[1-\frac{j^2}{(h+3)^2}\right]
+$$
+- noyau trapézoïdal :
+$$
+\kappa_j^{TP}=
+\begin{cases}
+  \frac{1}{3(2h-1)} & \text{ si }j=\pm h 
+  \\
+  \frac{2}{3(2h-1)} & \text{ si }j=\pm (h-1)\\
+  \frac{1}{2h-1}& \text{ sinon}
+\end{cases}
+$$
+- noyau gaussien^[
+Dans `rjd3filters` $\sigma^2$ est fixé arbitrairement à $\sigma^2=0,25$.
+] :
+$$
+\kappa_j^G=\exp\left(
+-\frac{
+  j^2
+}{
+  2\sigma^2h^2
+}\right)
+$$
+::::
+
+
+Les noyaux d'Henderson, trapézoïdal et gaussien sont particuliers :
+
+- Les fonctions noyau d'Henderson et trapézoïdal changent avec la fenêtre (les autres dépendent uniquement du rapport $j/(h+1)$).
+
+- Pour les noyaux trapézoïdal et gaussien, d'autres définitions pourraient être utilisées et ils sont donc définis arbitrairement.
+Pour le noyau trapézoïdal on pourrait par exemple prendre une pente utilisant moins de points (par exemple $\begin{cases}\frac{1}{4h} &\text{ si }j=\pm h \\ \frac{2}{4h}& \text{ sinon}\end{cases}$) ou donner un poids plus faible aux observations extrêmes (par exemple $\begin{cases}\frac{1}{6h-1} &\text{ si }j=\pm h \\ \frac{3}{6h-1}& \text{ sinon}\end{cases}$) ; pour le noyau gaussien on pourrait prendre une variance plus ou moins élevée.  
+Le noyau trapézoïdal implémenté dans `rjd3filters` permet de calculer les moyennes mobiles utilisées dans l'algorithme X-13ARIMA pour l'extraction des composantes saisonnières. 
+Il n'est pas adapté dans le cas de l'extraction de la tendance-cycle.
+
+
+#### Quelques filtres symétriques particuliers {#sec-sympolyfilter}
+
+Lorsque l'on effectue une régression locale en modélisant une constante locale ($d=0$), on obtient l'estimateur de **Nadaraya-Watson** (ou l'estimateur par noyaux).
+
+Avec le noyau uniforme on obtient le filtre de @macaulay1931smoothing. 
+Lorsque $d=0$ ou $d=1$, on retrouve la moyenne arithmétique : $w_j=w=\frac{1}{2h+1}$.
+
+Le noyau d'**Epanechnikov** est souvent recommandé comme le noyau optimal car il minimise l'erreur quadratique moyenne de l'estimation par polynômes locaux.
+
+Le **Loess**, *locally estimated scatterplot smoothing* (notamment utilisé dans la méthode de désaisonnalisation STL), est une régression locale pondérée qui utilise le noyau tricube.
+
+Le  **filtre d'Henderson** est un cas particulier de l'approximation locale cubique ($d=3$), couramment utilisée pour l'extraction de la tendance-cycle (c'est par exemple le filtre utilisé dans le logiciel de désaisonnalisation X-13ARIMA).
+Pour une fenêtre fixée, Henderson a trouvé le noyau qui donnait l'estimation la plus lisse de la tendance. 
+Il montre l'équivalence entre les trois problèmes suivants :
+
+1. minimiser la variance de la différence d'ordre trois de la série lissée par l'application d'une moyenne mobile ;  
+2. minimiser la somme du carré de la différence d'ordre trois des coefficients du filtre, c'est le critère de lissage (*smoothness*) : $S=\sum_j(\nabla^{3}\theta_{j})^{2}$ ;  
+3. estimer une tendance localement cubique par les moindres carrés pondérés, où les poids sont choisis de sorte à minimiser la *smoothness* (cela conduit au noyau présenté dans la @sec-kernels).

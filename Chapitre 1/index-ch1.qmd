@@ -1,0 +1,50 @@
+
+```{r, eval = TRUE, include=FALSE}
+library(kableExtra)
+
+is_html <- knitr::is_html_output(exclude = "epub")
+is_latex <- knitr::is_latex_output()
+
+fig.ext <- ifelse(is_latex,"pdf",ifelse(is_html,"svg", "pdf"))
+```
+
+# Estimation de la tendance-cycle et formule générale de construction des moyennes mobiles[\footnote{Références de l'article :  Quartier-la-Tente A (2024), \emph{Estimation en temps réel de la tendance-cycle : apport de l'utilisation des moyennes mobiles asymétriques}, Document de travail Insee, M2024/01. \url{https://github.com/InseeFrLab/DT-est-tr-tc}.}]{.content-visible when-format="pdf"}
+
+::: {.content-visible unless-format="pdf"}
+Références de l'article :\
+Quartier-la-Tente A (2024), *Estimation en temps réel de la tendance-cycle : apport de l'utilisation des moyennes mobiles asymétriques*, Document de travail Insee, M2024/01. <https://github.com/InseeFrLab/DT-est-tr-tc>.
+:::
+
+<!-- Cette étude compare différentes approches récentes de construction de moyennes mobiles pour l'estimation en temps réel de la tendance-cycle : filtres polynomiaux locaux, filtres fondés sur les espaces de Hilbert à noyau reproduisant (RKHS) et méthodes fondées sur une optimisation des propriétés des filtres — *Fidelity-Smoothness-Timeliness* (FST) et *Accuracy, Timeliness, Smoothness* (ATS).  -->
+<!-- Bien que ces méthodes aient été présentées avec des approches générales de construction des filtres linéaires, leurs propriétés théoriques et leurs performances empiriques n'ont pas été comparées.  -->
+<!-- Cette étude décrit l'ensemble de ces méthodes en développant une formulation générale pour la construction des filtres, permettant de mettre en exergue les spécificités de chacune. -->
+<!-- Toutes ces méthodes sont également comparées empiriquement sur des séries simulées et sur des séries réelles désaisonnalisées.\ -->
+<!-- Toutes les méthodes décrites sont implémentées package R `rjd3filters`, développé lors de la thèse, qui propose également de nombreux outils pour manipuler les moyennes mobiles et évaluer la qualité des estimations. -->
+
+<!-- Cette étude s'intéresse à différentes méthodes de construction de moyennes mobiles pour l'estimation en temps réel de la tendance-cycle et la détection rapide des points de retournement. -->
+<!-- Nous proposons une comparaison des principales méthodes grâce à une formulation générique de construction de moyennes mobiles. -->
+<!-- La comparaison empirique des méthodes montre que : les problèmes d'optimisation de filtres issus des espaces de Hilbert à noyau reproduisant (RKHS) augmentent le déphasage et les révisions des estimations de la tendance-cycle ; -->
+<!-- modéliser des tendances polynomiales trop complexes introduit plus de révisions sans diminuer le déphasage ; -->
+<!-- pour les filtres polynomiaux, une paramétrisation locale permet une réduction des révisions et du délai de détection des points de retournement. -->
+
+
+
+
+
+<!-- \newpage -->
+
+{{< include 01-intro.qmd >}}
+
+{{< include 02-mm_properties.qmd >}}
+
+{{< include 03-nonparamreg.qmd >}}
+
+{{< include 04-fst.qmd >}}
+
+{{< include 05-wildi.qmd >}}
+
+{{< include 06-comparaison.qmd >}}
+
+{{< include 50-conclusion.qmd >}}
+
+{{< include annexe.qmd >}}

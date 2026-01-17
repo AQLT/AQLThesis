@@ -1,0 +1,31 @@
+# Amélioration des estimations de tendance-cycle grâce à la paramétrisation locale des filtres de régression polynomiale[\footnote{Références de l'article~: Quartier-la-Tente, A. (2024). Improving Real-Time Trend Estimates Using Local Parametrization of Polynomial Regression Filters. \emph{Journal of Official Statistics}, 40(4), 685-715. \url{https://doi.org/10.1177/0282423X241283207}.}]{.content-visible when-format="pdf"}
+
+<!-- Cet article examine et compare les estimations en temps réel de la composante tendance-cycle à l'aide de moyennes mobiles construites à partir d'une régression polynomiale locale. -->
+<!-- Il permet de reproduire les filtres symétriques de Henderson et asymétriques de Musgrave utilisés dans l'algorithme d'ajustement saisonnier X-13ARIMA-SEATS. -->
+<!-- Cet article propose deux extensions des filtres polynomiaux locaux pour les estimations en temps réel de la tendance-cycle : la première inclut un critère de rapidité afin de minimiser le déphasage ; -->
+<!-- ensuite, une procédure permettant de paramétrer localement les filtres asymétriques alors qu'ils sont généralement paramétrés globalement, ce qui peut être sous-optimal autour des points d'inflexion. -->
+<!-- Une comparaison empirique, basée sur des données simulées et réelles, montre que la modélisation de tendances polynomiales trop complexes entraîne davantage de révisions sans réduire le déphasage, et que la paramétrisation locale réduit le retard dans la détection des points d'inflexion et diminue les révisions. -->
+
+
+
+::: {.content-visible unless-format="pdf"}
+Références de l'article :\
+Quartier-la-Tente, A. (2024). Improving Real-Time Trend Estimates Using Local Parametrization of Polynomial Regression Filters. *Journal of Official Statistics*, 40(4), 685-715. <https://doi.org/10.1177/0282423X241283207>.
+:::
+
+
+```{r}
+#| include: false
+library(kableExtra)
+fig_ext <- ifelse(knitr::is_latex_output(), "pdf", "jpg")
+```
+
+
+
+
+{{< include article_jos.qmd >}}
+
+\newpage
+## Annexes
+
+{{< include supp_material.qmd >}}

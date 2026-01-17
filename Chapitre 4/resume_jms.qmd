@@ -1,0 +1,50 @@
+---
+title: "Et si l'on publiait la tendance-cycle ?"
+format: docx
+execute: 
+  cache: true
+lang: fr
+language:
+ title-block-author-single: Auteur
+echo: false
+toc: false
+bibliography: biblio.bib
+csl: diabetologia.csl
+author:
+  - name: Alain Quartier-la-Tente 
+    affiliation: LEMNA
+    orcid: 0000-0001-7890-3857
+---
+
+Les séries chronologiques se décomposent généralement en trois composantes : 
+
+1.	La tendance-cycle qui contient la tendance (évolutions de long terme) et le cycle (évolutions de court terme autour de la tendance). 
+La tendance et le cycle étant difficiles à séparer (notamment sur des séries courtes), ils sont estimés de manière conjointes dans la majorité des méthodes de décomposition.
+
+2.	Les effets saisonniers et de calendrier qui représentent les variations régulières dans les données qui se manifestent durant le même mois ou le même trimestre chaque année.
+
+3.	L'irrégulier qui représente les fluctuations inattendues qui ne font pas partie des composantes précédentes. 
+C'est par exemple le cas de chocs économiques non prévus (grèves, conditions météorologiques inhabituelles...) ou du bruit (erreurs de mesures liées à l'échantillonnage...).
+
+Pour l'analyse conjoncturelle, les indicateurs économiques sont généralement uniquement corrigés des variations saisonnières, laissant ainsi l'effet combiné de la tendance-cycle et de l'irrégulier. Toutefois, l'analyse des évolutions de ces indicateurs peut être complexe lorsque l'irrégulier est important.
+
+Le calcul et la publication de la tendance-cycle présente plusieurs avantages pour enrichir l'analyse de la conjoncture économique, notamment une meilleure lecture du cycle conjoncturel classique (également appelé cycle des affaires) et des points de retournement associés^[
+On parle de point de retournement lorsque l'on passe d'une phase de récession (diminutions successives) à une phase d'expansion de l'économie (augmentations successives), ou d'une phase d'expansion à une phase de récession.
+]
+[@imf_qna_2017; @menezes2006timely; @huot1989note; @abs_interpreting_ts_2001]. 
+C'est également la composante à privilégier pour effectuer des prévisions à long-terme. 
+Pourtant, seuls quelques instituts statistiques, comme Statistique Canada ou l'Australian Bureau of Statistics, diffusent régulièrement cette composante.
+
+L'objectif de cette étude est d'expliquer l'intérêt de publier la composante tendance-cycle et les recommandations pour le faire. 
+Elle présente également les méthodes, basées sur des moyennes mobiles, utilisées par Statistique Canada @picard_matthews_2016 et l'Australian Bureau of Statistics @abs_interpreting_ts_2003. 
+Elle montre comment ces méthodes peuvent être étendues pour : 
+
+1)	Réduire le biais des estimations intermédiaires, notamment autour de points de retournement @jos2024AQLT ; 
+
+2)	Modéliser les points atypiques afin d'éviter qu'ils biaisent l'estimation de la tendance-cycle @AQLT2025robustMA.
+
+
+L'étude s'accompagne d'un *package* R, `publishTC` (<https://github.com/AQLT/publishTC>), qui facilite la mise en œuvre  et la comparaison de ces méthodes. 
+Elle explique également comment mettre en place une production automatique de cette composante, l'appliquant à une dizaine de publications de l'Insee (<https://aqlt.github.io/publishTC.wp/>).
+
+L'ensemble des codes étant disponibles en open source, cette étude est entièrement reproductible.

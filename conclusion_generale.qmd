@@ -1,0 +1,90 @@
+# Conclusion générale
+
+En somme, afin d'éclairer le débat public et de réduire le risque que les utilisateurs tirent des conclusions inappropriées, il est intéressant de publier conjointement la composante tendance-cycle et la série désaisonnalisée, notamment lorsque cette dernière est bruitée.
+En effet, en n'enlevant que la composante saisonnière et les jours ouvrables, la désaisonnalisation laisse, par construction, l'influence de la tendance-cycle et de l'irrégulier.
+Lorsque l'irrégulier est important (i.e., lorsque la série est bruitée), lisser les séries pour analyser directement la tendance de court terme (i.e., la composante tendance-cycle) apporte une information supplémentaire pour le diagnostic conjoncturel : en améliorant la compréhension et la détection des points de retournement et en réduisant l'impact des évènements ponctuels, ce qui peut contribuer à une prise de décision opportune et éclairée. 
+
+Les seuls instituts publiant régulièrement la composante tendance-cycle, Australian Bureau of Statistics (ABS) et Statistique Canada, utilisent des moyennes mobiles appliquées sur les séries désaisonnalisées.
+Cette approche est cohérente avec la méthode de désaisonnalisation utilisée par ces instituts (méthode de décomposition X-11 utilisée dans le logiciel X-13ARIMA-SEATS), qui s'appuie sur des moyennes mobiles.
+Pour l'estimation finale de la tendance-cycle, une moyenne mobile symétrique est utilisée (en utilisant autant de point dans le passé que dans le futur) : les estimations intermédiaires doivent donc être basées sur des moyennes mobiles asymétriques, ce qui conduira à des révisions au fur et à mesure que de nouvelles observations sont disponibles.
+Cette thèse étudie plusieurs façons d'améliorer ces moyennes mobiles, pour réduire les révisions, le délai dans la détection des points de retournement et mieux rendre compte de la réalité économique autour de chocs.
+
+Le premier apport de cette thèse est d'unifier la théorie autour des méthodes de construction des moyennes mobiles symétriques et asymétriques pour l'estimation en temps réel de la tendance-cycle.
+Ceci est fait par le développement d'une formulation générale permettant notamment de regrouper les approches récemment développées, basées sur l'approche polynomiale locale, la théorie des espaces de Hilbert à noyau reproduisant (RKHS) ou une optimisation d'une somme pondérée de critères de qualité des moyennes mobiles.
+La comparaison de toutes ces approches selon une méthodologie commune permet de souligner l'importance de bien construire les critères de qualité de moyennes mobiles.
+Ainsi, pour analyser le délai de détection des points de retournement, il est important de prendre en compte les révisions qu'il peut y avoir dans les points de retournement détectés.
+Cela permet par exemple de montrer des sous-optimalités de certaines moyennes mobiles asymétriques lorsque l'on se rapproche de l'estimation finale, comme dans le cas des filtres RKHS.
+Pour l'analyse des révisions, il est également important de tenir en compte des révisions entre les différentes estimations successives puisque certaines approches peuvent avoir des faibles révisions par rapport à la dernière estimation mais des révisions plus importantes entre les estimations intermédiaires.
+C'est par exemple le cas pour l'approche basée l'application d'une moyenne mobile symétrique sur la série prolongée par prévision.
+
+En étudiant les révisions et le délai de détection des points de retournement, nous soulignons aussi l'importance d'adapter la méthode et la longueur de la moyenne mobile à la variabilité de la série : lorsque la variabilité de la série est « faible » (i.e., lorsque l'irrégulier est petit comparativement à la tendance-cycle et que la longueur de la moyenne mobile utilisée est trop longue), les méthodes modélisant des tendances de degré un produisent de moins bons résultats.
+Dans ce cas, il est possible d'utiliser des moyennes mobiles plus courtes (afin d'avoir une estimation plus précise de la tendance-cycle) ou de modéliser des tendances plus complexes (le bruit étant faible, les nouveaux paramètres pourront être estimés avec précision).\
+Il est également important d'adapter les critères utilisés pour la construction des moyennes mobiles au nombre de points connus dans le futur : lorsque peu de points sont connus, on peut préférer minimiser le déphasage alors que lorsqu'on se rapproche du cas d'utilisation du filtre symétrique (c'est-à-dire lorsqu'on se rapproche des estimations finales), le critère le plus important pourrait être la réduction des révisions (le déphasage étant alors quasi nul).
+C'est ce que qui peut expliquer les sous-optimalités des moyennes mobiles basées sur les RKHS.
+\
+
+En exploitant l'approche polynomiale locale, cette thèse propose deux extensions aux moyennes mobiles utilisées dans X-11 pour l'estimation de la tendance-cycle : la moyenne mobile symétrique de Henderson et les moyennes mobiles asymétriques de Musgrave.
+
+La première consiste à effectuer une paramétrisation locale des moyennes mobiles asymétriques de Musgrave.
+En effet, ces dernières dépendent d'un paramètre qui doit être fixé par l'utilisateur et est généralement fixé globalement.
+Par exemple, dans X-11, ce paramètre ne dépend que de la longueur de la moyenne mobile de Henderson et est donc fixe pour toutes les moyennes mobiles et pour toutes les estimations.
+Même si l'hypothèse sous-jacente à cette façon de définir le paramètre peut être plausible dans le cadre où la tendance est linéaire et fixe, elle est sous-optimale pour les périodes de retournement conjoncturel.
+L'extension proposée permet de réduire les délais dans la détection des points de retournement ainsi que les révisions.
+
+La seconde extension montre comment construire des moyennes mobiles, associées aux moyennes mobiles de Henderson et de Musgrave, qui intègrent une information extérieure afin d'avoir une meilleure décomposition tendance-cycle et irrégulier.
+Cela permet notamment de modéliser des chocs ponctuels (dont l'effet est généralement associé à l'irrégulier) et des chocs permanents (dont l'effet est associé à la tendance-cycle) à certaines dates définies par l'utilisateur : nous parlerons alors de moyennes mobiles « robustes ».\
+Les moyennes mobiles étant des opérateurs linéaires, elles sont en effet sensibles à la présence de chocs. 
+Par exemple, lors d'un choc permanent positif (affectant la tendance-cycle), la rupture va être lissée par la moyenne mobile et la tendance-cycle va être sur-estimée avant le choc et sous-estimée après le choc ; lors d'un choc ponctuel (affectant l'irrégulier), la tendance-cycle va être sur ou sous-estimée autour du choc (en fonction du signe du choc).
+Cela va également mener à de fortes révisions des estimations autour des chocs.
+Lorsqu'un choc est associé à un point de retournement de l'économie (par exemple lors de la crise financière de 2008 ou lors de la pandémie du COVID-19), l'estimation directe de la tendance-cycle va conduire à un décalage dans la détection des points de retournement (contraction détectée en avance et reprise en retard), ce qui peut perturber l'utilisateur lors de l'analyse de ces séries.
+C'est notamment ce qui a conduit Statistique Canada et l'Australian Bureau of Statistics à suspendre leurs publications de tendance-cycle pendant la période du COVID-19.\
+À l'inverse, la construction de moyennes mobiles « robustes » permet de minimiser les révisions autour des chocs et de bien détecter les points de retournement associés à ces chocs.
+Par rapport à l'utilisation de modèles ad-hoc (comme l'utilisation d'un modèle RegARIMA), cette approche a l'avantage de modéliser directement les points atypiques dans la méthodologie associée aux moyennes mobiles et va ainsi réduire les révisions et les limiter au nombre de points utilisés par les moyennes mobiles.
+Cela évite également les sous-optimalités associées aux approches consistant à couper la série autour du choc et à estimer la tendance-cycle sur chaque partie, du fait de l'utilisation de moyennes mobiles asymétriques autour du choc, comme ce qui est par exemple fait par Statistique Canada pour la période du COVID-19.
+Par ailleurs, lorsqu'aucun choc n'est observé, les résultats ne sont pas dégradés par l'utilisation des moyennes mobiles « robustes » et les estimations sont proches de celles des moyennes mobiles classiques.\
+Pour éviter la modélisation de chocs, l'application de méthodes non linéaires (qui ne sont donc pas basées sur des moyennes mobiles) robustes peut être envisagée.
+Toutefois, ces méthodes conduisent à des estimations intermédiaires non cohérentes (i.e., très éloignées de ce que l'on pourrait économiquement s'attendre) : elles fournissent donc de moins bons résultats que les moyennes mobiles « robustes » pour l'estimation de la tendance-cycle.
+
+Ces deux extensions peuvent également être combinées afin de minimiser les révisions sur les estimations intermédiaires lorsque l'on modélise des chocs sur les derniers points.
+\
+
+Cette thèse s'inscrit dans une démarche de science ouverte par la publication de l'ensemble des codes utilisés, mais aussi par le développement de deux *packages* R, [`rjd3filters`](https://github.com/rjdverse/rjd3filters) et [`publishTC`](https://github.com/AQLT/publishTC).
+
+Le premier *package*, `rjd3filters`, implémente toutes les méthodes décrites dans cette thèse avec des paramètres supplémentaires non étudiés ici, comme par exemple l'ajout d'un critère associé au déphasage dans les méthodes polynomiales locales. 
+Il permet également de facilement créer et combiner des moyennes mobiles et étudier leurs propriétés théoriques (fonctions de gain, déphasage, critères de qualité, statistiques de validation croisée, etc.).
+Il est ainsi facile de reproduire l'algorithme de décomposition X-11 et d'étudier l'effet du changement d'une moyenne mobile dans cet algorithme.
+Ce *package* a donc davantage vocation à être utilisé par des chercheurs.
+
+Le second *package*, `publishTC`, a été développé pour faciliter la production de la composante tendance-cycle.
+Il permet de reproduire les méthodes utilisées par ABS et Statistique Canada, ainsi que les extensions proposées dans cette thèse.
+Il facilite également la production de graphiques illustrant notamment la qualité des dernières estimations grâces à des outils décrits dans cette thèse, comme les prévisions implicites ou les intervalles de confiance.
+Ce *package* a donc davantage vocation à être utilisé par des producteurs de statistiques officielles.
+Il a conduit au développement d'une chaîne de production simplifiée de la composante tendance-cycle, qui a été appliquée sur dix publications de l'Insee (environ 80 séries, <https://aqlt.github.io/publishTC.wp/>) démontrant l'intérêt de la composante tendance-cycle dans différents cas d'usage, comparant plusieurs méthodes d'estimation et analysant les révisions.
+\
+
+Les travaux de cette thèse pourraient être étendus de différentes façons.
+
+Tout d'abord, dans l'algorithme X-11 et dans cette thèse, la longueur de la moyenne mobile utilisée est supposée fixe dans le temps (pour l'estimation finale, sur des séries mensuelles nous utilisons toujours 13 termes). 
+Toutefois, dans cette thèse nous montrons qu'il est important d'adapter la longueur de la moyenne mobile (la fenêtre) à la variabilité de la série : lorsque l'irrégulier est faible, une moyenne mobile plus courte est à préférer, afin de mieux estimer la tendance-cycle, et inversement lorsque l'irrégulier est fort, afin de le supprimer davantage. 
+Cette variabilité peut également dépendre de la période étudiée : on peut par exemple s'attendre à une variabilité plus forte des séries autour d'une crise.
+Le passage par la modélisation polynomiale locale, comme ce qui est fait pour la prise en compte de chocs, permettrait d'avoir une estimation locale de la variance et d'utiliser des méthodes avancées de sélection de la fenêtre^[
+Une sélection de la fenêtre basée sur des critères statistiques facilement calculables (AIC, validation croisée, Cp de Mallow, etc.) ne sera pas assez discriminante (il y a peu de différences entre les fenêtres proches).
+], qu'elle soit supposée fixe [comme par exemple dans @Ruppert01121995] ou variable [voir par exemple @fangijbels].
+L'implémentation de ces méthodes de sélection aiderait à appliquer les estimations moyennes mobiles à des séries haute fréquence (hebdomadaires, journalières, etc.) et ainsi étendre l'algorithme X-11.
+En effet, pour ces séries, la principale difficulté réside dans le choix de la longueur des moyennes mobiles qui doit être fixée par l'utilisateur, comme par exemple dans les méthodes basées sur STL, et qu'il n'existe pas de méthode automatique permettant de le faire.
+Cela fait que le choix est souvent arbitraire et correspond à celui par défaut dans le logiciel utilisé.
+
+
+Ensuite, la construction de moyennes mobiles « robustes » pourrait être approfondie.
+L'algorithme de décomposition X-11 est basé sur un processus itératif estimant une à une chaque composante (saisonnalité, tendance-cycle et irrégulier) via des moyennes mobiles spécifiques.
+Il possède également un module de correction des chocs ponctuels qui implique que le processus itératif précédent soit répété plusieurs fois, afin d'éviter qu'un point trop important ne biaise les estimations.
+La construction de moyennes mobiles « robustes » pourrait simplifier ce processus en ne reproduisant qu'une fois la procédure d'estimation.
+La détection des chocs pourrait s'appuyer sur la méthode déjà utilisée dans X-11 (basée sur le calcul de l'écart de l'irrégulier à une estimation locale de sa variance) ou sur la construction d'intervalles de confiance comme proposée dans cette thèse.
+En limitant le nombre de moyennes mobiles utilisées pour la décomposition, cela faciliterait également la construction d'intervalles de confiance pour les différentes composantes.
+
+Enfin, il est, de manière générale, difficile de juger en temps réel de la présence de chocs dans une série. 
+Il est en effet souvent nécessaire d'avoir plusieurs points après le choc pour en être sûr, ou bien de s'appuyer sur des informations extérieurs. 
+Cela qui contribue à augmenter les révisions lors des estimations en temps-réel.
+Pour cela, l'idée derrière le programme TERROR de @caporello2003terror est d'estimer un modèle RegARIMA sans utiliser le dernier point, de faire une prévision et de la comparer à la valeur observée : si l'erreur de prévision est grande (en valeur absolue) alors cette dernière observation peut être considérée comme atypique.
+Cette idée peut être étendue pour étudier la probabilité qu'un point soit atypique en étudiant la distribution des prévisions grâce, par exemple, aux prévisions quantiles.
+

@@ -1,0 +1,32 @@
+# Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques[\footnote{Références de l'article~: Quartier-la-Tente, A. (2025). Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques. arXiv~: \href{https://arxiv.org/abs/2507.10704}{2507.10704 $[$stat.ME$]$}. \url{https://aqlt.github.io/robustMA/}.}]{.content-visible when-format="pdf"}
+
+```{r}
+#| include: false
+#| label: setup-ch3-index
+fig.ext <- ifelse(knitr::is_latex_output(), "pdf", "png")
+```
+
+<!-- Les séries désaisonnalisées sont usuellement utilisées pour l'analyse de la conjoncture et des points de retournement. -->
+<!-- Lorsque l'irrégulier est trop élevé, il est préférable de lisser la série afin d'analyser directement la composante tendance-cycle. -->
+<!-- Cette étude s'intéresse à l'estimation en temps réel de cette composante autour de chocs et de points de retournement. -->
+<!-- Les moyennes mobiles linéaires classiquement utilisées pour l'estimation de la tendance-cycle, sensibles à la présence de points atypiques, sont comparées à des méthodes non-linéaires robustes. -->
+<!-- Nous proposons également une méthodologie pour étendre les moyennes mobiles de Henderson et de Musgrave afin de prendre en compte des informations extérieurs et ainsi construire des moyennes mobiles robustes à la présence de certains chocs. -->
+<!-- Nous décrivons comment estimer des intervalles de confiance pour les estimations issues de moyennes mobiles, ce qui permet de valider l'utilisation de ces nouvelle moyennes mobiles. -->
+<!-- En comparant les méthodes sur des séries simulées et réelles, nous montrons que : construire des moyennes mobiles robustes permet de réduire les révisions et de mieux modéliser les points de retournement autour de chocs, sans dégrader les estimations lorsqu'aucun choc n'est observé ; les méthodes non-linéaires robustes ne permettent pas d'extraire une composante tendance-cycle satisfaisante pour l'analyse conjoncturelle, avec parfois des révisions importantes. -->
+
+<!-- Cette étude est entièrement reproductible et tous les codes utilisés sont disponibles sous <https://github.com/AQLT/robustMA>. -->
+
+::: {.content-visible unless-format="pdf"}
+Références de l'article :\
+Quartier-la-Tente, A. (2025). Estimation de la tendance-cycle avec des méthodes robustes aux points atypiques. arXiv : [2507.10704 [stat.ME]](https://arxiv.org/abs/2507.10704). <https://aqlt.github.io/robustMA/>.
+:::
+
+
+
+{{< include ch3.qmd >}}
+
+\newpage
+## Annexes
+
+{{< include annexe-ch3.qmd >}}
+

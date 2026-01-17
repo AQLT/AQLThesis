@@ -1,0 +1,68 @@
+\newpage
+### Coefficients, fonctions de gain et de déphasage {#sec-an-graphs}
+
+```{r, include = FALSE, cache = FALSE}
+knitr::opts_chunk$set(fig.pos = "H")
+```
+
+```{r, echo=FALSE, out.width="90%"}
+#| label: fig-graphslc
+#| fig-cap: Coefficients, fonctions de gain et de déphasage pour le filtre *Linear-Constant* (LC) avec $I/C=3,5$.
+img <- sprintf("img/filters_used/%s.%s", tolower("LC"), fig.ext)
+knitr::include_graphics(img)
+```
+
+```{r, echo=FALSE, out.width="90%"}
+#| label: fig-graphsql
+#| fig-cap: Coefficients, fonctions de gain et de déphasage pour le filtre *Quadratic-Linear* (QL) avec $I/C=3,5$.
+img <- sprintf("img/filters_used/%s.%s", tolower("QL"), fig.ext)
+knitr::include_graphics(img)
+```
+
+
+```{r, echo=FALSE, out.width="90%"}
+#| label: fig-graphscq
+#| fig-cap: Coefficients, fonctions de gain et de déphasage pour le filtre *Cubic-Quadratic* (CQ) avec $I/C=3,5$.
+img <- sprintf("img/filters_used/%s.%s", tolower("CQ"), fig.ext)
+knitr::include_graphics(img)
+```
+
+```{r, echo=FALSE, out.width="90%"}
+#| label: fig-graphsdaf
+#| fig-cap: Coefficients, fonctions de gain et de déphasage pour le filtre asymétrique direct (DAF).
+img <- sprintf("img/filters_used/%s.%s", tolower("DAF"), fig.ext)
+knitr::include_graphics(img)
+```
+
+```{r, echo=FALSE, out.width="90%"}
+#| label: fig-graphsrkhsfrf
+#| fig-cap: Coefficients, fonctions de gain et de déphasage pour le filtre RKHS $b_{q,\Gamma}$.
+img <- sprintf("img/filters_used/%s.%s", tolower("frf"), fig.ext)
+knitr::include_graphics(img)
+```
+
+
+```{r, echo=FALSE, out.width="90%"}
+#| label: fig-graphsrkhsgain
+#| fig-cap: Coefficients, fonctions de gain et de déphasage pour le filtre RKHS $b_{q,G}$.
+img <- sprintf("img/filters_used/%s.%s", tolower("gain"), fig.ext)
+knitr::include_graphics(img)
+```
+
+
+
+```{r, echo=FALSE, out.width="90%"}
+#| label: fig-graphsrkhsphase
+#| fig-cap: Coefficients, fonctions de gain et de déphasage pour le filtre RKHS $b_{q,\varphi}$.
+img <- sprintf("img/filters_used/%s.%s", tolower("phase"), fig.ext)
+knitr::include_graphics(img)
+```
+
+
+```{r, echo=FALSE, out.width="90%"}
+#| label: fig-graphsfst
+#| fig-cap: Coefficients, fonctions de gain et de déphasage pour le filtre FST préservant les polynômes de degré 2 avec $\alpha = 0,00$ (*fidelity*), $\beta =0,05$ (*smoothness*) et $\gamma = 0,95$ (*timeliness)*.
+img <- sprintf("img/filters_used/%s.%s", tolower("fst"), fig.ext)
+knitr::include_graphics(img)
+```
+
